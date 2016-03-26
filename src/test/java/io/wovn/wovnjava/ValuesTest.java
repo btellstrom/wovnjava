@@ -24,6 +24,14 @@ public class ValuesTest extends TestCase {
                             + "\"data\":\"\""
                         + "}"
                     + "]"
+                + "},"
+                + "\"Blank\":{"
+                    + "\"ja\":["
+                        + "{"
+                            + "\"xpath\":\"\","
+                            + "\"data\":\"\""
+                        + "}"
+                    + "]"
                 + "}"
             + "},"
             + "\"img_vals\":{"
@@ -58,6 +66,12 @@ public class ValuesTest extends TestCase {
         Values values = new Values(JSON);
         String text = values.getText("Non existing text", "ja");
         assertEquals(null, text);
+    }
+
+    public void testGetTextBlank() {
+        Values values = new Values(JSON);
+        String text = values.getText("Blank", "ja");
+        assertEquals("", text);
     }
 
     public void testGetImage() {
