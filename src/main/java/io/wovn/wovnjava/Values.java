@@ -1,12 +1,14 @@
 package io.wovn.wovnjava;
 
-import net.arnx.jsonic.JSON;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Set;
+
+import net.arnx.jsonic.JSON;
 
 class Values {
     private LinkedHashMap<String,LinkedHashMap<String,LinkedHashMap<String,ArrayList<LinkedHashMap<String,String>>>>>
@@ -50,7 +52,7 @@ class Values {
         return langs;
     }
 
-    @org.jetbrains.annotations.Nullable
+    @Nullable
     private String getCommon(String type, String text, String lang) {
         if (this.values.get(type) == null) {
             return null;
