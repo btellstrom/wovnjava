@@ -1,0 +1,4 @@
+general:
+  artifacts:
+    - "wovn-servlet-filter-*.jar"
+
