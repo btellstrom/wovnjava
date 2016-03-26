@@ -37,7 +37,7 @@ class Values {
         // Remove blank.
         set.remove("");
 
-        // Change variable type.
+        // Change variable type and sort.
         ArrayList<String> langs = new ArrayList<String>();
         langs.addAll(set);
         Collections.sort(langs);
