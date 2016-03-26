@@ -1,4 +1,4 @@
 general:
   artifacts:
-    - "wovn-servlet-filter-*.jar"
+    - "target/wovn-servlet-filter-*.jar"
 
