@@ -30,59 +30,59 @@ class Settings {
 
         p = config.getInitParameter("userToken");
         if (p != null && p.length() > 0) {
-            userToken = p;
+            this.userToken = p;
         }
 
         p = config.getInitParameter("secretKey");
         if (p != null && p.length() > 0) {
-            secretKey = p;
+            this.secretKey = p;
         }
 
         p = config.getInitParameter("urlPattern");
         if (p != null && p.length() > 0) {
-            urlPattern = p;
+            this.urlPattern = p;
         }
 
         p = config.getInitParameter("urlPatternReg");
         if (p != null && p.length() > 0) {
-            urlPatternReg = p;
+            this.urlPatternReg = p;
         }
 
         p = config.getInitParameter("query");
         if (p != null && p.length() > 0) {
-            query = getArrayParameter(p);
+            this.query = getArrayParameter(p);
         }
 
         p = config.getInitParameter("apiUrl");
         if (p != null && p.length() > 0) {
-            apiUrl = p;
+            this.apiUrl = p;
         }
 
         p = config.getInitParameter("defaultLang");
         if (p != null && p.length() > 0) {
-            defaultLang = p;
+            this.defaultLang = p;
         }
 
         p = config.getInitParameter("supportedLangs");
         if (p != null && p.length() > 0) {
-            supportedLangs = getArrayParameter(p);
+            this.supportedLangs = getArrayParameter(p);
         }
 
         p = config.getInitParameter("testMode");
         if (p != null && p.length() > 0) {
-            testMode = getBoolParameter(p);
+            this.testMode = getBoolParameter(p);
         }
 
         p = config.getInitParameter("testUrl");
         if (p != null && p.length() > 0) {
-            testUrl = p;
+            this.testUrl = p;
         }
 
-        initialize();
+        this.initialize();
     }
 
     @Contract("null -> null")
-    private static ArrayList<String> getArrayParameter(String param) {
+    static ArrayList<String> getArrayParameter(String param) {
         if (param == null || param.length() == 0) {
             return null;
         }
@@ -94,16 +94,20 @@ class Settings {
         return al;
     }
 
-    private static boolean getBoolParameter(String param) {
+    @Contract("null -> false")
+    static boolean getBoolParameter(String param) {
+        if (param == null) {
+            return false;
+        }
         param = param.toLowerCase();
         return param.equals("on") || param.equals("true") || param.equals("1");
     }
 
     private void initialize() {
-        defaultLang = Lang.getCode(defaultLang);
+        this.defaultLang = Lang.getCode(this.defaultLang);
 
-        if (supportedLangs.size() == 0) {
-            supportedLangs.add(defaultLang);
+        if (this.supportedLangs.size() == 0) {
+            this.supportedLangs.add(this.defaultLang);
         }
 
         if (this.urlPattern.equals("path")) {

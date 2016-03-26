@@ -97,4 +97,36 @@ public class SettingsTest extends TestCase {
         Settings s = new Settings(mock);
         assertTrue(s.isValid());
     }
+
+    public void testGetBoolParameter() {
+        assertTrue(Settings.getBoolParameter("on"));
+        assertTrue(Settings.getBoolParameter("true"));
+        assertTrue(Settings.getBoolParameter("1"));
+
+        assertFalse(Settings.getBoolParameter(null));
+        assertFalse(Settings.getBoolParameter(""));
+        assertFalse(Settings.getBoolParameter("0"));
+    }
+
+    public void testGetArrayParameterWithoutComma() {
+        ArrayList<String> expected = new ArrayList<String>();
+        expected.add("foo");
+        assertEquals(expected, Settings.getArrayParameter("foo"));
+    }
+
+    public void testGetArrayParameterWithComma() {
+        ArrayList<String> expected = new ArrayList<String>();
+        expected.add("foo");
+        expected.add("bar");
+        expected.add("baz");
+        assertEquals(expected, Settings.getArrayParameter("foo,bar,baz"));
+    }
+
+    public void testGetArrayParameterWithNull() {
+        assertNull(Settings.getArrayParameter(null));
+    }
+
+    public void testGetArrayParameterWithEmptyString() {
+        assertNull(Settings.getArrayParameter(""));
+    }
 }
