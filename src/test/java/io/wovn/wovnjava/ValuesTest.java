@@ -44,8 +44,8 @@ public class ValuesTest extends TestCase {
         Values values = new Values(JSON);
         List<String> langs = values.getLangs();
         assertEquals(2, langs.size());
-        assertEquals("ja", langs.get(0));
-        assertEquals("en", langs.get(1));
+        assertEquals("en", langs.get(0));
+        assertEquals("ja", langs.get(1));
     }
 
     public void testGetTextExists() {

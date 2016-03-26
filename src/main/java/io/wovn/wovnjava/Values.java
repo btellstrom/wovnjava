@@ -3,6 +3,7 @@ package io.wovn.wovnjava;
 import net.arnx.jsonic.JSON;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Set;
@@ -39,6 +40,7 @@ class Values {
         // Change variable type.
         ArrayList<String> langs = new ArrayList<String>();
         langs.addAll(set);
+        Collections.sort(langs);
 
         return langs;
     }
