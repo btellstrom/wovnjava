@@ -1,21 +1,23 @@
 package io.wovn.wovnjava;
 
+import org.jetbrains.annotations.Contract;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
 import javax.servlet.FilterConfig;
 
 class Settings {
-    String userToken;
-    private String secretKey;
+    String userToken = "";
+    String secretKey = "";
     String urlPattern = "path";
     String urlPatternReg = "/(?<lang>[^/.?]+)";
     ArrayList<String> query;
     String apiUrl = "https://api.wovn.io/v0/values";
     String defaultLang = "en";
-    private ArrayList<String> supportedLangs;
-    boolean testMode;
-    String testUrl;
+    ArrayList<String> supportedLangs;
+    boolean testMode = false;
+    String testUrl = "";
 
     Settings(FilterConfig config) {
         super();
@@ -79,6 +81,7 @@ class Settings {
         initialize();
     }
 
+    @Contract("null -> null")
     private static ArrayList<String> getArrayParameter(String param) {
         if (param == null || param.length() == 0) {
             return null;
