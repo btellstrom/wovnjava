@@ -1,9 +1,10 @@
 package io.wovn.wovnjava;
 
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
 
 public class WovnHttpServletRequest extends HttpServletRequestWrapper {
-    protected Headers headers;
+    private Headers headers;
 
     public WovnHttpServletRequest(HttpServletRequest r, Headers h) {
         super(r);
