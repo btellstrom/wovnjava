@@ -1,27 +1,35 @@
 package io.wovn.wovnjava;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
-import java.util.regex.*;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import javax.servlet.*;
-import javax.servlet.http.*;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-import org.jsoup.*;
-import org.jsoup.nodes.*;
-import org.jsoup.parser.*;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.parser.Tag;
 
-import us.codecraft.xsoup.*;
+import us.codecraft.xsoup.Xsoup;
 
-public class Interceptor {
+class Interceptor {
     private Store store;
 
     Interceptor(FilterConfig config) {
         store = new Store(config);
     }
 
-    public void call(HttpServletRequest request, ServletResponse response, FilterChain chain) {
+    void call(HttpServletRequest request, ServletResponse response, FilterChain chain) {
 
         if (!store.settings.isValid()) {
             try {
@@ -83,10 +91,10 @@ public class Interceptor {
         } catch (IOException e) {
         }
 
-        h.out((HttpServletRequest)request, (HttpServletResponse)wovnResponse);
+        h.out(request, wovnResponse);
     }
 
-    public String addLangCode(String href, String pattern, String lang, Headers headers) {
+    private String addLangCode(String href, String pattern, String lang, Headers headers) {
         if (href != null && href.length() > 0 && href.matches("^(#.*)?$")) {
             return href;
         }
@@ -125,7 +133,7 @@ public class Interceptor {
                         newHref = href + "?wovn=" + lang;
                     }
                 } else {
-                    newHref = href.replaceFirst("([^\\.]*\\.[^\\/]*)(\\/|$)", "$1/" + lang + "/");
+                    newHref = href.replaceFirst("([^\\.]*\\.[^/]*)(/|$)", "$1/" + lang + "/");
                 }
             }
         } else if (href != null && href.length() > 0) {
@@ -161,7 +169,7 @@ public class Interceptor {
         return newHref;
     }
 
-    public boolean checkWovnIgnore(Element el) {
+    private boolean checkWovnIgnore(Element el) {
         if (el.hasAttr("wovn-ignore")) {
             return true;
         } else if (el.parent() == null) {
@@ -170,17 +178,13 @@ public class Interceptor {
         return this.checkWovnIgnore(el.parent());
     }
 
-    public String switchLang(String body, Values values, HashMap<String,String> url, String lang, Headers headers) {
+    private String switchLang(String body, Values values, HashMap<String, String> url, String lang, Headers headers) {
 
         lang = Lang.getCode(lang);
-        boolean ignoreAll = false;
-
         Document doc = Jsoup.parse(body);
 
-        if (ignoreAll || Xsoup.compile("//html[@wovn-ignore]").evaluate(doc).get() != null) {
-            ignoreAll = true;
-            String newBody = doc.html();
-            return newBody;
+        if (Xsoup.compile("//html[@wovn-ignore]").evaluate(doc).get() != null) {
+            return doc.html();
         }
 
         if (!lang.equals(this.store.settings.defaultLang)) {
@@ -285,7 +289,7 @@ public class Interceptor {
             parentNode = doc.body();
         }
         if (parentNode == null) {
-            parentNode = (Element) doc;
+            parentNode = doc;
         }
 
         Element insertNode = new Element(Tag.valueOf("script"), "");
