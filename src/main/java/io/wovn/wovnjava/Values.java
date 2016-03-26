@@ -55,7 +55,7 @@ class Values {
         return this.getCommon("text_vals", text, lang);
     }
 
-    String getImg(String src, String lang) {
+    String getImage(String src, String lang) {
         return this.getCommon("img_vals", src, lang);
     }
 }

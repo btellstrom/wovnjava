@@ -10,6 +10,6 @@ public class ValuesTest extends TestCase {
     public void testGetText() {
     }
 
-    public void testGetImg() {
+    public void testGetImage() {
     }
 }

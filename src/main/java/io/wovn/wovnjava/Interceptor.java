@@ -254,7 +254,7 @@ public class Interceptor {
                         src = url.get("protocol") + "://" + url.get("host") + url.get("path") + src;
                     }
                 }
-                String destSrc = values.getImg(src, lang);
+                String destSrc = values.getImage(src, lang);
                 if (destSrc != null) {
                     el.attr("src", destSrc);
                 }
