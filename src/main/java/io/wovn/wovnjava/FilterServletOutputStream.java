@@ -1,13 +1,14 @@
 package io.wovn.wovnjava;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.OutputStream;
 
-import javax.servlet.*;
+import javax.servlet.ServletOutputStream;
 
-public class FilterServletOutputStream extends ServletOutputStream {
-    protected OutputStream stream;
+class FilterServletOutputStream extends ServletOutputStream {
+    private OutputStream stream;
 
-    public FilterServletOutputStream(OutputStream stream) {
+    FilterServletOutputStream(OutputStream stream) {
         this.stream = stream;
     }
 
