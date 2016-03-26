@@ -38,8 +38,14 @@ class Store {
                             json += line;
                         }
                     } finally {
-                        reader.close();
-                        isr.close();
+                        try {
+                            reader.close();
+                        } catch (IOException e) {
+                        }
+                        try {
+                            isr.close();
+                        } catch (IOException e) {
+                        }
                     }
                 }
             } finally {
