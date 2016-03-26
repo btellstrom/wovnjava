@@ -2,9 +2,7 @@
   <artifact type="jar" build-on-make="true" name="wovn-servlet-filter">
     <output-path>$PROJECT_DIR$/out/artifacts/wovn_servlet_filter</output-path>
     <root id="archive" name="wovn-servlet-filter.jar">
-      <element id="directory" name="META-INF">
-        <element id="file-copy" path="$PROJECT_DIR$/META-INF/MANIFEST.MF" />
-      </element>
+      <element id="module-output" name="wovn-servlet-filter" />
     </root>
   </artifact>
 </component>
