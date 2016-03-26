@@ -1,15 +1,18 @@
 package io.wovn.wovnjava;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Set;
 
-public class Values {
+class Values {
     private LinkedHashMap<String,LinkedHashMap<String,LinkedHashMap<String,ArrayList<LinkedHashMap<String,String>>>>> values;
 
-    public Values(LinkedHashMap<String,LinkedHashMap<String,LinkedHashMap<String,ArrayList<LinkedHashMap<String,String>>>>> v) {
+    Values(LinkedHashMap<String, LinkedHashMap<String, LinkedHashMap<String, ArrayList<LinkedHashMap<String, String>>>>> v) {
         values = v;
     }
 
-    public ArrayList<String> getLangs() {
+    ArrayList<String> getLangs() {
         Set<String> set = new HashSet<String>();
 
         LinkedHashMap<String,LinkedHashMap<String,ArrayList<LinkedHashMap<String,String>>>> textVals = this.values.get("text_vals");
@@ -48,11 +51,11 @@ public class Values {
         return null;
     }
 
-    public String getText(String text, String lang) {
+    String getText(String text, String lang) {
         return this.getCommon("text_vals", text, lang);
     }
 
-    public String getImg(String src, String lang) {
+    String getImg(String src, String lang) {
         return this.getCommon("img_vals", src, lang);
     }
 }

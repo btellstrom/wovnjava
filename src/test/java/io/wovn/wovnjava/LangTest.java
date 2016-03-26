@@ -6,10 +6,6 @@ import java.util.Map;
 
 public class LangTest extends TestCase {
 
-    public LangTest(String name) {
-        super(name);
-    }
-
     public void testLangsExist() {
         assertNotNull(Lang.LANG);
     }
