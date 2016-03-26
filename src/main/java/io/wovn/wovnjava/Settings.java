@@ -1,22 +1,23 @@
 package io.wovn.wovnjava;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
 
-import javax.servlet.*;
+import javax.servlet.FilterConfig;
 
-public class Settings {
-    public String userToken;
-    public String secretKey;
-    public String urlPattern = "path";
-    public String urlPatternReg = "/(?<lang>[^/.?]+)";
-    public ArrayList<String> query;
-    public String apiUrl = "https://api.wovn.io/v0/values";
-    public String defaultLang = "en";
-    public ArrayList<String> supportedLangs;
-    public boolean testMode;
-    public String testUrl;
+class Settings {
+    String userToken;
+    private String secretKey;
+    String urlPattern = "path";
+    String urlPatternReg = "/(?<lang>[^/.?]+)";
+    ArrayList<String> query;
+    String apiUrl = "https://api.wovn.io/v0/values";
+    String defaultLang = "en";
+    private ArrayList<String> supportedLangs;
+    boolean testMode;
+    String testUrl;
 
-    public Settings(FilterConfig config) {
+    Settings(FilterConfig config) {
         super();
 
         this.query = new ArrayList<String>();
@@ -86,19 +87,13 @@ public class Settings {
         param = param.replaceAll("^\\s+(.+)\\s+$", "$1");
         String[] params = param.split("\\s*,\\s*");
         ArrayList<String> al = new ArrayList<String>();
-        for (String p : params) {
-            al.add(p);
-        }
+        Collections.addAll(al, params);
         return al;
     }
 
     private static boolean getBoolParameter(String param) {
         param = param.toLowerCase();
-        if (param.equals("on") || param.equals("true") || param.equals("1")) {
-            return true;
-        } else {
-            return false;
-        }
+        return param.equals("on") || param.equals("true") || param.equals("1");
     }
 
     private void initialize() {
@@ -117,7 +112,7 @@ public class Settings {
         }
     }
 
-    public boolean isValid() {
+    boolean isValid() {
         boolean valid = true;
         ArrayList<String> errors = new ArrayList<String>();
 
@@ -147,7 +142,7 @@ public class Settings {
         }
 
         if (errors.size() > 0) {
-            // save error logs.
+            errors.size();  // This is a dummy code. Should log errors here.
         }
 
         return valid;
