@@ -1,5 +1,7 @@
 package io.wovn.wovnjava;
 
+import org.jetbrains.annotations.Contract;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,13 +44,14 @@ class Lang {
     String code;
     String en;
 
-    private Lang(String n, String c, String e) {
+    Lang(String n, String c, String e) {
         super();
         this.name = n;
         this.code = c;
         this.en = e;
     }
 
+    @Contract("null -> null")
     static String getCode(String langName) {
         if (langName == null || langName.length() == 0) {
             return null;

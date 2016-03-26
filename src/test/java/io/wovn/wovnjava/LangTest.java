@@ -21,6 +21,14 @@ public class LangTest extends TestCase {
         }
     }
 
+    public void testLang() {
+        Lang lang = new Lang("日本語", "ja", "Japanese");
+        assertNotNull(lang);
+        assertEquals("日本語", lang.name);
+        assertEquals("ja", lang.code);
+        assertEquals("Japanese", lang.en);
+    }
+
     public void testGetCodeWithValidCode() {
         assertEquals("ms", Lang.getCode("ms"));
     }
