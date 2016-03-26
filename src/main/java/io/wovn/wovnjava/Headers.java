@@ -137,6 +137,8 @@ class Headers {
         return this.pathLang;
     }
 
+    // This method is not used in wovnrb.
+    /*
     public String getBrowserLang() {
         if (browserLang == null || browserLang.length() == 0) {
             Cookie cookies[] = request.getCookies();
@@ -168,6 +170,7 @@ class Headers {
         }
         return browserLang;
     }
+    */
 
     String redirectLocation(String lang) {
         if (lang.equals(this.settings.defaultLang)) {
@@ -196,7 +199,7 @@ class Headers {
         if (this.settings.urlPattern.equals("query")) {
             return uri.replaceFirst("(^|\\?|&)wovn=" + lang + "(&|$)", "$1")
                     .replaceAll("(\\?|&)$", "");
-        } else if (this.settings.urlPattern.equals("subdoamin")) {
+        } else if (this.settings.urlPattern.equals("subdomain")) {
             return Pattern.compile("(^|(//))" + lang + "\\.", Pattern.CASE_INSENSITIVE)
                     .matcher(uri).replaceFirst("$1");
         } else {
