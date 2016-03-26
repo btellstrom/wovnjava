@@ -1,4 +1,4 @@
-general:
-  artifacts:
-    - "target/wovn-servlet-filter-*.jar"
+test:
+  post:
+    - mv target/wovn-servlet-filter-*.jar $CIRCLE_ARTIFACTS/
 
