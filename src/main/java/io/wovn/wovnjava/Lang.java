@@ -4,8 +4,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Lang {
-    public static final Map<String, Lang> LANG;
+class Lang {
+    static final Map<String, Lang> LANG;
     static {
         HashMap<String, Lang> map = new HashMap<String, Lang>();
         map.put("ar", new Lang("ﺎﻠﻋﺮﺒﻳﺓ", "ar", "Arabic"));
@@ -38,18 +38,18 @@ public class Lang {
         LANG = Collections.unmodifiableMap(map);
     }
 
-    public String name;
-    public String code;
-    public String en;
+    String name;
+    String code;
+    String en;
 
-    public Lang(String n, String c, String e) {
+    private Lang(String n, String c, String e) {
         super();
         this.name = n;
         this.code = c;
         this.en = e;
     }
 
-    public static String getCode(String langName) {
+    static String getCode(String langName) {
         if (langName == null || langName.length() == 0) {
             return null;
         }
@@ -57,7 +57,6 @@ public class Lang {
             return langName;
         }
         for (Map.Entry<String, Lang> e : LANG.entrySet()) {
-            String k = e.getKey();
             Lang l = e.getValue();
             String langNameLC = langName.toLowerCase();
             if ( langNameLC.equals(l.name.toLowerCase())
@@ -70,7 +69,7 @@ public class Lang {
         return null;
     }
 
-    public static Lang getLang(String langName) {
+    static Lang getLang(String langName) {
         String langCode = getCode(langName);
         return LANG.get(langCode);
     }
