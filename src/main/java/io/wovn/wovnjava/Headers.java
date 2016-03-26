@@ -1,27 +1,32 @@
 package io.wovn.wovnjava;
 
-import java.util.*;
-import java.util.regex.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import javax.servlet.http.*;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-public class Headers {
-    public Settings settings;
-    public HttpServletRequest request;
+class Headers {
+    Settings settings;
+    private HttpServletRequest request;
 
-    public String browserLang;
-    public String host;
-    public String pathLang;
-    public String pathName;
-    public String protocol;
-    public String pageUrl;
-    public String query;
-    public String unmaskedHost;
-    public String unmaskedPathName;
-    public String unmaskedUrl;
-    public String url;
+    private String browserLang;
+    String host;
+    private String pathLang;
+    String pathName;
+    String protocol;
+    String pageUrl;
+    private String query;
+    private String unmaskedHost;
+    private String unmaskedPathName;
+    private String unmaskedUrl;
+    String url;
 
-    public Headers(HttpServletRequest r, Settings s) {
+    Headers(HttpServletRequest r, Settings s) {
         this.settings = s;
         this.request = r;
 
@@ -77,8 +82,8 @@ public class Headers {
         this.url += this.removeLang(this.query, this.langCode());
         if (this.settings.query.size() > 0) {
             ArrayList<String> queryVals = new ArrayList<String>();
-            Pattern p = Pattern.compile("(^|&)(?<query_val>#{qv}[^&]+)(&|$)");
             for (String q : queryVals) {
+                Pattern p = Pattern.compile("(^|&)(?<query_val>" + q + "[^&]+)(&|$)");
                 Matcher m = p.matcher(this.query);
                 if (m.find() && m.group("query_val") != null && m.group("query_val").length() > 0) {
                     queryVals.add(m.group("query_val"));
@@ -100,7 +105,7 @@ public class Headers {
         this.pageUrl = this.host + this.pathName + this.query;
     }
 
-    public String langCode() {
+    String langCode() {
         String pl = getPathLang();
         if (pl != null && pl.length() > 0) {
             return pl;
@@ -109,7 +114,7 @@ public class Headers {
         }
     }
 
-    public String getPathLang() {
+    String getPathLang() {
         if (this.pathLang == null || this.pathLang.length() == 0) {
             Pattern p = Pattern.compile(settings.urlPatternReg);
             String path = this.request.getServerName() + this.request.getRequestURI();
@@ -134,13 +139,13 @@ public class Headers {
 
     public String getBrowserLang() {
         if (browserLang == null || browserLang.length() == 0) {
-            Cookie c[] = request.getCookies();
+            Cookie cookies[] = request.getCookies();
             boolean noCookie = true;
-            if (c != null) {
-                for (int i = 0; i < c.length; i++) {
-                    String name = c[i].getName();
+            if (cookies != null) {
+                for (Cookie c : cookies) {
+                    String name = c.getName();
                     if (name.equals("wovn_selected_lang")) {
-                        String value = c[i].getValue();
+                        String value = c.getValue();
                         if (Lang.getLang(value) != null) {
                             browserLang = value;
                             noCookie = false;
@@ -164,7 +169,7 @@ public class Headers {
         return browserLang;
     }
 
-    public String redirectLocation(String lang) {
+    String redirectLocation(String lang) {
         if (lang.equals(this.settings.defaultLang)) {
             return this.protocol + "://" + this.url;
         } else {
@@ -178,13 +183,13 @@ public class Headers {
             } else if (this.settings.urlPattern.equals("subdomain")) {
                 location = lang.toLowerCase() + "." + location;
             } else {
-                location = location.replaceFirst("(\\/|$)", lang);
+                location = location.replaceFirst("(/|$)", lang);
             }
             return protocol + "://" + location;
         }
     }
 
-    public String removeLang(String uri, String lang) {
+    String removeLang(String uri, String lang) {
         if (lang == null || lang.length() == 0) {
             lang = this.getPathLang();
         }
@@ -199,7 +204,7 @@ public class Headers {
         }
     }
 
-    public void out(HttpServletRequest req, HttpServletResponse res) {
+    void out(HttpServletRequest req, HttpServletResponse res) {
         String loc = req.getHeader("Location");
         if (loc != null && loc.matches("//" + host)) {
             if (this.settings.urlPattern.equals("query")) {
