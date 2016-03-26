@@ -6,21 +6,22 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.HttpURLConnection;
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 import javax.servlet.FilterConfig;
 
 import net.arnx.jsonic.JSON;
 
-public class Store {
-    public Settings settings;
+class Store {
+    Settings settings;
 
-    public Store(FilterConfig config) {
+    Store(FilterConfig config) {
         super();
         settings = new Settings(config);
     }
 
-    public Values getValues(String url) {
+    Values getValues(String url) {
         url = url.replaceAll("/$", "");
 
         String json = "";
