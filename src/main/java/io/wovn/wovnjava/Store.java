@@ -6,12 +6,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.HttpURLConnection;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 
 import javax.servlet.FilterConfig;
-
-import net.arnx.jsonic.JSON;
 
 class Store {
     Settings settings;
@@ -58,7 +54,6 @@ class Store {
             json = "{}";
         }
 
-        LinkedHashMap<String,LinkedHashMap<String,LinkedHashMap<String,ArrayList<LinkedHashMap<String,String>>>>> map = JSON.decode(json);
-        return new Values(map);
+        return new Values(json);
     }
 }
