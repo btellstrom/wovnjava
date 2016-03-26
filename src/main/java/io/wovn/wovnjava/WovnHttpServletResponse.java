@@ -1,25 +1,29 @@
 package io.wovn.wovnjava;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 
-import javax.servlet.*;
-import javax.servlet.http.*;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
 
-public class WovnHttpServletResponse extends HttpServletResponseWrapper {
-    public int status;
+class WovnHttpServletResponse extends HttpServletResponseWrapper {
+    int status;
 
-    protected Headers headers;
-    protected ByteArrayOutputStream buff;
-    protected PrintWriter writer;
-    protected ServletOutputStream output;
+    private Headers headers;
+    private ByteArrayOutputStream buff;
+    private PrintWriter writer;
+    private ServletOutputStream output;
 
-    public WovnHttpServletResponse(HttpServletResponse response, Headers h) {
+    WovnHttpServletResponse(HttpServletResponse response, Headers h) {
         super(response);
         this.headers = h;
         this.buff = new ByteArrayOutputStream();
     }
 
-    public byte[] getData() {
+    private byte[] getData() {
         if (this.writer != null) {
             this.writer.close();
         }
