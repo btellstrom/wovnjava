@@ -48,6 +48,11 @@ public class ValuesTest extends TestCase {
             + "}"
         + "}";
 
+    public void testValues() {
+        Values v = new Values(JSON);
+        assertNotNull(v);
+    }
+
     public void testGetLangs() {
         Values values = new Values(JSON);
         List<String> langs = values.getLangs();
