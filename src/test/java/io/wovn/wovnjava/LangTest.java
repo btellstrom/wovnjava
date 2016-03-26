@@ -49,4 +49,32 @@ public class LangTest extends TestCase {
         assertEquals(null, Lang.getCode(null));
     }
 
+    public void testGetLangWithValidCode() {
+        assertSame(Lang.LANG.get("ms"), Lang.getLang("ms"));
+    }
+
+    public void testGetLangWithCapitalLetters() {
+        assertSame(Lang.LANG.get("zh-CHT"), Lang.getLang("zh-cht"));
+    }
+
+    public void testGetLangWithValidEnglishName() {
+        assertSame(Lang.LANG.get("pt"), Lang.getLang("Portuguese"));
+    }
+
+    public void testGetLangWithValidNativeName() {
+        assertSame(Lang.LANG.get("hi"), Lang.getLang("हिन्दी"));
+    }
+
+    public void testGetLangWithInvalidName() {
+        assertSame(null, Lang.getLang("WOVN4LYFE"));
+    }
+
+    public void testGetLangWithEmptyString() {
+        assertSame(null, Lang.getLang(""));
+    }
+
+    public void testGetLangWithNull() {
+        assertSame(null, Lang.getLang(null));
+    }
+
 }
