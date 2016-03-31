@@ -21,7 +21,7 @@ public class WovnHttpServletRequest extends HttpServletRequestWrapper {
 
     public String getServerName() {
         String serverName = super.getServerName();
-        if (headers.settings.urlPattern.equals("sudomain")) {
+        if (headers.settings.urlPattern.equals("subdomain")) {
             serverName = headers.removeLang(serverName, null);
         }
         return serverName;
