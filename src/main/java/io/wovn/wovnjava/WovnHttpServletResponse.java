@@ -23,7 +23,7 @@ class WovnHttpServletResponse extends HttpServletResponseWrapper {
         this.buff = new ByteArrayOutputStream();
     }
 
-    private byte[] getData() {
+    byte[] getData() {
         if (this.writer != null) {
             this.writer.close();
         }

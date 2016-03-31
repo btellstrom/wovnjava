@@ -8,10 +8,7 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletResponse;
+import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -69,7 +66,7 @@ class Interceptor {
         } catch (IOException e) {
         }
 
-        String body = wovnResponse.toString();
+        String body = null;
         // There is a possibility that response.getContentType() is null when the response is an image.
         if (response.getContentType() != null && Pattern.compile("html").matcher(response.getContentType()).find()) {
             Values values = store.getValues(h.pageUrl);
@@ -80,16 +77,28 @@ class Interceptor {
                 url.put("host", h.host);
                 url.put("pathname", h.pathName);
 
+                body = wovnResponse.toString();
                 body = this.switchLang(body, values, url, lang, h);
                 wovnResponse.setContentLength(body.getBytes().length);
             }
         }
 
-        try {
-            PrintWriter out = response.getWriter();
-            out.write(body);
-            out.close();
-        } catch (IOException e) {
+        if (body != null) {
+            // text
+            try {
+                PrintWriter out = response.getWriter();
+                out.write(body);
+            } catch (IOException e) {
+            }
+        } else {
+            // binary
+            try {
+                ServletOutputStream out = response.getOutputStream();
+                byte[] data = wovnResponse.getData();
+                out.write(data, 0, data.length);
+                out.close();
+            } catch (IOException e) {
+            }
         }
 
         h.out(request, wovnResponse);
