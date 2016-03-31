@@ -70,7 +70,8 @@ class Interceptor {
         }
 
         String body = wovnResponse.toString();
-        if (Pattern.compile("html").matcher(response.getContentType()).find()) {
+        // There is a possibility that response.getContentType() is null when the response is an image.
+        if (response.getContentType() != null && Pattern.compile("html").matcher(response.getContentType()).find()) {
             Values values = store.getValues(h.pageUrl);
             if (!String.valueOf(wovnResponse.status).matches("^1|302")) {
                 String lang = h.langCode();
