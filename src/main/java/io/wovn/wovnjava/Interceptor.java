@@ -94,8 +94,7 @@ class Interceptor {
             // binary
             try {
                 ServletOutputStream out = response.getOutputStream();
-                byte[] data = wovnResponse.getData();
-                out.write(data, 0, data.length);
+                out.write(wovnResponse.getData());
                 out.close();
             } catch (IOException e) {
             }
