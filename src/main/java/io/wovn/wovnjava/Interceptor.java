@@ -56,12 +56,16 @@ class Interceptor {
             return;
         }
 
+        WovnHttpServletRequest wovnRequest = new WovnHttpServletRequest(
+                request, h
+        );
+
         WovnHttpServletResponse wovnResponse = new WovnHttpServletResponse(
                 (HttpServletResponse)response, h
         );
 
         try {
-            chain.doFilter(request, wovnResponse);
+            chain.doFilter(wovnRequest, wovnResponse);
         } catch (ServletException e) {
         } catch (IOException e) {
         }

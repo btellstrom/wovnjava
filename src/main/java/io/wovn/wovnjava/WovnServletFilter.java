@@ -22,8 +22,7 @@ public class WovnServletFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws ServletException, IOException
     {
-        HttpServletRequest r = (HttpServletRequest) request;
-        interceptor.call(r, response, chain);
+        interceptor.call((HttpServletRequest) request, response, chain);
     }
 
     public void destroy() {
