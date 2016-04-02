@@ -2,11 +2,9 @@ package io.wovn.wovnjava;
 
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Set;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import net.arnx.jsonic.JSON;
 
@@ -15,7 +13,34 @@ class Values {
         values;
 
     Values(String json) {
-        values = JSON.decode(json);
+        LinkedHashMap<String,LinkedHashMap<String,LinkedHashMap<String,ArrayList<LinkedHashMap<String,String>>>>> v
+                = JSON.decode(json);
+        this.values = removeJsessionid(v);
+    }
+
+    private static LinkedHashMap<String,LinkedHashMap<String,LinkedHashMap<String,ArrayList<LinkedHashMap<String,String>>>>>
+        removeJsessionid(LinkedHashMap<String,LinkedHashMap<String,LinkedHashMap<String,ArrayList<LinkedHashMap<String,String>>>>> v)
+    {
+        if (!v.containsKey("img_vals")) {
+            return v;
+        }
+
+        LinkedHashMap<String,LinkedHashMap<String,ArrayList<LinkedHashMap<String,String>>>> newImgVals
+                = new LinkedHashMap<String,LinkedHashMap<String,ArrayList<LinkedHashMap<String,String>>>>();
+
+        for (Map.Entry<String, LinkedHashMap<String, ArrayList<LinkedHashMap<String, String>>>> map : v.get("img_vals").entrySet()) {
+            String key = map.getKey();
+            Matcher m = Pattern.compile(";jsessionid=[^=]+$", Pattern.CASE_INSENSITIVE).matcher(key);
+            if (!m.find()) {
+                newImgVals.put(key, map.getValue());
+            } else {
+                String newKey = m.replaceFirst("");
+                newImgVals.put(newKey, map.getValue());
+            }
+        }
+
+        v.put("img_vals", newImgVals);
+        return v;
     }
 
     ArrayList<String> getLangs() {
