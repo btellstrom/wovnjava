@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" build-on-make="true" name="wovn-servlet-filter">
-    <output-path>$PROJECT_DIR$/out/artifacts/wovn_servlet_filter</output-path>
-    <root id="archive" name="wovn-servlet-filter.jar">
-      <element id="module-output" name="wovn-servlet-filter" />
-    </root>
-  </artifact>
-</component>
