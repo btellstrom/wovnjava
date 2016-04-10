@@ -31,8 +31,7 @@ This is WOVN backend for Java, which is implemented as a servlet filter.
 <dependency>
   <groupId>com.github.wovnio</groupId>
   <artifactId>wovnjava</artifactId>
-  <!-- set the version of wovnjava you use. -->
-  <version>-SNAPSHOT</version>
+  <version>-SNAPSHOT</version><!-- set the version of wovnjava you use. -->
 </dependency>
 ```
 
@@ -46,8 +45,7 @@ You can see all available versions of wovnjava [here](https://jitpack.io/#wovnio
   <filter-class>com.github.wovnio.wovnjava.WovnServletFilter</filter-class>
   <init-param>
     <param-name>userToken</param-name>
-    <!-- set your user token. -->
-    <param-value>2Wle3</param-value>
+    <param-value>2Wle3</param-value><!-- set your user token. -->
   </init-param>
   <init-param>
     <param-name>secretKey</param-name>
@@ -57,8 +55,7 @@ You can see all available versions of wovnjava [here](https://jitpack.io/#wovnio
 
 <filter-mapping>
   <filter-name>wovn</filter-name>
-  <!-- set filter URL pattern you use wovnjava. -->
-  <url-pattern>/*</url-pattern>
+  <url-pattern>/*</url-pattern><!-- set filter URL pattern you use wovnjava. -->
 </filter-mapping>
 ```
 
