@@ -1,4 +1,4 @@
 test:
   post:
-    - mv target/wovn-servlet-filter-*.jar $CIRCLE_ARTIFACTS/
+    - mv target/wovnjava-*.jar $CIRCLE_ARTIFACTS/
 
