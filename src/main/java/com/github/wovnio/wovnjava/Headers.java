@@ -1,4 +1,4 @@
-package io.wovn.wovnjava;
+package com.github.wovnio.wovnjava;
 
 import java.util.ArrayList;
 import java.util.Collections;

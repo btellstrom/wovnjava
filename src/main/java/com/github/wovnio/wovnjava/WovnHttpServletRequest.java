@@ -1,4 +1,4 @@
-package io.wovn.wovnjava;
+package com.github.wovnio.wovnjava;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;

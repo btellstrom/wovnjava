@@ -1,4 +1,4 @@
-package io.wovn.wovnjava;
+package com.github.wovnio.wovnjava;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
