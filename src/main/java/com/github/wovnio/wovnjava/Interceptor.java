@@ -223,7 +223,7 @@ class Interceptor {
             }
         }
 
-        for (Element el : Xsoup.compile("//text()").evaluate(doc).getElements()) {
+        for (Element el : Xsoup.compile("//*/text(0)").evaluate(doc).getElements()) {
             if (this.checkWovnIgnore(el)) {
                 continue;
             }
