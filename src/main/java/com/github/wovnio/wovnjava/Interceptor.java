@@ -211,14 +211,11 @@ class Interceptor {
             }
         }
 
-        for (Element el : Xsoup.compile("//*/text()").evaluate(doc).getElements()) {
-            String nodeText = el.ownText();
-            if (nodeText == null || nodeText.length() == 0) {
-                continue;
-            }
+        for (Element el : Xsoup.compile("//text()").evaluate(doc).getElements()) {
             if (this.checkWovnIgnore(el)) {
                 continue;
             }
+            String nodeText = el.ownText();
             nodeText = Pattern.compile("^\\s+|\\s+$").matcher(nodeText).replaceAll("");
             String destText = values.getText(nodeText, lang);
             if (destText != null) {
