@@ -41,10 +41,12 @@ class Store {
                         try {
                             reader.close();
                         } catch (IOException e) {
+                            WovnServletFilter.log.error("IOException in reader.close()", e);
                         }
                         try {
                             isr.close();
                         } catch (IOException e) {
+                            WovnServletFilter.log.error("IOException in isr.close()", e);
                         }
                     }
                 }
@@ -54,6 +56,7 @@ class Store {
                 }
             }
         } catch (IOException e) {
+            WovnServletFilter.log.error("IOException in getValues()", e);
         }
 
         if (json.length() == 0) {

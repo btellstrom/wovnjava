@@ -10,10 +10,15 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 public class WovnServletFilter implements Filter {
     protected Interceptor interceptor;
 
     public static final String VERSION = "1.0";
+
+    static final Log log = LogFactory.getLog(WovnServletFilter.class);
 
     public void init(FilterConfig config) throws ServletException {
         interceptor = new Interceptor(config);

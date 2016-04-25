@@ -32,7 +32,9 @@ class Interceptor {
             try {
                 chain.doFilter(request, response);
             } catch (ServletException e) {
+                WovnServletFilter.log.error("ServletException in chain.doFilter (invalid settings)", e);
             } catch (IOException e) {
+                WovnServletFilter.log.error("IOException in chain.doFilter (invalid settings)", e);
             }
             return;
         }
@@ -42,8 +44,11 @@ class Interceptor {
             try {
                 chain.doFilter(request, response);
             } catch (ServletException e) {
+                WovnServletFilter.log.error("ServletException in chain.doFilter (test mode)", e);
             } catch (IOException e) {
+                WovnServletFilter.log.error("IOException in chain.doFilter (test mode)", e);
             }
+            return;
         }
 
         if (h.getPathLang().equals(store.settings.defaultLang)) {
@@ -52,6 +57,7 @@ class Interceptor {
                         h.redirectLocation(store.settings.defaultLang)
                 );
             } catch (IOException e) {
+                WovnServletFilter.log.error("IOException in response.sendRedirect", e);
             }
             return;
         }
@@ -67,7 +73,9 @@ class Interceptor {
         try {
             chain.doFilter(wovnRequest, wovnResponse);
         } catch (ServletException e) {
+            WovnServletFilter.log.error("ServletExecption in chain.doFilter", e);
         } catch (IOException e) {
+            WovnServletFilter.log.error("ServletException in chain.doFilter", e);
         }
 
         String body = null;
@@ -92,7 +100,9 @@ class Interceptor {
             try {
                 PrintWriter out = response.getWriter();
                 out.write(body);
+                out.close();
             } catch (IOException e) {
+                WovnServletFilter.log.error("IOException while writing text data", e);
             }
         } else {
             // binary
@@ -101,6 +111,7 @@ class Interceptor {
                 out.write(wovnResponse.getData());
                 out.close();
             } catch (IOException e) {
+                WovnServletFilter.log.error("IOException while writing binary data", e);
             }
         }
 
@@ -123,6 +134,7 @@ class Interceptor {
             try {
                 uri = new URL(href);
             } catch (MalformedURLException e) {
+                WovnServletFilter.log.error("MalformedURLException in addLangCode", e);
                 return newHref;
             }
             if (uri.getHost().toLowerCase().equals(headers.host.toLowerCase())) {
