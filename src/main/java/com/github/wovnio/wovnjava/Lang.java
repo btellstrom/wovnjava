@@ -11,6 +11,7 @@ class Lang {
     static {
         HashMap<String, Lang> map = new HashMap<String, Lang>();
         map.put("ar", new Lang("ﺎﻠﻋﺮﺒﻳﺓ", "ar", "Arabic"));
+        map.put("bg", new Lang("Български", "bg", "Bulgarian"));
         map.put("zh-CHS", new Lang("简体中文", "zh-CHS", "Simp Chinese"));
         map.put("zh-CHT", new Lang("繁體中文", "zh-CHT", "Trad Chinese"));
         map.put("da", new Lang("Dansk", "da", "Danish"));

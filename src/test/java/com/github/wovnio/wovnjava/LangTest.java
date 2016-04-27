@@ -10,6 +10,10 @@ public class LangTest extends TestCase {
         assertNotNull(Lang.LANG);
     }
 
+    public void testLangsSize() {
+        assertEquals(28, Lang.LANG.size());
+    }
+
     public void testKeyExist() {
         for (Map.Entry<String, Lang> e : Lang.LANG.entrySet()) {
             String k = e.getKey();
