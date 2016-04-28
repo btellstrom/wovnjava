@@ -73,15 +73,15 @@ urlPattern     | yes      | 'path'
 query          |          | ''
 defaultLang    | yes      | 'en'
 
-2.1. userToken
+### 2.1. userToken
 
 Set your WOVN.io Account's user token. This parameter is required.
 
-2.2. secretKey
+### 2.2. secretKey
 
 This parameter is in development; it is not currently used. However, it is a required parameter, so ensure to set a value for it.
 
-2.3. urlPattern
+### 2.3. urlPattern
 
 The Library works in the Java Application by adding new URL's to be translated. You can set the type of url with the url_pattern parameter. There are 3 types that can be set.
 
@@ -93,23 +93,23 @@ parameters  | Translated page's URL           | Notes
 
 ※ The following is an example of a URL that has been translated by the library using the above URL's.
 
-https://wovn.io/contact
+    https://wovn.io/contact
 
-2.4. query
+### 2.4. query
 
 Using the query parameter, you can setup query parameters you wish ignored within the URL when translating via WOVN.io. There is no default value, in this case, all query parameters are included within the translated page's URL.
 
-https://wovn.io/ja/contact?os=mac&keyboard=us
+    https://wovn.io/ja/contact?os=mac&keyboard=us
 
 If the defualt_lang is 'en', and the query is , the above URL will be modified into the following URL to search for the page's translation.
 
-https://wovn.io/contact?os=mac&keyboard=us
+    https://wovn.io/contact?os=mac&keyboard=us
 
 If the default_lang is 'en', and the query is set to 'mac', the above URL will be modified into the following URL to search for the page's translation.
 
-https://wovn.io/contact?os=mac
+    https://wovn.io/contact?os=mac
 
-2.5. defaultLang
+### 2.5. defaultLang
 
 This sets the Java application's default language. The default value is english ('en').
 
@@ -117,8 +117,8 @@ If a requested page, where the default language's parameter is included in the U
 
 If the default_lang is set to 'en', when receiving a request for the following URL,
 
-https://wovn.io/en/contact
+    https://wovn.io/en/contact
 
 The library will redirect to the following URL.
 
-https://wovn.io/contact"
+    https://wovn.io/contact"
