@@ -31,7 +31,9 @@ This is WOVN backend for Java, which is implemented as a servlet filter.
 <dependency>
   <groupId>com.github.wovnio</groupId>
   <artifactId>wovnjava</artifactId>
-  <version>-SNAPSHOT</version><!-- set the version of wovnjava you use. -->
+  <!-- set the version of wovnjava you use. -->
+  <!-- if you want to use development version of wovnjava, please set "-SNAPSHOT" here. -->
+  <version>0.0.1</version>
 </dependency>
 ```
 
