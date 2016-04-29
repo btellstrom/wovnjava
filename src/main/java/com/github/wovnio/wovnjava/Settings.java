@@ -115,11 +115,11 @@ class Settings {
         }
 
         if (this.urlPattern.equals("path")) {
-            this.urlPatternReg = this.UrlPatternRegPath;
+            this.urlPatternReg = UrlPatternRegPath;
         } else if (this.urlPattern.equals("query")) {
-            this.urlPatternReg = this.UrlPatternRegQuery;
+            this.urlPatternReg = UrlPatternRegQuery;
         } else if (this.urlPattern.equals("subdomain")) {
-            this.urlPatternReg = this.UrlPatternRegSubdomain;
+            this.urlPatternReg = UrlPatternRegSubdomain;
         }
     }
 
