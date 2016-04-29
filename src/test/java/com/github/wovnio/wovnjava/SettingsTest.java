@@ -70,7 +70,7 @@ public class SettingsTest extends TestCase {
         assertEquals("", s.userToken);
         assertEquals("", s.secretKey);
         assertEquals("path", s.urlPattern);
-        assertEquals("/(?<lang>[^/.?]+)", s.urlPatternReg);
+        assertEquals(Settings.UrlPatternRegPath, s.urlPatternReg);
         assertEquals(new ArrayList<String>(), s.query);
         assertEquals("https://api.wovn.io/v0/values", s.apiUrl);
         assertEquals("en", s.defaultLang);
@@ -89,7 +89,7 @@ public class SettingsTest extends TestCase {
         assertEquals("2Wle3", s.userToken);
         assertEquals("secret", s.secretKey);
         assertEquals("query", s.urlPattern);
-        assertEquals("((\\?.*&)|\\?)wovn=(?<lang>[^&]+)(&|$)", s.urlPatternReg);
+        assertEquals(Settings.UrlPatternRegQuery, s.urlPatternReg);
         ArrayList<String> query = new ArrayList<String>();
         query.add("foo");
         query.add("bar");
@@ -109,7 +109,7 @@ public class SettingsTest extends TestCase {
 
         assertNotNull(s);
         assertEquals("query", s.urlPattern);
-        assertEquals("((\\?.*&)|\\?)wovn=(?<lang>[^&]+)(&|$)", s.urlPatternReg);
+        assertEquals(Settings.UrlPatternRegQuery, s.urlPatternReg);
     }
 
     public void testIsValidWithEmptyConfig() {

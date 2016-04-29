@@ -83,10 +83,10 @@ class Headers {
         if (this.settings.query.size() > 0) {
             ArrayList<String> queryVals = new ArrayList<String>();
             for (String q : queryVals) {
-                Pattern p = Pattern.compile("(^|&)(?<query_val>" + q + "[^&]+)(&|$)");
+                Pattern p = Pattern.compile("(^|&)(" + q + "[^&]+)(&|$)");
                 Matcher m = p.matcher(this.query);
-                if (m.find() && m.group("query_val") != null && m.group("query_val").length() > 0) {
-                    queryVals.add(m.group("query_val"));
+                if (m.find() && m.group(2) != null && m.group(2).length() > 0) {
+                    queryVals.add(m.group(2));
                 }
             }
             if (queryVals.size() > 0) {
@@ -123,7 +123,7 @@ class Headers {
             }
             Matcher m = p.matcher(path);
             if (m.find()) {
-                String l = m.group("lang");
+                String l = m.group(1);
                 if (l != null && l.length() > 0 && Lang.getLang(l) != null) {
                     String lc = Lang.getCode(l);
                     if (lc != null && lc.length() > 0) {
