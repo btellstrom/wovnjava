@@ -13,14 +13,13 @@ This is WOVN backend for Java, which is implemented as a servlet filter.
   <repository>
     <id>jitpack.io</id>
     <url>https://jitpack.io</url>
+    <!-- These lines are not needed if you do not use SNAPSHOT version. -->
+    <snapshots>
+      <enabled>true</enabled>
+      <updatePolicy>always</updatePolicy>
+    </snapshots>
+    <!-- end -->
   </repository>
-  
-  <!-- These lines are not needed if you do not use SNAPSHOT version. -->
-  <snapshots>
-    <enabled>true</enabled>
-    <updatePolicy>always</updatePolicy>
-  </snapshots>
-  <!-- end -->
   
 </repositories>
 ```

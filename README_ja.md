@@ -27,14 +27,13 @@ WOVN.io Java ライブラリを使用するためには、WOVN.io のアカウ�
   <repository>
     <id>jitpack.io</id>
     <url>https://jitpack.io</url>
+    <!-- SNAPSHOT バージョンを使用しない場合は、以下の行は必要ありません。 -->
+    <snapshots>
+      <enabled>true</enabled>
+      <updatePolicy>always</updatePolicy>
+    </snapshots>
+    <!-- end -->
   </repository>
-  
-  <!-- SNAPSHOT バージョンを使用しない場合は、以下の行は必要ありません。 -->
-  <snapshots>
-    <enabled>true</enabled>
-    <updatePolicy>always</updatePolicy>
-  </snapshots>
-  <!-- end -->
   
 </repositories>
 ```
