@@ -179,9 +179,9 @@ class Headers {
         } else {
             String location = this.url;
             if (this.settings.urlPattern.equals("query")) {
-                if (!location.matches("\\?")) {
+                if (!Pattern.compile("\\?").matcher(location).find()) {
                     location = location + "?wovn=" + lang;
-                } else if (!this.request.getRequestURI().matches("(\\?|&)wovn=")) {
+                } else if (!Pattern.compile("(\\?|&)wovn=").matcher(this.request.getRequestURI()).find()) {
                     location = location + "&wovn=" + lang;
                 }
             } else if (this.settings.urlPattern.equals("subdomain")) {
@@ -210,9 +210,9 @@ class Headers {
 
     void out(HttpServletRequest req, HttpServletResponse res) {
         String loc = req.getHeader("Location");
-        if (loc != null && loc.matches("//" + host)) {
+        if (loc != null && Pattern.compile("//" + host).matcher(loc).find()) {
             if (this.settings.urlPattern.equals("query")) {
-                if (loc.matches("\\?")) {
+                if (Pattern.compile("\\?").matcher(loc).find()) {
                     res.setHeader("Location", loc + "?wovn=" + langCode());
                 } else {
                     res.setHeader("Location", loc + "&wovn=" + langCode());
