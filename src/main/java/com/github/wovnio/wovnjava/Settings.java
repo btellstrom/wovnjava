@@ -8,10 +8,14 @@ import java.util.Collections;
 import javax.servlet.FilterConfig;
 
 class Settings {
+    static final String UrlPatternRegPath = "/([^/.?]+)";
+    static final String UrlPatternRegQuery = "(?:(?:\\?.*&)|\\?)wovn=([^&]+)(?:&|$)";
+    static final String UrlPatternRegSubdomain = "^([^.]+)\\.";
+
     String userToken = "";
     String secretKey = "";
     String urlPattern = "path";
-    String urlPatternReg = "/(?<lang>[^/.?]+)";
+    String urlPatternReg = UrlPatternRegPath;
     ArrayList<String> query;
     String apiUrl = "https://api.wovn.io/v0/values";
     String defaultLang = "en";
@@ -111,11 +115,11 @@ class Settings {
         }
 
         if (this.urlPattern.equals("path")) {
-            this.urlPatternReg = "/(?<lang>[^/.?]+)";
+            this.urlPatternReg = UrlPatternRegPath;
         } else if (this.urlPattern.equals("query")) {
-            this.urlPatternReg = "((\\?.*&)|\\?)wovn=(?<lang>[^&]+)(&|$)";
+            this.urlPatternReg = UrlPatternRegQuery;
         } else if (this.urlPattern.equals("subdomain")) {
-            this.urlPatternReg = "^(?<lang>[^.]+)\\.";
+            this.urlPatternReg = UrlPatternRegSubdomain;
         }
     }
 
