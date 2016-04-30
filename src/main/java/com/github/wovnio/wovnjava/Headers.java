@@ -20,7 +20,7 @@ class Headers {
     String pathName;
     String protocol;
     String pageUrl;
-    private String query;
+    String query;
     private String unmaskedHost;
     private String unmaskedPathName;
     private String unmaskedUrl;
@@ -41,9 +41,10 @@ class Headers {
                 requestUri = "";
             }
             requestUri += this.request.getPathInfo();
-            if (r.getQueryString() != null && this.request.getQueryString().length() > 0) {
-                requestUri += "?" + this.request.getQueryString();
-            }
+        }
+        // Both getRequestURI() and getPathInfo() do not have query parameters.
+        if (r.getQueryString() != null && this.request.getQueryString().length() > 0) {
+            requestUri += "?" + this.request.getQueryString();
         }
         if (Pattern.compile("://").matcher(requestUri).find()) {
             requestUri = Pattern.compile("^.*://[^/]+").matcher(requestUri).replaceFirst("");
@@ -82,7 +83,7 @@ class Headers {
         this.url += this.removeLang(this.query, this.langCode());
         if (this.settings.query.size() > 0) {
             ArrayList<String> queryVals = new ArrayList<String>();
-            for (String q : queryVals) {
+            for (String q : this.settings.query) {
                 Pattern p = Pattern.compile("(^|&)(" + q + "[^&]+)(&|$)");
                 Matcher m = p.matcher(this.query);
                 if (m.find() && m.group(2) != null && m.group(2).length() > 0) {

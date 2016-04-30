@@ -58,6 +58,23 @@ public class HeadersTest extends TestCase {
         return mock;
     }
 
+    private static FilterConfig mockConfigQueryParameter() {
+        FilterConfig mock = EasyMock.createMock(FilterConfig.class);
+        EasyMock.expect(mock.getInitParameter("userToken")).andReturn("2Wle3");
+        EasyMock.expect(mock.getInitParameter("secretKey")).andReturn("secret");
+        EasyMock.expect(mock.getInitParameter("urlPattern")).andReturn("query");
+        EasyMock.expect(mock.getInitParameter("urlPatternReg")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("query")).andReturn("abc");
+        EasyMock.expect(mock.getInitParameter("apiUrl")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("defaultLang")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("supportedLangs")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("testMode")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("testUrl")).andReturn("");
+        EasyMock.replay(mock);
+
+        return mock;
+    }
+
     private static HttpServletRequest mockRequestPath() {
         HttpServletRequest mock = EasyMock.createMock(HttpServletRequest.class);
         EasyMock.expect(mock.getScheme()).andReturn("https");
@@ -95,6 +112,19 @@ public class HeadersTest extends TestCase {
         return mock;
     }
 
+    private static HttpServletRequest mockRequestQueryParameter() {
+        HttpServletRequest mock = EasyMock.createMock(HttpServletRequest.class);
+        EasyMock.expect(mock.getScheme()).andReturn("https");
+        EasyMock.expect(mock.getRemoteHost()).andReturn("example.com");
+        EasyMock.expect(mock.getRequestURI()).andReturn("/test").atLeastOnce();
+        EasyMock.expect(mock.getServerName()).andReturn("example.com").atLeastOnce();
+        EasyMock.expect(mock.getQueryString()).andReturn("abc=123&wovn=ja&def=456").atLeastOnce();
+        EasyMock.expect(mock.getServerPort()).andReturn(443).atLeastOnce();
+        EasyMock.replay(mock);
+
+        return mock;
+    }
+
     public void testHeaders() {
         HttpServletRequest mockRequest = mockRequestPath();
         FilterConfig mockConfig = mockConfigPath();
@@ -104,6 +134,18 @@ public class HeadersTest extends TestCase {
 
         assertNotNull(h);
     }
+
+    public void testHeadersQueryParamter() {
+        HttpServletRequest mockRequest = mockRequestQueryParameter();
+        FilterConfig mockConfig = mockConfigQueryParameter();
+
+        Settings s = new Settings(mockConfig);
+        Headers h = new Headers(mockRequest, s);
+
+        assertNotNull(h);
+        assertEquals("?abc=123", h.query);
+    }
+
     public void testGetPathLangPath() {
         HttpServletRequest mockRequest = mockRequestPath();
         FilterConfig mockConfig = mockConfigPath();
@@ -113,6 +155,7 @@ public class HeadersTest extends TestCase {
 
         assertEquals("ja", h.getPathLang());
     }
+
     public void testGetPathLangSubdomain() {
         HttpServletRequest mockRequest = mockRequestSubdomain();
         FilterConfig mockConfig = mockConfigSubdomain();
