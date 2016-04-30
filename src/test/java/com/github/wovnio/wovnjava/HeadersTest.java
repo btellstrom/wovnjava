@@ -118,7 +118,7 @@ public class HeadersTest extends TestCase {
         EasyMock.expect(mock.getRemoteHost()).andReturn("example.com");
         EasyMock.expect(mock.getRequestURI()).andReturn("/test").atLeastOnce();
         EasyMock.expect(mock.getServerName()).andReturn("example.com").atLeastOnce();
-        EasyMock.expect(mock.getQueryString()).andReturn("abc=123&wovn=ja&def=456").atLeastOnce();
+        EasyMock.expect(mock.getQueryString()).andReturn("def=456&wovn=ja&abc=123").atLeastOnce();
         EasyMock.expect(mock.getServerPort()).andReturn(443).atLeastOnce();
         EasyMock.replay(mock);
 
@@ -135,7 +135,18 @@ public class HeadersTest extends TestCase {
         assertNotNull(h);
     }
 
-    public void testHeadersQueryParamter() {
+    public void testHeadersWithoutQueryParameter() {
+        HttpServletRequest mockRequest = mockRequestQueryParameter();
+        FilterConfig mockConfig = mockConfigQuery();
+
+        Settings s = new Settings(mockConfig);
+        Headers h = new Headers(mockRequest, s);
+
+        assertNotNull(h);
+        assertEquals("", h.query);
+    }
+
+    public void testHeadersWithQueryParameter() {
         HttpServletRequest mockRequest = mockRequestQueryParameter();
         FilterConfig mockConfig = mockConfigQueryParameter();
 
