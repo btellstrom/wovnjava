@@ -82,7 +82,8 @@ class Interceptor {
         // There is a possibility that response.getContentType() is null when the response is an image.
         if (response.getContentType() != null && Pattern.compile("html").matcher(response.getContentType()).find()) {
             Values values = store.getValues(h.pageUrl);
-            if (!String.valueOf(wovnResponse.status).matches("^1|302")) {
+            String status = String.valueOf(wovnResponse.status);
+            if (!Pattern.compile("^1|302").matcher(status).find()) {
                 String lang = h.langCode();
                 HashMap<String,String> url = new HashMap<String,String>();
                 url.put("protocol", h.protocol);
@@ -119,7 +120,7 @@ class Interceptor {
     }
 
     private String addLangCode(String href, String pattern, String lang, Headers headers) {
-        if (href != null && href.length() > 0 && href.matches("^(#.*)?$")) {
+        if (href != null && href.length() > 0 && Pattern.compile("^(#.*)?$").matcher(href).find()) {
             return href;
         }
 
@@ -152,7 +153,7 @@ class Interceptor {
                         newHref = href.replaceFirst("(//)([^\\.]*)", "$1" + lang.toLowerCase() + ".$2");
                     }
                 } else if (pattern.equals("query")) {
-                    if (href.matches("\\?")) {
+                    if (Pattern.compile("\\?").matcher(href).find()) {
                         newHref = href + "&wovn=" + lang;
                     } else {
                         newHref = href + "?wovn=" + lang;
@@ -166,23 +167,23 @@ class Interceptor {
             if (pattern.equals("subdomain")) {
                 String langUrl = headers.protocol + "://" + lang.toLowerCase() + headers.host;
                 currentDir = headers.pathName.replaceFirst("[^/]*\\.[^\\.]{2,6}$", "");
-                if (href.matches("^\\.\\..*$")) {
+                if (Pattern.compile("^\\.\\..*$").matcher(href).find()) {
                     newHref = langUrl + "/" + href.replaceAll("^\\.\\./", "");
-                } else if (href.matches("^\\..*$")) {
+                } else if (Pattern.compile("^\\..*$").matcher(href).find()) {
                     newHref = langUrl + currentDir + "/" + href.replaceAll("^\\./", "");
-                } else if (href.matches("^/.*$")) {
+                } else if (Pattern.compile("^/.*$").matcher(href).find()) {
                     newHref = langUrl + href;
                 } else {
                     newHref = langUrl + currentDir + "/" + href;
                 }
             } else if (pattern.equals("query")) {
-                if (href.matches("\\?")) {
+                if (Pattern.compile("\\?").matcher(href).find()) {
                     newHref = href + "&wovn=" + lang;
                 } else {
                     newHref = href + "?wovn=" + lang;
                 }
             } else {
-                if (href.matches("^/")) {
+                if (Pattern.compile("^/").matcher(href).find()) {
                     newHref = "/" + lang + href;
                 } else {
                     currentDir = headers.pathName.replaceFirst("[^/]*\\.[^\\.]{2,6}$", "");
