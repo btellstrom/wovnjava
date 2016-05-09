@@ -32,7 +32,7 @@ This is WOVN backend for Java, which is implemented as a servlet filter.
   <artifactId>wovnjava</artifactId>
   <!-- set the version of wovnjava you use. -->
   <!-- if you want to use development version of wovnjava, please set "-SNAPSHOT" here. -->
-  <version>0.0.1</version>
+  <version>0.1.0</version>
 </dependency>
 ```
 
