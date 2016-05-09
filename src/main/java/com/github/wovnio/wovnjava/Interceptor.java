@@ -244,32 +244,29 @@ class Interceptor {
 
         HtmlDocumentBuilder builder = new HtmlDocumentBuilder();
         StringReader reader = new StringReader(body);
-        Document doc = null;
+
+        Document doc;
         try {
             doc = builder.parse(new InputSource(reader));
         } catch (org.xml.sax.SAXException e) {
             WovnServletFilter.log.error("SAXException while parsing HTML", e);
+            return body;
         } catch (IOException e) {
             WovnServletFilter.log.error("IOException while parsing HTML", e);
+            return body;
         }
 
         XPathFactory factory = XPathFactory.newInstance();
         XPath xpath = factory.newXPath();
 
-        Node ignore = null;
-        try {
-            ignore = (Node)xpath.evaluate("//html[@wovn-ignore]", doc, XPathConstants.NODE);
-        } catch (XPathExpressionException e) {
-            // No error occurs.
-        }
-        if (ignore != null) {
+        if (doc.getDocumentElement().hasAttribute("wovn-ignore")) {
             return getStringFromDocument(doc);
         }
 
         if (!lang.equals(this.store.settings.defaultLang)) {
             NodeList anchors = null;
             try {
-                anchors = (NodeList)xpath.evaluate("//a", doc, XPathConstants.NODESET);
+                anchors = (NodeList)xpath.evaluate("//*[local-name()='a']", doc, XPathConstants.NODESET);
             } catch (XPathExpressionException e) {
                 // No error occurs.
             }
@@ -309,7 +306,7 @@ class Interceptor {
         Pattern p = Pattern.compile("^(description|title|og:title|og:description|twitter:title|twitter:description)$");
         NodeList metas = null;
         try {
-            metas = (NodeList)xpath.evaluate("//meta", doc, XPathConstants.NODESET);
+            metas = (NodeList)xpath.evaluate("//*[local-name()='meta']", doc, XPathConstants.NODESET);
         } catch (XPathExpressionException e) {
             // No error occurs.
         }
@@ -346,7 +343,7 @@ class Interceptor {
 
         NodeList imgs = null;
         try {
-            imgs = (NodeList)xpath.evaluate("//img", doc, XPathConstants.NODESET);
+            imgs = (NodeList)xpath.evaluate("//*[local-name()='img']", doc, XPathConstants.NODESET);
         } catch (XPathExpressionException e) {
             // No erorr occurs.
         }
@@ -386,7 +383,7 @@ class Interceptor {
 
         NodeList scripts = null;
         try {
-            scripts = (NodeList)xpath.evaluate("//script", doc, XPathConstants.NODESET);
+            scripts = (NodeList)xpath.evaluate("//*[local-name()='script']", doc, XPathConstants.NODESET);
         } catch (XPathExpressionException e) {
             // No error occurs.
         }
@@ -400,24 +397,22 @@ class Interceptor {
         }
 
         Node parentNode = null;
-        NodeList heads = null;
         try {
-            heads = doc.getElementsByTagName("head");
+            NodeList heads = doc.getElementsByTagName("head");
+            if (heads != null && heads.getLength() > 0) {
+                parentNode = heads.item(0);
+            }
         } catch (NullPointerException e) {
             WovnServletFilter.log.error("NullPointerException while searching <head> tag", e);
         }
-        if (heads != null && heads.getLength() > 0) {
-            parentNode = heads.item(0);
-        }
         if (parentNode == null) {
-            NodeList bodies = null;
             try {
-                bodies = doc.getElementsByTagName("body");
+                NodeList bodies = doc.getElementsByTagName("body");
+                if (bodies != null && bodies.getLength() > 0) {
+                    parentNode = bodies.item(0);
+                }
             } catch (NullPointerException e) {
                 WovnServletFilter.log.error("NullPointerException while searching <body> tag", e);
-            }
-            if (bodies != null && bodies.getLength() > 0) {
-                parentNode = bodies.item(0);
             }
         }
         if (parentNode == null) {
@@ -446,15 +441,6 @@ class Interceptor {
         }
 
         doc.getDocumentElement().setAttribute("lang", lang);
-
-/*
-        try {
-            Element html = (Element)xpath.evaluate("//html", doc, XPathConstants.NODE);
-            html.setAttribute("lang", lang);
-        } catch (XPathExpressionException e) {
-            // No error occurs.
-        }
-*/
 
         return getStringFromDocument(doc);
     }
