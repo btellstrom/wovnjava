@@ -352,22 +352,20 @@ class Interceptor {
             if (img == null || this.checkWovnIgnore(img)) {
                 continue;
             }
-            Matcher m = Pattern.compile("src=['\"]([^'\"]*)['\"]", Pattern.CASE_INSENSITIVE)
-                    .matcher(img.getTextContent());
-            if (m.find()) {
-                String src = m.group(1);
-                if (!Pattern.compile("://").matcher(src).find()) {
-                    if (Pattern.compile("^/").matcher(src).find()) {
-                        src = url.get("protocol") + "://" + url.get("host") + src;
-                    } else {
-                        src = url.get("protocol") + "://" + url.get("host") + url.get("path") + src;
-                    }
-                }
-                String destSrc = values.getImage(src, lang);
-                if (destSrc != null) {
-                    img.getAttributes().getNamedItem("src").setNodeValue(destSrc);
+            Element imgElement = (Element)img;
+            String src = imgElement.getAttribute("src");
+            if (!Pattern.compile("://").matcher(src).find()) {
+                if (Pattern.compile("^/").matcher(src).find()) {
+                    src = url.get("protocol") + "://" + url.get("host") + src;
+                } else {
+                    src = url.get("protocol") + "://" + url.get("host") + url.get("path") + src;
                 }
             }
+            String destSrc = values.getImage(src, lang);
+            if (destSrc != null) {
+                img.getAttributes().getNamedItem("src").setNodeValue(destSrc);
+            }
+
             if (img.getAttributes().getNamedItem("alt") != null) {
                 String alt = img.getAttributes().getNamedItem("alt").getNodeValue();
                 alt = Pattern.compile("^\\s+|\\s+$").matcher(alt).replaceAll("");
