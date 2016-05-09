@@ -2,6 +2,8 @@ package com.github.wovnio.wovnjava;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -12,12 +14,25 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.parser.Tag;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
-import us.codecraft.xsoup.Xsoup;
+import org.xml.sax.InputSource;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import nu.validator.htmlparser.dom.*;
 
 class Interceptor {
     private Store store;
@@ -195,65 +210,125 @@ class Interceptor {
         return newHref;
     }
 
-    private boolean checkWovnIgnore(Element el) {
-        if (el.hasAttr("wovn-ignore")) {
+    private boolean checkWovnIgnore(Node node) {
+        if (node.getAttributes() != null && node.getAttributes().getNamedItem("wovn-ignore") != null) {
             return true;
-        } else if (el.parent() == null) {
+        } else if (node.getParentNode() == null) {
             return false;
         }
-        return this.checkWovnIgnore(el.parent());
+        return this.checkWovnIgnore(node.getParentNode());
     }
 
+    private static String getStringFromDocument(Document doc)
+    {
+        try
+        {
+            DOMSource domSource = new DOMSource(doc);
+            StringWriter writer = new StringWriter();
+            StreamResult result = new StreamResult(writer);
+            TransformerFactory tf = TransformerFactory.newInstance();
+            Transformer transformer = tf.newTransformer();
+            transformer.setOutputProperty(OutputKeys.METHOD, "html");
+            transformer.transform(domSource, result);
+            return writer.toString();
+        }
+        catch(TransformerException ex)
+        {
+            ex.printStackTrace();
+            return null;
+        }
+    }
     private String switchLang(String body, Values values, HashMap<String, String> url, String lang, Headers headers) {
 
         lang = Lang.getCode(lang);
-        Document doc = Jsoup.parse(body);
 
-        if (Xsoup.compile("//html[@wovn-ignore]").evaluate(doc).get() != null) {
-            return doc.html();
+        HtmlDocumentBuilder builder = new HtmlDocumentBuilder();
+        StringReader reader = new StringReader(body);
+
+        Document doc;
+        try {
+            doc = builder.parse(new InputSource(reader));
+        } catch (org.xml.sax.SAXException e) {
+            WovnServletFilter.log.error("SAXException while parsing HTML", e);
+            return body;
+        } catch (IOException e) {
+            WovnServletFilter.log.error("IOException while parsing HTML", e);
+            return body;
+        }
+
+        XPathFactory factory = XPathFactory.newInstance();
+        XPath xpath = factory.newXPath();
+
+        if (doc.getDocumentElement().hasAttribute("wovn-ignore")) {
+            return getStringFromDocument(doc);
         }
 
         if (!lang.equals(this.store.settings.defaultLang)) {
-            for (Element el : Xsoup.compile("//a").evaluate(doc).getElements()) {
-                if (this.checkWovnIgnore(el)) {
+            NodeList anchors = null;
+            try {
+                anchors = (NodeList)xpath.evaluate("//*[local-name()='a']", doc, XPathConstants.NODESET);
+            } catch (XPathExpressionException e) {
+                // No error occurs.
+            }
+            for (int i = 0; i < anchors.getLength(); i++) {
+                Node anchor = anchors.item(i);
+                if (this.checkWovnIgnore(anchor)) {
                     continue;
                 }
-                String href = el.attr("href");
-                String newHref = this.addLangCode(href, this.store.settings.urlPattern, lang, headers);
-                el.attr("href", newHref);
+                Node href = anchor.getAttributes().getNamedItem("href");
+                String newHref = this.addLangCode(href.getNodeValue(), this.store.settings.urlPattern, lang, headers);
+                href.setNodeValue(newHref);
             }
         }
 
-        for (Element el : Xsoup.compile("//*/text(0)").evaluate(doc).getElements()) {
-            if (this.checkWovnIgnore(el)) {
+        NodeList texts = null;
+        try {
+            texts = (NodeList)xpath.evaluate("//text()", doc, XPathConstants.NODESET);
+        } catch (XPathExpressionException e) {
+            // No error occurs.
+        }
+        for (int i = 0; i < texts.getLength(); i++) {
+            Node text = texts.item(i);
+            if (this.checkWovnIgnore(text)) {
                 continue;
             }
-            String nodeText = el.ownText();
+            String nodeText = text.getTextContent();
             nodeText = Pattern.compile("^\\s+|\\s+$").matcher(nodeText).replaceAll("");
             String destText = values.getText(nodeText, lang);
             if (destText != null) {
                 String newText = Pattern.compile("^(\\s*)[\\S\\s]*(\\s*)$")
-                        .matcher(el.text())
+                        .matcher(text.getTextContent())
                         .replaceAll("$1" + destText + "$2");
-                el.text(newText);
+                text.setTextContent(newText);
             }
         }
 
         Pattern p = Pattern.compile("^(description|title|og:title|og:description|twitter:title|twitter:description)$");
-        for (Element el : Xsoup.compile("//meta").evaluate(doc).getElements()) {
-            if (this.checkWovnIgnore(el)) {
+        NodeList metas = null;
+        try {
+            metas = (NodeList)xpath.evaluate("//*[local-name()='meta']", doc, XPathConstants.NODESET);
+        } catch (XPathExpressionException e) {
+            // No error occurs.
+        }
+        for (int i = 0; i < metas.getLength(); i++) {
+            Node meta = metas.item(i);
+            if (this.checkWovnIgnore(meta)) {
                 continue;
             }
-            if ( !(el.hasAttr("name") && p.matcher(el.attr("name")).find())
-                    && !(el.hasAttr("property") && p.matcher(el.attr("name")).find())
+
+            Node name = meta.getAttributes().getNamedItem("name");
+            Node property = meta.getAttributes().getNamedItem("property");
+            if (!(name != null && p.matcher(name.getNodeValue()).find())
+                    && !(property != null && p.matcher(name.getNodeValue()).find())
                     ) {
                 continue;
             }
-            String nodeContent = el.attr("content");
-            if (nodeContent == null) {
+
+            Node content = meta.getAttributes().getNamedItem("content");
+            if (content == null || content.getNodeValue().length() == 0) {
                 continue;
             }
-            nodeContent = Pattern.compile("^\\s+|\\s+$").matcher(nodeContent).replaceAll("");
+            String nodeContent = Pattern.compile("^\\s+|\\s+$").matcher(content.getNodeValue()).replaceAll("");
             if (nodeContent.length() == 0) {
                 continue;
             }
@@ -262,82 +337,109 @@ class Interceptor {
                 String newContent = Pattern.compile("^(\\s*)[\\S\\s]*(\\s*)$")
                         .matcher(nodeContent)
                         .replaceAll("$1" + destContent + "$2");
-                el.attr("content", newContent);
+                content.setNodeValue(newContent);
             }
         }
 
-        for (Element el : Xsoup.compile("//img").evaluate(doc).getElements()) {
-            if (this.checkWovnIgnore(el)) {
+        NodeList imgs = null;
+        try {
+            imgs = (NodeList)xpath.evaluate("//*[local-name()='img']", doc, XPathConstants.NODESET);
+        } catch (XPathExpressionException e) {
+            // No erorr occurs.
+        }
+        for (int i = 0; i < imgs.getLength(); i++) {
+            Node img = imgs.item(i);
+            if (img == null || this.checkWovnIgnore(img)) {
                 continue;
             }
-            Matcher m = Pattern.compile("src=['\"]([^'\"]*)['\"]", Pattern.CASE_INSENSITIVE)
-                    .matcher(el.outerHtml());
-            if (m.find()) {
-                String src = m.group(1);
-                if (!Pattern.compile("://").matcher(src).find()) {
-                    if (Pattern.compile("^/").matcher(src).find()) {
-                        src = url.get("protocol") + "://" + url.get("host") + src;
-                    } else {
-                        src = url.get("protocol") + "://" + url.get("host") + url.get("path") + src;
-                    }
-                }
-                String destSrc = values.getImage(src, lang);
-                if (destSrc != null) {
-                    el.attr("src", destSrc);
+            Element imgElement = (Element)img;
+            String src = imgElement.getAttribute("src");
+            if (!Pattern.compile("://").matcher(src).find()) {
+                if (Pattern.compile("^/").matcher(src).find()) {
+                    src = url.get("protocol") + "://" + url.get("host") + src;
+                } else {
+                    src = url.get("protocol") + "://" + url.get("host") + url.get("path") + src;
                 }
             }
-            if (el.hasAttr("alt")) {
-                String alt = el.attr("alt");
+            String destSrc = values.getImage(src, lang);
+            if (destSrc != null) {
+                img.getAttributes().getNamedItem("src").setNodeValue(destSrc);
+            }
+
+            if (img.getAttributes().getNamedItem("alt") != null) {
+                String alt = img.getAttributes().getNamedItem("alt").getNodeValue();
                 alt = Pattern.compile("^\\s+|\\s+$").matcher(alt).replaceAll("");
                 String destAlt = values.getText(alt, lang);
                 if (destAlt != null) {
                     String newAlt = Pattern.compile("^(\\s*)[\\S\\s]*(\\s*)$")
                             .matcher(alt)
                             .replaceAll("$1" + destAlt + "$2");
-                    el.attr("alt", newAlt);
+                    img.getAttributes().getNamedItem("alt").setNodeValue(newAlt);
                 }
             }
         }
 
-        for (Element el : Xsoup.compile("//script").evaluate(doc).getElements()) {
-            if ( el.hasAttr("src")
-                    && Pattern.compile("//j\\.(dev-)?wovn\\.io(:3000)?/").matcher(el.attr("src")).find()
-                    ) {
-                el.remove();
+        NodeList scripts = null;
+        try {
+            scripts = (NodeList)xpath.evaluate("//*[local-name()='script']", doc, XPathConstants.NODESET);
+        } catch (XPathExpressionException e) {
+            // No error occurs.
+        }
+        for (int i = 0; i < scripts.getLength(); i++) {
+            Node script = scripts.item(i);
+            Node src = script.getAttributes().getNamedItem("src");
+            if (src != null
+                    && Pattern.compile("//j\\.(dev-)?wovn\\.io(:3000)?/").matcher(src.getNodeValue()).find()) {
+                src.getAttributes().removeNamedItem("src");
             }
         }
 
-        Element parentNode = doc.head();
+        Node parentNode = null;
+        try {
+            NodeList heads = doc.getElementsByTagName("head");
+            if (heads != null && heads.getLength() > 0) {
+                parentNode = heads.item(0);
+            }
+        } catch (NullPointerException e) {
+            WovnServletFilter.log.error("NullPointerException while searching <head> tag", e);
+        }
         if (parentNode == null) {
-            parentNode = doc.body();
+            try {
+                NodeList bodies = doc.getElementsByTagName("body");
+                if (bodies != null && bodies.getLength() > 0) {
+                    parentNode = bodies.item(0);
+                }
+            } catch (NullPointerException e) {
+                WovnServletFilter.log.error("NullPointerException while searching <body> tag", e);
+            }
         }
         if (parentNode == null) {
             parentNode = doc;
         }
 
-        Element insertNode = new Element(Tag.valueOf("script"), "");
-        insertNode.attr("src", "//j.wovn.io/1");
-        insertNode.attr("async", true);
+        Element insertNode = doc.createElement("script");
+        insertNode.setAttribute("src", "//j.wovn.io/1");
+        insertNode.setAttribute("async", "true");
         String version = WovnServletFilter.VERSION;
-        insertNode.attr(
+        insertNode.setAttribute(
                 "data-wovnio",
                 "key=" + this.store.settings.userToken + "&backend=true&currentLang=" + lang
                         + "&defaultLang=" + this.store.settings.defaultLang
                         + "&urlPattern=" + this.store.settings.urlPattern + "&version=" + version
         );
-        insertNode.text(" ");
-        parentNode.prependChild(insertNode);
+        insertNode.setTextContent(" ");
+        parentNode.insertBefore(insertNode, parentNode.getFirstChild());
 
         for (String l : values.getLangs()) {
-            insertNode = new Element(Tag.valueOf("link"), "");
-            insertNode.attr("ref", "altername");
-            insertNode.attr("hreflang", l);
-            insertNode.attr("href", headers.redirectLocation(l));
+            insertNode = doc.createElement("link");
+            insertNode.setAttribute("ref", "altername");
+            insertNode.setAttribute("hreflang", l);
+            insertNode.setAttribute("href", headers.redirectLocation(l));
             parentNode.appendChild(insertNode);
         }
 
-        Xsoup.compile("//html").evaluate(doc).getElements().first().attr("lang", lang);
+        doc.getDocumentElement().setAttribute("lang", lang);
 
-        return doc.html();
+        return getStringFromDocument(doc);
     }
 }
