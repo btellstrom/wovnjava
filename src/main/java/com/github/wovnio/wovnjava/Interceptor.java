@@ -386,11 +386,10 @@ class Interceptor {
             // No error occurs.
         }
         for (int i = 0; i < scripts.getLength(); i++) {
-            Node script = scripts.item(i);
-            Node src = script.getAttributes().getNamedItem("src");
+            Element src = (Element)scripts.item(i);
             if (src != null
-                    && Pattern.compile("//j\\.(dev-)?wovn\\.io(:3000)?/").matcher(src.getNodeValue()).find()) {
-                src.getAttributes().removeNamedItem("src");
+                    && Pattern.compile("//j\\.(dev-)?wovn\\.io(:3000)?/").matcher(src.getAttribute("src")).find()) {
+                src.getParentNode().removeChild(src);
             }
         }
 
