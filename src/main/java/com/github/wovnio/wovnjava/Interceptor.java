@@ -276,8 +276,10 @@ class Interceptor {
                     continue;
                 }
                 Node href = anchor.getAttributes().getNamedItem("href");
-                String newHref = this.addLangCode(href.getNodeValue(), this.store.settings.urlPattern, lang, headers);
-                href.setNodeValue(newHref);
+                if (href != null) {
+                    String newHref = this.addLangCode(href.getNodeValue(), this.store.settings.urlPattern, lang, headers);
+                    href.setNodeValue(newHref);
+                }
             }
         }
 
@@ -319,7 +321,7 @@ class Interceptor {
             Node name = meta.getAttributes().getNamedItem("name");
             Node property = meta.getAttributes().getNamedItem("property");
             if (!(name != null && p.matcher(name.getNodeValue()).find())
-                    && !(property != null && p.matcher(name.getNodeValue()).find())
+                    && !(property != null && p.matcher(property.getNodeValue()).find())
                     ) {
                 continue;
             }
