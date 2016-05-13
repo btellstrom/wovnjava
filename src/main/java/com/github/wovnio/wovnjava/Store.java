@@ -3,8 +3,11 @@ package com.github.wovnio.wovnjava;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.IOException;
-import java.net.URL;
+
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import java.nio.charset.Charset;
 
 import javax.servlet.FilterConfig;
@@ -37,6 +40,8 @@ class Store {
                         while ((line = reader.readLine()) != null) {
                             json += line;
                         }
+                    } catch (IOException e) {
+                        WovnServletFilter.log.error("IOException in reader.readLine()", e);
                     } finally {
                         try {
                             reader.close();
@@ -50,13 +55,15 @@ class Store {
                         }
                     }
                 }
+            } catch (IOException e) {
+                WovnServletFilter.log.error("IOException in uri.openConnection()", e);
             } finally {
                 if (connection != null) {
                     connection.disconnect();
                 }
             }
-        } catch (IOException e) {
-            WovnServletFilter.log.error("IOException in getValues()", e);
+        } catch (MalformedURLException e) {
+            WovnServletFilter.log.error("MalformedURLException in parsing URL", e);
         }
 
         if (json.length() == 0) {
