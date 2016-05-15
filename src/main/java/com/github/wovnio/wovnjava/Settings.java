@@ -84,7 +84,7 @@ class Settings {
         }
 
         p = config.getInitParameter("useProxy");
-        if (p != null & p.length() > 0) {
+        if (p != null && p.length() > 0) {
             this.useProxy = getBoolParameter(p);
         }
 
