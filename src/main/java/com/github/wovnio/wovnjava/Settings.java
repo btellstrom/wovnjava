@@ -22,6 +22,7 @@ class Settings {
     ArrayList<String> supportedLangs;
     boolean testMode = false;
     String testUrl = "";
+    boolean useProxy = false;
 
     Settings(FilterConfig config) {
         super();
@@ -80,6 +81,11 @@ class Settings {
         p = config.getInitParameter("testUrl");
         if (p != null && p.length() > 0) {
             this.testUrl = p;
+        }
+
+        p = config.getInitParameter("useProxy");
+        if (p != null & p.length() > 0) {
+            this.useProxy = getBoolParameter(p);
         }
 
         this.initialize();
