@@ -45,7 +45,7 @@ class WovnHttpServletResponse extends HttpServletResponseWrapper {
     }
 
     public String toString() {
-        return new String(this.getData());
+        return Utf8.toStringUtf8(this.getData());
     }
 
     public void setStatus(int sc) {
