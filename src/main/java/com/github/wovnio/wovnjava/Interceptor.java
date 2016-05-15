@@ -113,6 +113,7 @@ class Interceptor {
 
         if (body != null) {
             // text
+            wovnResponse.setContentType("text/html; charset=utf-8");
             try {
                 PrintWriter out = response.getWriter();
                 out.write(body);
