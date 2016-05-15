@@ -22,6 +22,7 @@ public class SettingsTest extends TestCase {
         EasyMock.expect(mock.getInitParameter("supportedLangs")).andReturn("");
         EasyMock.expect(mock.getInitParameter("testMode")).andReturn("");
         EasyMock.expect(mock.getInitParameter("testUrl")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("useProxy")).andReturn("");
         EasyMock.replay(mock);
 
         return mock;
@@ -39,6 +40,7 @@ public class SettingsTest extends TestCase {
         EasyMock.expect(mock.getInitParameter("supportedLangs")).andReturn("en,ja");
         EasyMock.expect(mock.getInitParameter("testMode")).andReturn("true");
         EasyMock.expect(mock.getInitParameter("testUrl")).andReturn("https://example.com");
+        EasyMock.expect(mock.getInitParameter("useProxy")).andReturn("");
         EasyMock.replay(mock);
 
         return mock;
@@ -56,6 +58,7 @@ public class SettingsTest extends TestCase {
         EasyMock.expect(mock.getInitParameter("supportedLangs")).andReturn("");
         EasyMock.expect(mock.getInitParameter("testMode")).andReturn("");
         EasyMock.expect(mock.getInitParameter("testUrl")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("useProxy")).andReturn("");
         EasyMock.replay(mock);
 
         return mock;

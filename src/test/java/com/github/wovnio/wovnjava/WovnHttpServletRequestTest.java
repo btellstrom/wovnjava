@@ -63,6 +63,7 @@ public class WovnHttpServletRequestTest extends TestCase {
         EasyMock.expect(mock.getInitParameter("supportedLangs")).andReturn("");
         EasyMock.expect(mock.getInitParameter("testMode")).andReturn("");
         EasyMock.expect(mock.getInitParameter("testUrl")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("useProxy")).andReturn("");
         EasyMock.replay(mock);
         return mock;
     }
@@ -79,6 +80,7 @@ public class WovnHttpServletRequestTest extends TestCase {
         EasyMock.expect(mock.getInitParameter("supportedLangs")).andReturn("");
         EasyMock.expect(mock.getInitParameter("testMode")).andReturn("");
         EasyMock.expect(mock.getInitParameter("testUrl")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("useProxy")).andReturn("");
         EasyMock.replay(mock);
         return mock;
     }
@@ -95,6 +97,7 @@ public class WovnHttpServletRequestTest extends TestCase {
         EasyMock.expect(mock.getInitParameter("supportedLangs")).andReturn("");
         EasyMock.expect(mock.getInitParameter("testMode")).andReturn("");
         EasyMock.expect(mock.getInitParameter("testUrl")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("useProxy")).andReturn("");
         EasyMock.replay(mock);
         return mock;
     }

@@ -31,7 +31,11 @@ class Headers {
         this.request = r;
 
         this.protocol = this.request.getScheme();
-        this.unmaskedHost = this.request.getRemoteHost();
+        if (this.settings.useProxy && this.request.getHeader("X-Forwarded-Host").length() > 0) {
+            this.unmaskedHost = this.request.getHeader("X-Forwarded-Host");
+        } else {
+            this.unmaskedHost = this.request.getRemoteHost();
+        }
 
         String requestUri = this.request.getRequestURI();
         if (requestUri == null || requestUri.length() == 0) {
@@ -57,10 +61,13 @@ class Headers {
             this.unmaskedPathName += "/";
         }
         this.unmaskedUrl = this.protocol + "://" + this.unmaskedHost + this.unmaskedPathName;
-        if (this.settings.urlPattern.equals("subdomain")) {
-            this.host = this.removeLang(this.request.getServerName(), this.langCode());
+        if (this.settings.useProxy && this.request.getHeader("X-Forwarded-Host").length() > 0) {
+            this.host = this.request.getHeader("X-Forwarded-Host");
         } else {
-            this.host = r.getServerName();
+            this.host = this.request.getServerName();
+        }
+        if (this.settings.urlPattern.equals("subdomain")) {
+            this.host = this.removeLang(this.host, this.langCode());
         }
         this.pathName = split[0];
         if (split.length == 2) {
@@ -118,7 +125,12 @@ class Headers {
     String getPathLang() {
         if (this.pathLang == null || this.pathLang.length() == 0) {
             Pattern p = Pattern.compile(settings.urlPatternReg);
-            String path = this.request.getServerName() + this.request.getRequestURI();
+            String path;
+            if (this.settings.useProxy && this.request.getHeader("X-Forwarded-Host").length() > 0) {
+                path = this.request.getHeader("X-Forwarded-Host") + this.request.getRequestURI();
+            } else {
+                path = this.request.getServerName() + this.request.getRequestURI();
+            }
             if (this.request.getQueryString() != null && this.request.getQueryString().length() > 0) {
                 path += "?" + this.request.getQueryString();
             }
