@@ -31,7 +31,7 @@ class Headers {
         this.request = r;
 
         this.protocol = this.request.getScheme();
-        if (this.settings.useProxy && this.request.getHeader("X-Forwarded-Host").length() > 0) {
+        if (this.settings.useProxy && this.request.getHeader("X-Forwarded-Host") != null) {
             this.unmaskedHost = this.request.getHeader("X-Forwarded-Host");
         } else {
             this.unmaskedHost = this.request.getRemoteHost();
@@ -61,7 +61,7 @@ class Headers {
             this.unmaskedPathName += "/";
         }
         this.unmaskedUrl = this.protocol + "://" + this.unmaskedHost + this.unmaskedPathName;
-        if (this.settings.useProxy && this.request.getHeader("X-Forwarded-Host").length() > 0) {
+        if (this.settings.useProxy && this.request.getHeader("X-Forwarded-Host") != null) {
             this.host = this.request.getHeader("X-Forwarded-Host");
         } else {
             this.host = this.request.getServerName();
@@ -126,7 +126,7 @@ class Headers {
         if (this.pathLang == null || this.pathLang.length() == 0) {
             Pattern p = Pattern.compile(settings.urlPatternReg);
             String path;
-            if (this.settings.useProxy && this.request.getHeader("X-Forwarded-Host").length() > 0) {
+            if (this.settings.useProxy && this.request.getHeader("X-Forwarded-Host") != null) {
                 path = this.request.getHeader("X-Forwarded-Host") + this.request.getRequestURI();
             } else {
                 path = this.request.getServerName() + this.request.getRequestURI();
