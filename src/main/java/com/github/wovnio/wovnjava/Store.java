@@ -3,10 +3,12 @@ package com.github.wovnio.wovnjava;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 
 import java.nio.charset.Charset;
 
@@ -23,9 +25,23 @@ class Store {
     Values getValues(String url) {
         url = url.replaceAll("/$", "");
 
+        String encodedToken, encodedUrl;
+        try {
+            encodedToken = URLEncoder.encode(settings.userToken, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            Logger.log.error("UnsupportedEncodingException while encoding token", e);
+            encodedToken = settings.userToken;
+        }
+        try {
+            encodedUrl = URLEncoder.encode(url, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            Logger.log.error("UnspportedEncodingException while encoding page url", e);
+            encodedUrl = url;
+        }
+
         String json = "";
         try {
-            URL uri = new URL(settings.apiUrl + "?token=" + settings.userToken + "&url=" + url);
+            URL uri = new URL(settings.apiUrl + "?token=" + encodedToken + "&url=" + encodedUrl);
             HttpURLConnection connection = null;
 
             if (Logger.isDebug()) {
