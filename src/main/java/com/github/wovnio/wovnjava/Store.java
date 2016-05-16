@@ -28,6 +28,10 @@ class Store {
             URL uri = new URL(settings.apiUrl + "?token=" + settings.userToken + "&url=" + url);
             HttpURLConnection connection = null;
 
+            if (Logger.isDebug()) {
+                Logger.log.info("Sending API request to \"" + uri.toString() + "\"");
+            }
+
             try {
                 connection = (HttpURLConnection) uri.openConnection();
                 connection.setRequestMethod("GET");
@@ -41,32 +45,46 @@ class Store {
                             json += line;
                         }
                     } catch (IOException e) {
-                        WovnServletFilter.log.error("IOException in reader.readLine()", e);
+                        Logger.log.error("IOException in reader.readLine()", e);
                     } finally {
                         try {
                             reader.close();
                         } catch (IOException e) {
-                            WovnServletFilter.log.error("IOException in reader.close()", e);
+                            Logger.log.error("IOException in reader.close()", e);
                         }
                         try {
                             isr.close();
                         } catch (IOException e) {
-                            WovnServletFilter.log.error("IOException in isr.close()", e);
+                            Logger.log.error("IOException in isr.close()", e);
                         }
                     }
                 }
             } catch (IOException e) {
-                WovnServletFilter.log.error("IOException in uri.openConnection()", e);
+                Logger.log.error("IOException in uri.openConnection()", e);
             } finally {
                 if (connection != null) {
                     connection.disconnect();
                 }
             }
         } catch (MalformedURLException e) {
-            WovnServletFilter.log.error("MalformedURLException in parsing URL", e);
+            Logger.log.error("MalformedURLException in parsing URL", e);
         }
 
-        if (json.length() == 0) {
+        if (Logger.isDebug()) {
+            if (Logger.debugMode > 1) {
+                Logger.log.info("Translation data: " + json);
+            } else {
+                if (json.isEmpty()) {
+                    Logger.log.info("Translation data is empty string");
+                } else if (json.equals("{}")) {
+                    Logger.log.info("Translation data is empty");
+                } else {
+                    Logger.log.info("Translation data size: " + json.length());
+                }
+            }
+        }
+
+        if (json.isEmpty()) {
             json = "{}";
         }
 

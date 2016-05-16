@@ -39,6 +39,7 @@ class Interceptor {
 
     Interceptor(FilterConfig config) {
         store = new Store(config);
+        Logger.debugMode = store.settings.debugMode;
     }
 
     void call(HttpServletRequest request, ServletResponse response, FilterChain chain) {
@@ -47,32 +48,42 @@ class Interceptor {
             try {
                 chain.doFilter(request, response);
             } catch (ServletException e) {
-                WovnServletFilter.log.error("ServletException in chain.doFilter (invalid settings)", e);
+                Logger.log.error("ServletException in chain.doFilter (invalid settings)", e);
             } catch (IOException e) {
-                WovnServletFilter.log.error("IOException in chain.doFilter (invalid settings)", e);
+                Logger.log.error("IOException in chain.doFilter (invalid settings)", e);
             }
             return;
         }
 
         Headers h = new Headers(request, store.settings);
         if (store.settings.testMode && !store.settings.testUrl.equals(h.url)) {
+
+            if (Logger.isDebug()) {
+                Logger.log.info("test mode: " + h.url);
+            }
+
             try {
                 chain.doFilter(request, response);
             } catch (ServletException e) {
-                WovnServletFilter.log.error("ServletException in chain.doFilter (test mode)", e);
+                Logger.log.error("ServletException in chain.doFilter (test mode)", e);
             } catch (IOException e) {
-                WovnServletFilter.log.error("IOException in chain.doFilter (test mode)", e);
+                Logger.log.error("IOException in chain.doFilter (test mode)", e);
             }
             return;
         }
 
         if (h.getPathLang().equals(store.settings.defaultLang)) {
+            String redirectLocation = h.redirectLocation(store.settings.defaultLang);
+
+            if (Logger.isDebug()) {
+                Logger.log.info("Redirect to \"" + redirectLocation + "\"");
+            }
+
             try {
-                ((HttpServletResponse) response).sendRedirect(
-                        h.redirectLocation(store.settings.defaultLang)
-                );
+                ((HttpServletResponse) response).sendRedirect(redirectLocation);
             } catch (IOException e) {
-                WovnServletFilter.log.error("IOException in response.sendRedirect", e);
+                Logger.log.error("IOException in response.sendRedirect", e);
+
             }
             return;
         }
@@ -88,17 +99,29 @@ class Interceptor {
         try {
             chain.doFilter(wovnRequest, wovnResponse);
         } catch (ServletException e) {
-            WovnServletFilter.log.error("ServletExecption in chain.doFilter", e);
+            Logger.log.error("ServletExecption in chain.doFilter", e);
         } catch (IOException e) {
-            WovnServletFilter.log.error("ServletException in chain.doFilter", e);
+            Logger.log.error("ServletException in chain.doFilter", e);
         }
 
         String body = null;
         // There is a possibility that response.getContentType() is null when the response is an image.
         if (response.getContentType() != null && Pattern.compile("html").matcher(response.getContentType()).find()) {
-            Values values = store.getValues(h.pageUrl);
+
             String status = String.valueOf(wovnResponse.status);
+
             if (!Pattern.compile("^1|302").matcher(status).find()) {
+
+                if (Logger.isDebug()) {
+                    if (wovnRequest.getQueryString() != null && wovnRequest.getQueryString().isEmpty()) {
+                        Logger.log.info("Translating HTML: " + wovnRequest.getRequestURL());
+                    } else {
+                        Logger.log.info("Translating HTML: " + wovnRequest.getRequestURL() + "?" + wovnRequest.getQueryString());
+                    }
+                }
+
+                Values values = store.getValues(h.pageUrl);
+
                 String lang = h.langCode();
                 HashMap<String,String> url = new HashMap<String,String>();
                 url.put("protocol", h.protocol);
@@ -119,7 +142,7 @@ class Interceptor {
                 out.write(body);
                 out.close();
             } catch (IOException e) {
-                WovnServletFilter.log.error("IOException while writing text data", e);
+                Logger.log.error("IOException while writing text data", e);
             }
         } else {
             // binary
@@ -128,7 +151,7 @@ class Interceptor {
                 out.write(wovnResponse.getData());
                 out.close();
             } catch (IOException e) {
-                WovnServletFilter.log.error("IOException while writing binary data", e);
+                Logger.log.error("IOException while writing binary data", e);
             }
         }
 
@@ -151,7 +174,7 @@ class Interceptor {
             try {
                 uri = new URL(href);
             } catch (MalformedURLException e) {
-                WovnServletFilter.log.error("MalformedURLException in addLangCode", e);
+                Logger.log.error("MalformedURLException in addLangCode", e);
                 return newHref;
             }
             if (uri.getHost().toLowerCase().equals(headers.host.toLowerCase())) {
@@ -250,10 +273,10 @@ class Interceptor {
         try {
             doc = builder.parse(new InputSource(reader));
         } catch (org.xml.sax.SAXException e) {
-            WovnServletFilter.log.error("SAXException while parsing HTML", e);
+            Logger.log.error("SAXException while parsing HTML", e);
             return body;
         } catch (IOException e) {
-            WovnServletFilter.log.error("IOException while parsing HTML", e);
+            Logger.log.error("IOException while parsing HTML", e);
             return body;
         }
 
@@ -403,7 +426,7 @@ class Interceptor {
                 parentNode = heads.item(0);
             }
         } catch (NullPointerException e) {
-            WovnServletFilter.log.error("NullPointerException while searching <head> tag", e);
+            Logger.log.error("NullPointerException while searching <head> tag", e);
         }
         if (parentNode == null) {
             try {
@@ -412,7 +435,7 @@ class Interceptor {
                     parentNode = bodies.item(0);
                 }
             } catch (NullPointerException e) {
-                WovnServletFilter.log.error("NullPointerException while searching <body> tag", e);
+                Logger.log.error("NullPointerException while searching <body> tag", e);
             }
         }
         if (parentNode == null) {
