@@ -113,7 +113,7 @@ class Interceptor {
             if (!Pattern.compile("^1|302").matcher(status).find()) {
 
                 if (Logger.isDebug()) {
-                    if (wovnRequest.getQueryString() != null && wovnRequest.getQueryString().isEmpty()) {
+                    if (wovnRequest.getQueryString() == null || wovnRequest.getQueryString().isEmpty()) {
                         Logger.log.info("Translating HTML: " + wovnRequest.getRequestURL());
                     } else {
                         Logger.log.info("Translating HTML: " + wovnRequest.getRequestURL() + "?" + wovnRequest.getQueryString());
