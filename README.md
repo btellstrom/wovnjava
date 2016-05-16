@@ -72,6 +72,7 @@ urlPattern     | yes      | 'path'
 query          |          | ''
 defaultLang    | yes      | 'en'
 useProxy       |          | ''
+debugMode      |          | '0'
 
 ### 2.1. userToken
 
@@ -126,3 +127,7 @@ The library will redirect to the following URL.
 ### 2.6. useProxy
 
 There is some case that wovnjava with reverse proxy cannot get translated data. When useProxy setting is true, wovnjava uses X-Forwarded-Host header for getting translated data.
+
+### 2.7. debugMode
+
+When debugMode is 1, wovnjava outputs debug logs. This setting is for development.
