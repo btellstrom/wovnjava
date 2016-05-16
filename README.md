@@ -71,6 +71,7 @@ secretKey      | yes      | ''
 urlPattern     | yes      | 'path'
 query          |          | ''
 defaultLang    | yes      | 'en'
+useProxy       |          | ''
 
 ### 2.1. userToken
 
@@ -121,3 +122,7 @@ If the default_lang is set to 'en', when receiving a request for the following U
 The library will redirect to the following URL.
 
     https://wovn.io/contact"
+
+### 2.6. useProxy
+
+There is some case that wovnjava with reverse proxy cannot get translated data. When useProxy setting is true, wovnjava uses X-Forwarded-Host header for getting translated data.
