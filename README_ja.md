@@ -114,13 +114,13 @@ debugMode    |              | '0'
 
 ### 2.4. query
 
-query パラメータでは、WOVN.io で翻訳するページの URL について、無視したいクエリパラメータを設定することができます。初期値は何も設定されておらず、この場合は全てのクエリパラメータを翻訳するページの URL に含めます。
+WOVN.io では翻訳ページの識別の際にクエリパラメータを無視します。クエリパラメータを翻訳ページの URL に含めたい場合、query パラメータで設定する必要があります。（WOVN.io 側の設定も必要です）
 
     https://wovn.io/ja/contact?os=mac&keyboard=us
 
 defualt_lang が 'en' で、query が '' （未設定）の場合、上記の URL は下記のように変換されて、翻訳ページを探します。
 
-    https://wovn.io/contact?os=mac&keyboard=us
+    https://wovn.io/contact
 
 default_lang が 'en' で、query が 'mac' の場合、上記の URL は下記のように変換されて、翻訳ページを探します。
 
