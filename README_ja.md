@@ -85,7 +85,7 @@ secretKey    | yes          | ''
 urlPattern   | yes          | 'path'
 query        |              | ''
 defaultLang  | yes          | 'en'
-useProxy     |              | ''
+useProxy     |              | 'false'
 debugMode    |              | '0'
 
 ※ 初期値が設定されている必須パラメータは、web.xml で設定しなくても大丈夫です。（userToken と secretKey だけ指定すればライブラリを動作させることができます）
