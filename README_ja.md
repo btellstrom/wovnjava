@@ -85,6 +85,7 @@ secretKey    | yes          | ''
 urlPattern   | yes          | 'path'
 query        |              | ''
 defaultLang  | yes          | 'en'
+useProxy     |              | ''
 
 ※ 初期値が設定されている必須パラメータは、web.xml で設定しなくても大丈夫です。（userToken と secretKey だけ指定すればライブラリを動作させることができます）
 
@@ -139,3 +140,8 @@ defaultLang が 'en' で下記 URL にリクエストがあった場合、
 ライブラリは、下記 URL にリダイレクトします。
 
     https://wovn.io/contact
+
+### 2.6. useProxy
+
+リバースプロキシ使用時は wovnjava に適切なホスト名が渡されず、翻訳ページのデータを取得できない場合があります。
+useProxy に true を設定すると、wovnjava の処理に HTTP リクエストヘッダの X-Forwarded-Host を使用します。
