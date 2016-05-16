@@ -86,6 +86,7 @@ urlPattern   | yes          | 'path'
 query        |              | ''
 defaultLang  | yes          | 'en'
 useProxy     |              | ''
+debugMode    |              | '0'
 
 ※ 初期値が設定されている必須パラメータは、web.xml で設定しなくても大丈夫です。（userToken と secretKey だけ指定すればライブラリを動作させることができます）
 
@@ -145,3 +146,7 @@ defaultLang が 'en' で下記 URL にリクエストがあった場合、
 
 リバースプロキシ使用時は wovnjava に適切なホスト名が渡されず、翻訳ページのデータを取得できない場合があります。
 useProxy に true を設定すると、wovnjava の処理に HTTP リクエストヘッダの X-Forwarded-Host を使用します。
+
+### 2.7. debugMode
+
+debugMode に 1 を設定すると、wovnjava はデバッグログを出力します。これは開発用の機能です。
