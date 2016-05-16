@@ -83,6 +83,25 @@ public class HeadersTest extends TestCase {
         return mock;
     }
 
+    private static FilterConfig mockConfigQueryParameterAAA() {
+        FilterConfig mock = EasyMock.createMock(FilterConfig.class);
+        EasyMock.expect(mock.getInitParameter("userToken")).andReturn("2Wle3");
+        EasyMock.expect(mock.getInitParameter("secretKey")).andReturn("secret");
+        EasyMock.expect(mock.getInitParameter("urlPattern")).andReturn("query");
+        EasyMock.expect(mock.getInitParameter("urlPatternReg")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("query")).andReturn("AAA");
+        EasyMock.expect(mock.getInitParameter("apiUrl")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("defaultLang")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("supportedLangs")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("testMode")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("testUrl")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("useProxy")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("debugMode")).andReturn("");
+        EasyMock.replay(mock);
+
+        return mock;
+    }
+
     private static HttpServletRequest mockRequestPath() {
         HttpServletRequest mock = EasyMock.createMock(HttpServletRequest.class);
         EasyMock.expect(mock.getScheme()).andReturn("https");
@@ -237,5 +256,15 @@ public class HeadersTest extends TestCase {
         Headers h = new Headers(mockRequest, s);
 
         assertEquals("example.com/test", h.removeLang("example.com/test?wovn=ja", null));
+    }
+
+    public void testNotMatchQuery() {
+        HttpServletRequest mockRequest = mockRequestQueryParameter();
+        FilterConfig mockConfig = mockConfigQueryParameterAAA();
+
+        Settings s = new Settings(mockConfig);
+        Headers h = new Headers(mockRequest, s);
+
+        assertEquals("", h.query);
     }
 }
