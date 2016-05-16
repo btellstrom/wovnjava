@@ -71,7 +71,7 @@ secretKey      | yes      | ''
 urlPattern     | yes      | 'path'
 query          |          | ''
 defaultLang    | yes      | 'en'
-useProxy       |          | ''
+useProxy       |          | 'false'
 debugMode      |          | '0'
 
 ### 2.1. userToken
