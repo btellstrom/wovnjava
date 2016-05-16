@@ -18,8 +18,6 @@ public class WovnServletFilter implements Filter {
 
     public static final String VERSION = "0.1.4";
 
-    static final Log log = LogFactory.getLog(WovnServletFilter.class);
-
     public void init(FilterConfig config) throws ServletException {
         interceptor = new Interceptor(config);
     }

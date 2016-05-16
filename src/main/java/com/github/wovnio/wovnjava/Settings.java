@@ -23,6 +23,7 @@ class Settings {
     boolean testMode = false;
     String testUrl = "";
     boolean useProxy = false;
+    int debugMode = 0;
 
     Settings(FilterConfig config) {
         super();
@@ -88,7 +89,19 @@ class Settings {
             this.useProxy = getBoolParameter(p);
         }
 
+        p  = config.getInitParameter("debugMode");
+        if (p != null && !p.isEmpty()) {
+            this.debugMode = getIntParameter(p);
+        }
+
         this.initialize();
+    }
+
+    static int getIntParameter(String param) {
+        if (param == null || param.isEmpty()) {
+            return 0;
+        }
+        return Integer.parseInt(param);
     }
 
     @Contract("null -> null")
@@ -135,7 +148,7 @@ class Settings {
 
         if (userToken == null || userToken.length() < 5 || userToken.length() > 6) {
             valid = false;
-            errors.add("User token is not " + userToken + " valid.");
+            errors.add("User token is not valid: " + userToken);
         }
         if (secretKey == null || secretKey.length() == 0) {
             valid = false;
@@ -159,7 +172,7 @@ class Settings {
         }
 
         if (errors.size() > 0) {
-            errors.size();  // This is a dummy code. Should log errors here.
+            Logger.log.error("Settings is invalid: " + errors.toString());
         }
 
         return valid;
