@@ -97,12 +97,16 @@ class Headers {
                     queryVals.add(m.group(2));
                 }
             }
-            if (queryVals.size() > 0) {
+            if (queryVals.isEmpty()) {
+                // ignore all query parameters.
+                this.query = "";
+            } else {
                 this.query = "?";
                 Collections.sort(queryVals);
                 for (String q : queryVals) {
                     this.query += q + "&";
                 }
+                // remove last ampersand.
                 this.query = Pattern.compile("&$").matcher(this.query).replaceFirst("");
             }
         } else {
