@@ -32,6 +32,11 @@ public class Utf8 {
 
     static String toStringUtf8(byte[] data) {
         String encoding = detectEncoding(data);
+
+        if (Logger.isDebug()) {
+            Logger.log.info("encoding: " + encoding);
+        }
+
         if (encoding.equals("UTF-8")) {
             return new String(data);
         }
