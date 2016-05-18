@@ -112,6 +112,27 @@ public class HeadersTest extends TestCase {
         return mock;
     }
 
+    private static FilterConfig mockConfigOriginalHeaders() {
+        FilterConfig mock = EasyMock.createMock(FilterConfig.class);
+        EasyMock.expect(mock.getInitParameter("userToken")).andReturn("2Wle3");
+        EasyMock.expect(mock.getInitParameter("secretKey")).andReturn("secret");
+        EasyMock.expect(mock.getInitParameter("urlPattern")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("urlPatternReg")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("query")).andReturn("baz");
+        EasyMock.expect(mock.getInitParameter("apiUrl")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("defaultLang")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("supportedLangs")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("testMode")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("testUrl")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("useProxy")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("debugMode")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("originalUrlHeader")).andReturn("REDIRECT_URL");
+        EasyMock.expect(mock.getInitParameter("originalQueryStringHeader")).andReturn("REDIRECT_QUERY_STRING");
+        EasyMock.replay(mock);
+
+        return mock;
+    }
+
     private static HttpServletRequest mockRequestPath() {
         HttpServletRequest mock = EasyMock.createMock(HttpServletRequest.class);
         EasyMock.expect(mock.getScheme()).andReturn("https");
@@ -173,6 +194,22 @@ public class HeadersTest extends TestCase {
         EasyMock.replay(mock);
 
         return mock;
+    }
+
+    private static HttpServletRequest mockRequestOriginalHeaders() {
+        HttpServletRequest mock = EasyMock.createMock(HttpServletRequest.class);
+        EasyMock.expect(mock.getScheme()).andReturn("https");
+        EasyMock.expect(mock.getRemoteHost()).andReturn("example.com");
+        EasyMock.expect(mock.getRequestURI()).andReturn("/ja/test").atLeastOnce();
+        EasyMock.expect(mock.getServerName()).andReturn("example.com").atLeastOnce();
+        EasyMock.expect(mock.getQueryString()).andReturn("").atLeastOnce();
+        EasyMock.expect(mock.getServerPort()).andReturn(443).atLeastOnce();
+        EasyMock.expect(mock.getHeader("REDIRECT_URL")).andReturn("/foo/bar").atLeastOnce();
+        EasyMock.expect(mock.getHeader("REDIRECT_QUERY_STRING")).andReturn("baz=123").atLeastOnce();
+        EasyMock.replay(mock);
+
+        return mock;
+
     }
 
     public void testHeaders() {
@@ -299,5 +336,17 @@ public class HeadersTest extends TestCase {
         Headers h = new Headers(mockRequest, s);
 
         assertEquals("example.com:8080/test", h.pageUrl);
+    }
+
+    public void testOriginalHeaders() {
+        HttpServletRequest mockRequest = mockRequestOriginalHeaders();
+        FilterConfig mockConfig = mockConfigOriginalHeaders();
+
+        Settings s = new Settings(mockConfig);
+        Headers h = new Headers(mockRequest, s);
+
+        assertEquals("/foo/bar", h.pathName);
+        assertEquals("?baz=123", h.query);
+        assertEquals("example.com/foo/bar?baz=123", h.pageUrl);
     }
 }
