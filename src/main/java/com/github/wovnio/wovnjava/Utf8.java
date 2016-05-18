@@ -1,7 +1,5 @@
 package com.github.wovnio.wovnjava;
 
-import sun.rmi.runtime.Log;
-
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 
