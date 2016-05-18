@@ -152,6 +152,19 @@ public class HeadersTest extends TestCase {
         return mock;
     }
 
+    private static HttpServletRequest mockRequestServerPort() {
+        HttpServletRequest mock = EasyMock.createMock(HttpServletRequest.class);
+        EasyMock.expect(mock.getScheme()).andReturn("https");
+        EasyMock.expect(mock.getRemoteHost()).andReturn("example.com");
+        EasyMock.expect(mock.getRequestURI()).andReturn("/ja/test").atLeastOnce();
+        EasyMock.expect(mock.getServerName()).andReturn("example.com").atLeastOnce();
+        EasyMock.expect(mock.getQueryString()).andReturn("").atLeastOnce();
+        EasyMock.expect(mock.getServerPort()).andReturn(8080).atLeastOnce();
+        EasyMock.replay(mock);
+
+        return mock;
+    }
+
     public void testHeaders() {
         HttpServletRequest mockRequest = mockRequestPath();
         FilterConfig mockConfig = mockConfigPath();
@@ -266,5 +279,15 @@ public class HeadersTest extends TestCase {
         Headers h = new Headers(mockRequest, s);
 
         assertEquals("", h.query);
+    }
+
+    public void testServerPort() {
+        HttpServletRequest mockRequest = mockRequestServerPort();
+        FilterConfig mockConfig = mockConfigPath();
+
+        Settings s = new Settings(mockConfig);
+        Headers h = new Headers(mockRequest, s);
+
+        assertEquals("example.com:8080/test", h.pageUrl);
     }
 }

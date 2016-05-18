@@ -79,11 +79,10 @@ class Headers {
         if (this.query == null || this.query.length() == 0) {
             this.query = "";
         }
-        this.url = this.host;
         if (this.request.getServerPort() != 80 && this.request.getServerPort() != 443) {
-            this.url += ":" + this.request.getServerPort();
+            this.host += ":" + this.request.getServerPort();
         }
-        this.url += this.pathName;
+        this.url = this.host + this.pathName;
         if (this.query != null && this.query.length() > 0) {
             this.url += "?";
         }
