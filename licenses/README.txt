@@ -3,4 +3,4 @@ wovnjava-0.1.5-jar-with-dependencies.jar is including the following libraries wh
 * jsonic 1.3.0
 * xercesImpl 2.11.0
 * xml-apis 1.4.01
-* commons-loggins 1.2
+* commons-logging 1.2
