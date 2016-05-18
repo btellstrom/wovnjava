@@ -21,6 +21,7 @@ public class Utf8 {
             try {
                 converted = (new String(data, encoding)).getBytes(encoding);
             } catch (UnsupportedEncodingException e) {
+                Logger.log.error("UnsupportedEncodingException while detecting encoding: ", e);
                 continue;
             }
             if (Arrays.equals(converted, data)) {
@@ -43,6 +44,7 @@ public class Utf8 {
         try {
             return new String(data, encoding);
         } catch (UnsupportedEncodingException e) {
+            Logger.log.error("UnsupportedEncodingException while encoding to UTF-8: ", e);
             return new String(data);
         }
     }
