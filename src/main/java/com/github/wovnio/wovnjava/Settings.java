@@ -113,7 +113,14 @@ class Settings {
         if (param == null || param.isEmpty()) {
             return 0;
         }
-        return Integer.parseInt(param);
+        int n;
+        try {
+            n = Integer.parseInt(param);
+        } catch (NumberFormatException e) {
+            Logger.log.error("NumberFormatException while parsing int parameter", e);
+            n = 0;
+        }
+        return n;
     }
 
     @Contract("null -> null")
