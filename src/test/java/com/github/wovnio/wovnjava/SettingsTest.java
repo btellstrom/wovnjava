@@ -24,6 +24,8 @@ public class SettingsTest extends TestCase {
         EasyMock.expect(mock.getInitParameter("testUrl")).andReturn("");
         EasyMock.expect(mock.getInitParameter("useProxy")).andReturn("");
         EasyMock.expect(mock.getInitParameter("debugMode")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("originalUrlHeader")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("originalQueryStringHeader")).andReturn("");
         EasyMock.replay(mock);
 
         return mock;
@@ -43,6 +45,8 @@ public class SettingsTest extends TestCase {
         EasyMock.expect(mock.getInitParameter("testUrl")).andReturn("https://example.com");
         EasyMock.expect(mock.getInitParameter("useProxy")).andReturn("");
         EasyMock.expect(mock.getInitParameter("debugMode")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("originalUrlHeader")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("originalQueryStringHeader")).andReturn("");
         EasyMock.replay(mock);
 
         return mock;
@@ -62,6 +66,8 @@ public class SettingsTest extends TestCase {
         EasyMock.expect(mock.getInitParameter("testUrl")).andReturn("");
         EasyMock.expect(mock.getInitParameter("useProxy")).andReturn("");
         EasyMock.expect(mock.getInitParameter("debugMode")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("originalUrlHeader")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("originalQueryStringHeader")).andReturn("");
         EasyMock.replay(mock);
 
         return mock;

@@ -23,6 +23,8 @@ public class HeadersTest extends TestCase {
         EasyMock.expect(mock.getInitParameter("testUrl")).andReturn("");
         EasyMock.expect(mock.getInitParameter("useProxy")).andReturn("");
         EasyMock.expect(mock.getInitParameter("debugMode")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("originalUrlHeader")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("originalQueryStringHeader")).andReturn("");
         EasyMock.replay(mock);
 
         return mock;
@@ -41,6 +43,8 @@ public class HeadersTest extends TestCase {
         EasyMock.expect(mock.getInitParameter("testUrl")).andReturn("");
         EasyMock.expect(mock.getInitParameter("useProxy")).andReturn("");
         EasyMock.expect(mock.getInitParameter("debugMode")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("originalUrlHeader")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("originalQueryStringHeader")).andReturn("");
         EasyMock.replay(mock);
 
         return mock;
@@ -59,6 +63,8 @@ public class HeadersTest extends TestCase {
         EasyMock.expect(mock.getInitParameter("testUrl")).andReturn("");
         EasyMock.expect(mock.getInitParameter("useProxy")).andReturn("");
         EasyMock.expect(mock.getInitParameter("debugMode")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("originalUrlHeader")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("originalQueryStringHeader")).andReturn("");
         EasyMock.replay(mock);
 
         return mock;
@@ -78,6 +84,8 @@ public class HeadersTest extends TestCase {
         EasyMock.expect(mock.getInitParameter("testUrl")).andReturn("");
         EasyMock.expect(mock.getInitParameter("useProxy")).andReturn("");
         EasyMock.expect(mock.getInitParameter("debugMode")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("originalUrlHeader")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("originalQueryStringHeader")).andReturn("");
         EasyMock.replay(mock);
 
         return mock;
@@ -97,6 +105,8 @@ public class HeadersTest extends TestCase {
         EasyMock.expect(mock.getInitParameter("testUrl")).andReturn("");
         EasyMock.expect(mock.getInitParameter("useProxy")).andReturn("");
         EasyMock.expect(mock.getInitParameter("debugMode")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("originalUrlHeader")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("originalQueryStringHeader")).andReturn("");
         EasyMock.replay(mock);
 
         return mock;

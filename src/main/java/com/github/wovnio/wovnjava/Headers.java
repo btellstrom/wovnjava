@@ -37,22 +37,36 @@ class Headers {
             this.unmaskedHost = this.request.getRemoteHost();
         }
 
-        String requestUri = this.request.getRequestURI();
-        if (requestUri == null || requestUri.length() == 0) {
-            if (Pattern.compile("^[^/]").matcher(this.request.getPathInfo()).find()) {
-                requestUri = "/";
-            } else {
-                requestUri = "";
+        String requestUri = null;
+        if (!this.settings.originalUrlHeader.isEmpty()) {
+            requestUri = this.request.getHeader(this.settings.originalUrlHeader);
+        }
+        if (requestUri == null || requestUri.isEmpty()) {
+            requestUri = this.request.getRequestURI();
+            if (requestUri == null || requestUri.length() == 0) {
+                if (Pattern.compile("^[^/]").matcher(this.request.getPathInfo()).find()) {
+                    requestUri = "/";
+                } else {
+                    requestUri = "";
+                }
+                requestUri += this.request.getPathInfo();
             }
-            requestUri += this.request.getPathInfo();
         }
         // Both getRequestURI() and getPathInfo() do not have query parameters.
-        if (r.getQueryString() != null && this.request.getQueryString().length() > 0) {
-            requestUri += "?" + this.request.getQueryString();
+        if (this.settings.originalQueryStringHeader.isEmpty()) {
+            if (r.getQueryString() != null && !this.request.getQueryString().isEmpty()) {
+                requestUri += "?" + this.request.getQueryString();
+            }
+        } else {
+            String query = this.request.getHeader(this.settings.originalQueryStringHeader);
+            if (query != null && !query.isEmpty()) {
+                requestUri += "?" + query;
+            }
         }
         if (Pattern.compile("://").matcher(requestUri).find()) {
             requestUri = Pattern.compile("^.*://[^/]+").matcher(requestUri).replaceFirst("");
         }
+
         String[] split = requestUri.split("\\?");
         this.unmaskedPathName = split[0];
         if ( !Pattern.compile("/$").matcher(this.unmaskedPathName).find()
@@ -76,7 +90,7 @@ class Headers {
         if (this.settings.urlPattern.equals("path")) {
             this.pathName = this.removeLang(this.pathName, this.langCode());
         }
-        if (this.query == null || this.query.length() == 0) {
+        if (this.query == null) {
             this.query = "";
         }
 
