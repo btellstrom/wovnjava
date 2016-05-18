@@ -79,11 +79,22 @@ class Headers {
         if (this.query == null || this.query.length() == 0) {
             this.query = "";
         }
-        this.url = this.host;
-        if (this.request.getServerPort() != 80 && this.request.getServerPort() != 443) {
-            this.url += ":" + this.request.getServerPort();
+
+        int port;
+        if (this.settings.useProxy) {
+            if (this.request.getHeader("X-Forwarded-Port") == null || this.request.getHeader("X-Forwarded-Port").isEmpty()) {
+                port = 80;
+            } else {
+                port = Integer.parseInt(request.getHeader("X-Forwarded-Port"));
+            }
+        } else {
+            port = this.request.getServerPort();
         }
-        this.url += this.pathName;
+        if (port != 80 && port != 443) {
+            this.host += ":" + port;
+        }
+
+        this.url = this.host + this.pathName;
         if (this.query != null && this.query.length() > 0) {
             this.url += "?";
         }
