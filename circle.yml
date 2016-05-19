@@ -6,5 +6,5 @@ test:
   post:
     - mv target/wovnjava-*.jar $CIRCLE_ARTIFACTS/
     - bash zip.sh
-    - mv target/wovnjava-jar-*.zip $CIRCLE_ARTFIFACTS/
+    - mv target/wovnjava-jar-*.zip $CIRCLE_ARTIFACTS/
 
