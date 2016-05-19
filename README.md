@@ -64,15 +64,17 @@ You can see all available versions of wovnjava [here](https://jitpack.io/#wovnio
 
 wovnjava's valid parameters are as follows.
 
-Parameter Name | Required | Default Setting
--------------- | -------- | ------------
-userToken      | yes      | ''
-secretKey      | yes      | ''
-urlPattern     | yes      | 'path'
-query          |          | ''
-defaultLang    | yes      | 'en'
-useProxy       |          | 'false'
-debugMode      |          | '0'
+Parameter Name            | Required | Default Setting
+------------------------- | -------- | ------------
+userToken                 | yes      | ''
+secretKey                 | yes      | ''
+urlPattern                | yes      | 'path'
+query                     |          | ''
+defaultLang               | yes      | 'en'
+useProxy                  |          | 'false'
+debugMode                 |          | '0'
+originalUrlHeader         |          | ''
+originalQueryStringHeader |          | ''
 
 ### 2.1. userToken
 
@@ -131,3 +133,38 @@ There is some case that wovnjava with reverse proxy cannot get translated data. 
 ### 2.7. debugMode
 
 When debugMode is 1, wovnjava outputs debug logs. This setting is for development.
+
+### 2.8. originalUrlHeader, originalQueryStringHeader
+
+When you are using mod_rewrite module of Apache HTTP server and it is rewriting Request URL, wovnjava receives URL after rewriting and it sometimes cannot get correct translation data from API server.
+
+If you configure originalUrlHeader and originalQueryStringHeader in your Application setting file, wovnjava uses request header values set in originalUrlHeader and originalQueryStringHeader.
+
+In following setting of Apache HTTP server, if you configure URL before rewriting in request headers,
+
+```
+SetEnvIf Request_URI "^(.*)$" REQUEST_URI=$1
+RequestHeader set X-Request-Uri "%{REQUEST_URI}e"
+RewriteRule .* - [E=REQUEST_QUERY_STRING:%{QUERY_STRING}]
+RequestHeader set X-Query-String "%{REQUEST_QUERY_STRING}e"
+```
+
+wovnjava uses URL before rewriting with following setting, and can get correct translation data from API server.
+
+```XML
+<filter>
+  ...
+  <init-param>
+    <param-name>originalUrlHeader</param-name>
+    <param-value>X-Request-Uri</param-value>
+  </init-param>
+  <init-param>
+    <param-name>originalQueryStringHeader</param-name>
+    <param-value>X-Query-String</param-value>
+  </init-param>
+  ...
+</filter>
+```
+※ Above sample of request header setting is referred from following site.
+
+https://coderwall.com/p/jhkw7w/passing-request-uri-into-request-header
