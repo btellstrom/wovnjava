@@ -78,15 +78,17 @@ WOVN.io Java ライブラリを使用するためには、WOVN.io のアカウ�
 
 WOVN.io Java ライブラリに設定可能なパラメータは以下の通りです。
 
-パラメータ名 | 必須かどうか | 初期値
------------- | ------------ | ------------
-userToken    | yes          | ''
-secretKey    | yes          | ''
-urlPattern   | yes          | 'path'
-query        |              | ''
-defaultLang  | yes          | 'en'
-useProxy     |              | 'false'
-debugMode    |              | '0'
+パラメータ名              | 必須かどうか | 初期値
+------------------------- | ------------ | ------------
+userToken                 | yes          | ''
+secretKey                 | yes          | ''
+urlPattern                | yes          | 'path'
+query                     |              | ''
+defaultLang               | yes          | 'en'
+useProxy                  |              | 'false'
+debugMode                 |              | '0'
+originalUrlHeader         |              | ''
+originalQueryStringHeader |              | ''
 
 ※ 初期値が設定されている必須パラメータは、web.xml で設定しなくても大丈夫です。（userToken と secretKey だけ指定すればライブラリを動作させることができます）
 
@@ -150,3 +152,39 @@ useProxy に true を設定すると、wovnjava の処理に HTTP リクエス�
 ### 2.7. debugMode
 
 debugMode に 1 を設定すると、wovnjava はデバッグログを出力します。これは開発用の機能です。
+
+### 2.8. originalUrlHeader, originalQueryStringHeader
+
+Apache HTTP Server の mod_rewrite モジュールなどを使用して URL を書き換えている場合、wovnjava には書き換え前の URL が渡されず、適切な翻訳データを取得できない場合があります。
+
+originalUrlHeader、originalQueryStringHeader を設定した場合、wovnjava はこれらに設定されたリクエストヘッダの値を翻訳データの取得に利用します。
+
+下記の Apache HTTP Server の設定で、書き換え前の URL をリクエストヘッダに設定した場合、
+
+```
+SetEnvIf Request_URI "^(.*)$" REQUEST_URI=$1
+RequestHeader set X-Request-Uri "%{REQUEST_URI}e"
+RewriteRule .* - [E=REQUEST_QUERY_STRING:%{QUERY_STRING}]
+RequestHeader set X-Query-String "%{REQUEST_QUERY_STRING}e"
+```
+
+wovnjava は下記の設定で書き換え前の URL を使って、正しい翻訳データを取得できます。
+
+```XML
+<filter>
+  ...
+  <init-param>
+    <param-name>originalUrlHeader</param-name>
+    <param-value>X-Request-Uri</param-value>
+  </init-param>
+  <init-param>
+    <param-name>originalQueryStringHeader</param-name>
+    <param-value>X-Query-String</param-value>
+  </init-param>
+  ...
+</filter>
+```
+
+※ 上記のリクエストヘッダ設定のサンプルは、下記ページから引用しています。
+
+https://coderwall.com/p/jhkw7w/passing-request-uri-into-request-header
