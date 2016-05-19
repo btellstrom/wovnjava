@@ -4,5 +4,7 @@ machine:
 
 test:
   post:
+    - bash zip.sh
     - mv target/wovnjava-*.jar $CIRCLE_ARTIFACTS/
+    - mv target/wovnjava-jar-*.zip $CIRCLE_ARTIFACTS/
 
