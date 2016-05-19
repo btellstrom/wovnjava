@@ -16,7 +16,7 @@ import org.apache.commons.logging.LogFactory;
 public class WovnServletFilter implements Filter {
     protected Interceptor interceptor;
 
-    public static final String VERSION = "0.1.5";
+    public static final String VERSION = "0.1.6";
 
     public void init(FilterConfig config) throws ServletException {
         interceptor = new Interceptor(config);
