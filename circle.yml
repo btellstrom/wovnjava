@@ -5,4 +5,5 @@ machine:
 test:
   post:
     - mv target/wovnjava-*.jar $CIRCLE_ARTIFACTS/
+    - mv target/wovnjava-jar-*.zip $CIRCLE_ARFIFACTS/
 
