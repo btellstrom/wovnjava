@@ -24,6 +24,8 @@ class Settings {
     String testUrl = "";
     boolean useProxy = false;
     int debugMode = 0;
+    String originalUrlHeader = "";
+    String originalQueryStringHeader = "";
 
     Settings(FilterConfig config) {
         super();
@@ -89,9 +91,19 @@ class Settings {
             this.useProxy = getBoolParameter(p);
         }
 
-        p  = config.getInitParameter("debugMode");
+        p = config.getInitParameter("debugMode");
         if (p != null && !p.isEmpty()) {
             this.debugMode = getIntParameter(p);
+        }
+
+        p = config.getInitParameter("originalUrlHeader");
+        if (p != null && !p.isEmpty()) {
+            this.originalUrlHeader = p;
+        }
+
+        p = config.getInitParameter("originalQueryStringHeader");
+        if (p != null && !p.isEmpty()) {
+            this.originalQueryStringHeader = p;
         }
 
         this.initialize();
@@ -101,7 +113,14 @@ class Settings {
         if (param == null || param.isEmpty()) {
             return 0;
         }
-        return Integer.parseInt(param);
+        int n;
+        try {
+            n = Integer.parseInt(param);
+        } catch (NumberFormatException e) {
+            Logger.log.error("NumberFormatException while parsing int parameter", e);
+            n = 0;
+        }
+        return n;
     }
 
     @Contract("null -> null")

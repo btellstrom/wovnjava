@@ -24,6 +24,8 @@ public class SettingsTest extends TestCase {
         EasyMock.expect(mock.getInitParameter("testUrl")).andReturn("");
         EasyMock.expect(mock.getInitParameter("useProxy")).andReturn("");
         EasyMock.expect(mock.getInitParameter("debugMode")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("originalUrlHeader")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("originalQueryStringHeader")).andReturn("");
         EasyMock.replay(mock);
 
         return mock;
@@ -43,6 +45,8 @@ public class SettingsTest extends TestCase {
         EasyMock.expect(mock.getInitParameter("testUrl")).andReturn("https://example.com");
         EasyMock.expect(mock.getInitParameter("useProxy")).andReturn("");
         EasyMock.expect(mock.getInitParameter("debugMode")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("originalUrlHeader")).andReturn("REDIRECT_URL");
+        EasyMock.expect(mock.getInitParameter("originalQueryStringHeader")).andReturn("REDIRECT_QUERY_STRING");
         EasyMock.replay(mock);
 
         return mock;
@@ -62,6 +66,8 @@ public class SettingsTest extends TestCase {
         EasyMock.expect(mock.getInitParameter("testUrl")).andReturn("");
         EasyMock.expect(mock.getInitParameter("useProxy")).andReturn("");
         EasyMock.expect(mock.getInitParameter("debugMode")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("originalUrlHeader")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("originalQueryStringHeader")).andReturn("");
         EasyMock.replay(mock);
 
         return mock;
@@ -85,6 +91,9 @@ public class SettingsTest extends TestCase {
         assertEquals(supportedLangs, s.supportedLangs);
         assertFalse(s.testMode);
         assertEquals("", s.testUrl);
+
+        assertEquals("", s.originalUrlHeader);
+        assertEquals("", s.originalQueryStringHeader);
     }
     // urlPattern is "subdomain".
     public void testSettingsWithValidConfig() {
@@ -108,6 +117,9 @@ public class SettingsTest extends TestCase {
         assertEquals(supportedLangs, s.supportedLangs);
         assertTrue(s.testMode);
         assertEquals("https://example.com", s.testUrl);
+
+        assertEquals("REDIRECT_URL", s.originalUrlHeader);
+        assertEquals("REDIRECT_QUERY_STRING", s.originalQueryStringHeader);
     }
     public void testSettingsWithQueryConfig() {
         FilterConfig mock = mockQueryConfig();
@@ -156,5 +168,18 @@ public class SettingsTest extends TestCase {
     }
     public void testGetArrayParameterWithEmptyString() {
         assertNull(Settings.getArrayParameter(""));
+    }
+
+    public void testGetIntParamterWithInvalidString() {
+        assertEquals(0, Settings.getIntParameter(null));
+        assertEquals(0, Settings.getIntParameter(""));
+        assertEquals(0, Settings.getIntParameter("a"));
+        assertEquals(0, Settings.getIntParameter("3.14"));
+    }
+    public void testGetIntParameter() {
+        assertEquals(0, Settings.getIntParameter("0"));
+        assertEquals(1, Settings.getIntParameter("1"));
+        assertEquals(2, Settings.getIntParameter("2"));
+        assertEquals(13, Settings.getIntParameter("13"));
     }
 }
