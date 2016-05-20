@@ -114,7 +114,7 @@ class Interceptor {
 
                 body = wovnResponse.toString();
 
-                if (isHtml(body)) {
+                if (!this.store.settings.strictHtmlCheck || isHtml(body)) {
 
                     if (Logger.isDebug()) {
                         if (wovnRequest.getQueryString() == null || wovnRequest.getQueryString().isEmpty()) {

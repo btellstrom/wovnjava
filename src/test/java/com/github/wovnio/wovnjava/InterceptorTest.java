@@ -24,6 +24,7 @@ public class InterceptorTest extends TestCase {
         EasyMock.expect(mock.getInitParameter("debugMode")).andReturn("");
         EasyMock.expect(mock.getInitParameter("originalUrlHeader")).andReturn("");
         EasyMock.expect(mock.getInitParameter("originalQueryStringHeader")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("strictHtmlCheck")).andReturn("");
         EasyMock.replay(mock);
         return mock;
     }
@@ -44,6 +45,7 @@ public class InterceptorTest extends TestCase {
         EasyMock.expect(mock.getInitParameter("debugMode")).andReturn("");
         EasyMock.expect(mock.getInitParameter("originalUrlHeader")).andReturn("");
         EasyMock.expect(mock.getInitParameter("originalQueryStringHeader")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("strictHtmlCheck")).andReturn("");
         EasyMock.replay(mock);
         return mock;
     }
@@ -64,6 +66,7 @@ public class InterceptorTest extends TestCase {
         EasyMock.expect(mock.getInitParameter("debugMode")).andReturn("");
         EasyMock.expect(mock.getInitParameter("originalUrlHeader")).andReturn("");
         EasyMock.expect(mock.getInitParameter("originalQueryStringHeader")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("strictHtmlCheck")).andReturn("");
         EasyMock.replay(mock);
         return mock;
     }

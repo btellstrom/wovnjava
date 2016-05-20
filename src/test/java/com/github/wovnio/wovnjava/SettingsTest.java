@@ -26,6 +26,7 @@ public class SettingsTest extends TestCase {
         EasyMock.expect(mock.getInitParameter("debugMode")).andReturn("");
         EasyMock.expect(mock.getInitParameter("originalUrlHeader")).andReturn("");
         EasyMock.expect(mock.getInitParameter("originalQueryStringHeader")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("strictHtmlCheck")).andReturn("");
         EasyMock.replay(mock);
 
         return mock;
@@ -47,6 +48,7 @@ public class SettingsTest extends TestCase {
         EasyMock.expect(mock.getInitParameter("debugMode")).andReturn("");
         EasyMock.expect(mock.getInitParameter("originalUrlHeader")).andReturn("REDIRECT_URL");
         EasyMock.expect(mock.getInitParameter("originalQueryStringHeader")).andReturn("REDIRECT_QUERY_STRING");
+        EasyMock.expect(mock.getInitParameter("strictHtmlCheck")).andReturn("");
         EasyMock.replay(mock);
 
         return mock;
@@ -68,6 +70,7 @@ public class SettingsTest extends TestCase {
         EasyMock.expect(mock.getInitParameter("debugMode")).andReturn("");
         EasyMock.expect(mock.getInitParameter("originalUrlHeader")).andReturn("");
         EasyMock.expect(mock.getInitParameter("originalQueryStringHeader")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("strictHtmlCheck")).andReturn("");
         EasyMock.replay(mock);
 
         return mock;

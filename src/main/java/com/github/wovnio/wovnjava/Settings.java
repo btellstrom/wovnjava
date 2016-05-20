@@ -26,6 +26,7 @@ class Settings {
     int debugMode = 0;
     String originalUrlHeader = "";
     String originalQueryStringHeader = "";
+    boolean strictHtmlCheck = false;
 
     Settings(FilterConfig config) {
         super();
@@ -104,6 +105,11 @@ class Settings {
         p = config.getInitParameter("originalQueryStringHeader");
         if (p != null && !p.isEmpty()) {
             this.originalQueryStringHeader = p;
+        }
+
+        p = config.getInitParameter("strictHtmlCheck");
+        if (p != null && !p.isEmpty()) {
+            this.strictHtmlCheck = getBoolParameter(p);
         }
 
         this.initialize();
