@@ -77,9 +77,24 @@ public class InterceptorTest extends TestCase {
 
     public void testIsHtml() {
         assertEquals(false, Interceptor.isHtml(""));
+        assertEquals(false, Interceptor.isHtml("xml"));
         assertEquals(false, Interceptor.isHtml("html"));
         assertEquals(false, Interceptor.isHtml("doctype"));
         assertEquals(false, Interceptor.isHtml("doctype html"));
+
+        assertEquals(true, Interceptor.isHtml("<?xml version=\"1.0\"?>"));
+        assertEquals(false, Interceptor.isHtml("<?xmlversion=\"1.0\"?>"));
+        assertEquals(true, Interceptor.isHtml("<?XML version=\"1.0\"?>"));
+        assertEquals(true, Interceptor.isHtml("   <?xml version=\"1.0\"?>"));
+        assertEquals(true, Interceptor.isHtml("\n<?xml version=\"1.0\"?>"));
+        assertEquals(true, Interceptor.isHtml("\r\n<?xml version=\"1.0\"?>"));
+        assertEquals(true, Interceptor.isHtml("\n\r<?xml version=\"1.0\"?>"));
+        assertEquals(true, Interceptor.isHtml(" \n <?xml version=\"1.0\"?>"));
+        assertEquals(true, Interceptor.isHtml(" \r\n <?xml version=\"1.0\"?>"));
+        assertEquals(true, Interceptor.isHtml(" \n\r <?xml version=\"1.0\"?>"));
+        assertEquals(false, Interceptor.isHtml("aaa\n<?xml version=\"1.0\"?>"));
+        assertEquals(false, Interceptor.isHtml("aaa\r\n<?xml version=\"1.0\"?>"));
+        assertEquals(false, Interceptor.isHtml("aaa\n\r<?xml version=\"1.0\"?>"));
 
         assertEquals(true, Interceptor.isHtml("<html></html>"));
         assertEquals(true, Interceptor.isHtml("<html ></html>"));

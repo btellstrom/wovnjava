@@ -163,7 +163,7 @@ class Interceptor {
     }
 
     static boolean isHtml(String body) {
-        return Pattern.compile("(?m)\\A\\s*(<!DOCTYPE|<html)\\b", Pattern.CASE_INSENSITIVE).matcher(body).find();
+        return Pattern.compile("(?m)\\A\\s*(<\\?xml|<!DOCTYPE|<html)\\b", Pattern.CASE_INSENSITIVE).matcher(body).find();
     }
 
     private String addLangCode(String href, String pattern, String lang, Headers headers) {
