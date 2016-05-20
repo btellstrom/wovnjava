@@ -89,6 +89,7 @@ useProxy                  |              | 'false'
 debugMode                 |              | '0'
 originalUrlHeader         |              | ''
 originalQueryStringHeader |              | ''
+strictHtmlCheck           |              | 'false'
 
 ※ 初期値が設定されている必須パラメータは、web.xml で設定しなくても大丈夫です。（userToken と secretKey だけ指定すればライブラリを動作させることができます）
 
@@ -188,3 +189,16 @@ wovnjava は下記の設定で書き換え前の URL を使って、正しい翻
 ※ 上記のリクエストヘッダ設定のサンプルは、下記ページから引用しています。
 
 https://coderwall.com/p/jhkw7w/passing-request-uri-into-request-header
+
+### 2.9. strictHtmlCheck
+
+（これは実験的な機能です。将来的に廃止される可能性があります。）
+
+wovnjava は HTML に対してのみ翻訳処理を行い、その判定は Content-Type ヘッダのチェックによって行っています。strictHtmlCheck の設定を true にすると、Content-Type ヘッダのチェックに加えて、レスポンスボディの内容も翻訳するかどうかのチェックに利用します。本機能は例えば Content-Type は text/html であるけれども、内容は HTML ではないものを翻訳処理から除外したい場合に有効です。
+
+レスポンスボディの最初のコメントタグと空白を除いて、レスポンスボディが下記いずれかで開始している場合に HTML だと判定します。大文字小文字は区別しません。
+
+* <?xml
+* <!DOCTYPE
+* <html
+
