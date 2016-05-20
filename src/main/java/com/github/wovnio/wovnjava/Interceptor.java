@@ -112,24 +112,28 @@ class Interceptor {
 
             if (!Pattern.compile("^1|302").matcher(status).find()) {
 
-                if (Logger.isDebug()) {
-                    if (wovnRequest.getQueryString() == null || wovnRequest.getQueryString().isEmpty()) {
-                        Logger.log.info("Translating HTML: " + wovnRequest.getRequestURL());
-                    } else {
-                        Logger.log.info("Translating HTML: " + wovnRequest.getRequestURL() + "?" + wovnRequest.getQueryString());
-                    }
-                }
-
-                Values values = store.getValues(h.pageUrl);
-
-                String lang = h.langCode();
-                HashMap<String,String> url = new HashMap<String,String>();
-                url.put("protocol", h.protocol);
-                url.put("host", h.host);
-                url.put("pathname", h.pathName);
-
                 body = wovnResponse.toString();
-                body = this.switchLang(body, values, url, lang, h);
+
+                if (!this.store.settings.strictHtmlCheck || isHtml(body)) {
+
+                    if (Logger.isDebug()) {
+                        if (wovnRequest.getQueryString() == null || wovnRequest.getQueryString().isEmpty()) {
+                            Logger.log.info("Translating HTML: " + wovnRequest.getRequestURL());
+                        } else {
+                            Logger.log.info("Translating HTML: " + wovnRequest.getRequestURL() + "?" + wovnRequest.getQueryString());
+                        }
+                    }
+
+                    String lang = h.langCode();
+                    HashMap<String,String> url = new HashMap<String,String>();
+                    url.put("protocol", h.protocol);
+                    url.put("host", h.host);
+                    url.put("pathname", h.pathName);
+
+                    Values values = store.getValues(h.pageUrl);
+
+                    body = this.switchLang(body, values, url, lang, h);
+                }
                 wovnResponse.setContentLength(body.getBytes().length);
             }
         }
@@ -156,6 +160,41 @@ class Interceptor {
         }
 
         h.out(request, wovnResponse);
+    }
+
+    static boolean isHtml(String body) {
+        if (Logger.isDebug()) {
+            Logger.log.info("Checking HTML strictly.");
+
+            if (Logger.debugMode > 1) {
+                Logger.log.info("original HTML:\n" + body);
+            }
+        }
+
+        // Remove comments.
+        body = Pattern.compile("(?m)\\A(\\s*<!--[\\s\\S]*?-->\\s*)+").matcher(body).replaceAll("");
+
+        // Remove spaces.
+        body = Pattern.compile("(?m)\\A\\s+").matcher(body).replaceAll("");
+
+        if (Logger.debugMode > 1) {
+            Logger.log.info("HTML after removing comment tags and spaces:\n" + body);
+        }
+
+        if (Pattern.compile("(?m)\\A<\\?xml\\b", Pattern.CASE_INSENSITIVE).matcher(body).find()             // <?xml
+                || Pattern.compile("(?m)\\A<!DOCTYPE\\b", Pattern.CASE_INSENSITIVE).matcher(body).find()    // <!DOCTYPE
+                || Pattern.compile("(?m)\\A<html\\b", Pattern.CASE_INSENSITIVE).matcher(body).find()        // <html
+                ) {
+            if (Logger.isDebug()) {
+                Logger.log.info("This data is HTML.");
+            }
+            return true;
+        } else {
+            if (Logger.isDebug()) {
+                Logger.log.info("This data is not HTML.");
+            }
+            return false;
+        }
     }
 
     private String addLangCode(String href, String pattern, String lang, Headers headers) {

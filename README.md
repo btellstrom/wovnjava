@@ -75,6 +75,7 @@ useProxy                  |          | 'false'
 debugMode                 |          | '0'
 originalUrlHeader         |          | ''
 originalQueryStringHeader |          | ''
+strictHtmlCheck           |          | 'false'
 
 ### 2.1. userToken
 
@@ -168,3 +169,15 @@ wovnjava uses URL before rewriting with following setting, and can get correct t
 ※ Above sample of request header setting is referred from following site.
 
 https://coderwall.com/p/jhkw7w/passing-request-uri-into-request-header
+
+### 2.9. strictHtmlCheck
+
+(This is an experimental setting. So it is possible to remove this setting in the future.)
+
+wovnjava with default settings translates only HTML requests and wovnjava determines data type of response body by only Content-Type. When you set true to srictHtmlCheck setting, wovnjava determines data type of response body not only by Content-Type but also by the content of response body. This setting is used when you want to eliminate HTML responses that has wrong Content-Type.
+
+wovnjava determines reponse body as HTML when the response body starts any following strings. wovnjava ignores first comment tags and blanks in response body.
+
+* <?xml
+* <!DOCTYPE
+* <html
