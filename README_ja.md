@@ -125,7 +125,7 @@ defualt_lang が 'en' で、query が '' （未設定）の場合、上記の UR
 
     https://wovn.io/contact
 
-default_lang が 'en' で、query が 'mac' の場合、上記の URL は下記のように変換されて、翻訳ページを探します。
+default_lang が 'en' で、query が 'os' の場合、上記の URL は下記のように変換されて、翻訳ページを探します。
 
     https://wovn.io/contact?os=mac
 

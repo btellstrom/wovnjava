@@ -105,11 +105,11 @@ WOVN.io ignores query parameters when searching translated page. If you want to 
 
     https://wovn.io/ja/contact?os=mac&keyboard=us
 
-If the defualt_lang is 'en', and the query is , the above URL will be modified into the following URL to search for the page's translation.
+If the defualt_lang is 'en', and the query is set to '', the above URL will be modified into the following URL to search for the page's translation.
 
     https://wovn.io/contact
 
-If the default_lang is 'en', and the query is set to 'mac', the above URL will be modified into the following URL to search for the page's translation.
+If the default_lang is 'en', and the query is set to 'os', the above URL will be modified into the following URL to search for the page's translation.
 
     https://wovn.io/contact?os=mac
 
