@@ -112,24 +112,28 @@ class Interceptor {
 
             if (!Pattern.compile("^1|302").matcher(status).find()) {
 
-                if (Logger.isDebug()) {
-                    if (wovnRequest.getQueryString() == null || wovnRequest.getQueryString().isEmpty()) {
-                        Logger.log.info("Translating HTML: " + wovnRequest.getRequestURL());
-                    } else {
-                        Logger.log.info("Translating HTML: " + wovnRequest.getRequestURL() + "?" + wovnRequest.getQueryString());
-                    }
-                }
-
-                Values values = store.getValues(h.pageUrl);
-
-                String lang = h.langCode();
-                HashMap<String,String> url = new HashMap<String,String>();
-                url.put("protocol", h.protocol);
-                url.put("host", h.host);
-                url.put("pathname", h.pathName);
-
                 body = wovnResponse.toString();
-                body = this.switchLang(body, values, url, lang, h);
+
+                if (isHtml(body)) {
+
+                    if (Logger.isDebug()) {
+                        if (wovnRequest.getQueryString() == null || wovnRequest.getQueryString().isEmpty()) {
+                            Logger.log.info("Translating HTML: " + wovnRequest.getRequestURL());
+                        } else {
+                            Logger.log.info("Translating HTML: " + wovnRequest.getRequestURL() + "?" + wovnRequest.getQueryString());
+                        }
+                    }
+
+                    String lang = h.langCode();
+                    HashMap<String,String> url = new HashMap<String,String>();
+                    url.put("protocol", h.protocol);
+                    url.put("host", h.host);
+                    url.put("pathname", h.pathName);
+
+                    Values values = store.getValues(h.pageUrl);
+
+                    body = this.switchLang(body, values, url, lang, h);
+                }
                 wovnResponse.setContentLength(body.getBytes().length);
             }
         }
@@ -156,6 +160,10 @@ class Interceptor {
         }
 
         h.out(request, wovnResponse);
+    }
+
+    static boolean isHtml(String body) {
+        return Pattern.compile("(?m)\\A\\s*(<!DOCTYPE\\s+html|<html)", Pattern.CASE_INSENSITIVE).matcher(body).find();
     }
 
     private String addLangCode(String href, String pattern, String lang, Headers headers) {

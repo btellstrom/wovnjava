@@ -75,4 +75,40 @@ public class InterceptorTest extends TestCase {
         assertNotNull(interceptor);
     }
 
+    public void testIsHtml() {
+        assertEquals(false, Interceptor.isHtml(""));
+        assertEquals(false, Interceptor.isHtml("html"));
+        assertEquals(false, Interceptor.isHtml("doctype"));
+        assertEquals(false, Interceptor.isHtml("doctype html"));
+
+        assertEquals(true, Interceptor.isHtml("<html></html>"));
+        assertEquals(false, Interceptor.isHtml("aaa<html></html>"));
+        assertEquals(true, Interceptor.isHtml("<HTML></HTML>"));
+        assertEquals(true, Interceptor.isHtml(" <html></html>"));
+        assertEquals(true, Interceptor.isHtml("\n<html></html>"));
+        assertEquals(true, Interceptor.isHtml("\r\n<html></html>"));
+        assertEquals(true, Interceptor.isHtml("\n\r<html></html>"));
+        assertEquals(true, Interceptor.isHtml("  \n  <html></html>"));
+        assertEquals(true, Interceptor.isHtml("  \r\n  <html></html>"));
+        assertEquals(true, Interceptor.isHtml("  \n\r  <html></html>"));
+        assertEquals(false, Interceptor.isHtml("aaa\n<html></html>"));
+        assertEquals(false, Interceptor.isHtml("aaa\r\n<html></html>"));
+        assertEquals(false, Interceptor.isHtml("aaa\n\r<html></html>"));
+
+        assertEquals(true, Interceptor.isHtml("<!DOCTYPE html><html></html>"));
+        assertEquals(true, Interceptor.isHtml("<!DOCTYPE   html><html></html>"));
+        assertEquals(false, Interceptor.isHtml("aaa<!DOCTYPE html><html></html>"));
+        assertEquals(true, Interceptor.isHtml("<!doctype html><html></html>"));
+        assertEquals(true, Interceptor.isHtml("  <!DOCTYPE html><html></html>"));
+        assertEquals(true, Interceptor.isHtml("\n<!DOCTYPE html><html></html>"));
+        assertEquals(true, Interceptor.isHtml("\r\n<!DOCTYPE html><html></html>"));
+        assertEquals(true, Interceptor.isHtml("\n\r<!DOCTYPE html><html></html>"));
+        assertEquals(true, Interceptor.isHtml("  \n  <!DOCTYPE html><html></html>"));
+        assertEquals(true, Interceptor.isHtml("  \r\n  <!DOCTYPE html><html></html>"));
+        assertEquals(true, Interceptor.isHtml("  \n\r  <!DOCTYPE html><html></html>"));
+        assertEquals(false, Interceptor.isHtml("aaa\n<!DOCTYPE html><html></html>"));
+        assertEquals(false, Interceptor.isHtml("aaa\r\n<!DOCTYPE html><html></html>"));
+        assertEquals(false, Interceptor.isHtml("aaa\n\r<!DOCTYPE html><html></html>"));
+    }
+
 }
