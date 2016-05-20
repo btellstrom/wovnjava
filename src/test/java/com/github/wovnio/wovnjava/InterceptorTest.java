@@ -84,6 +84,7 @@ public class InterceptorTest extends TestCase {
         assertEquals(false, Interceptor.isHtml("html"));
         assertEquals(false, Interceptor.isHtml("doctype"));
         assertEquals(false, Interceptor.isHtml("doctype html"));
+        assertEquals(false, Interceptor.isHtml("<!-- -->"));
 
         assertEquals(true, Interceptor.isHtml("<?xml version=\"1.0\"?>"));
         assertEquals(false, Interceptor.isHtml("<?xmlversion=\"1.0\"?>"));
@@ -98,6 +99,10 @@ public class InterceptorTest extends TestCase {
         assertEquals(false, Interceptor.isHtml("aaa\n<?xml version=\"1.0\"?>"));
         assertEquals(false, Interceptor.isHtml("aaa\r\n<?xml version=\"1.0\"?>"));
         assertEquals(false, Interceptor.isHtml("aaa\n\r<?xml version=\"1.0\"?>"));
+        assertEquals(true, Interceptor.isHtml("<!-- --><?xml version=\"1.0\"?>"));
+        assertEquals(true, Interceptor.isHtml("<!-- -->\n<?xml version=\"1.0\"?>"));
+        assertEquals(true, Interceptor.isHtml("<!-- -->\r\n<?xml version=\"1.0\"?>"));
+        assertEquals(true, Interceptor.isHtml("<!-- -->\n\r<?xml version=\"1.0\"?>"));
 
         assertEquals(true, Interceptor.isHtml("<html></html>"));
         assertEquals(true, Interceptor.isHtml("<html ></html>"));
@@ -114,6 +119,10 @@ public class InterceptorTest extends TestCase {
         assertEquals(false, Interceptor.isHtml("aaa\n<html></html>"));
         assertEquals(false, Interceptor.isHtml("aaa\r\n<html></html>"));
         assertEquals(false, Interceptor.isHtml("aaa\n\r<html></html>"));
+        assertEquals(true, Interceptor.isHtml("<!-- --><html></html>"));
+        assertEquals(true, Interceptor.isHtml("<!-- -->\n<html></html>"));
+        assertEquals(true, Interceptor.isHtml("<!-- -->\r\n<html></html>"));
+        assertEquals(true, Interceptor.isHtml("<!-- -->\n\r<html></html>"));
 
         assertEquals(true, Interceptor.isHtml("<!DOCTYPE html><html></html>"));
         assertEquals(false, Interceptor.isHtml("<!DOCTYPEhtml><html></html>"));
@@ -130,6 +139,10 @@ public class InterceptorTest extends TestCase {
         assertEquals(false, Interceptor.isHtml("aaa\n<!DOCTYPE html><html></html>"));
         assertEquals(false, Interceptor.isHtml("aaa\r\n<!DOCTYPE html><html></html>"));
         assertEquals(false, Interceptor.isHtml("aaa\n\r<!DOCTYPE html><html></html>"));
+        assertEquals(true, Interceptor.isHtml("<!-- --><!DOCTYPE html><html></html>"));
+        assertEquals(true, Interceptor.isHtml("<!-- -->\n<!DOCTYPE html><html></html>"));
+        assertEquals(true, Interceptor.isHtml("<!-- -->\r\n<!DOCTYPE html><html></html>"));
+        assertEquals(true, Interceptor.isHtml("<!-- -->\n\r<!DOCTYPE html><html></html>"));
     }
 
 }

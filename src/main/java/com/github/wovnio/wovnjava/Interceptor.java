@@ -163,7 +163,38 @@ class Interceptor {
     }
 
     static boolean isHtml(String body) {
-        return Pattern.compile("(?m)\\A\\s*(<\\?xml|<!DOCTYPE|<html)\\b", Pattern.CASE_INSENSITIVE).matcher(body).find();
+        if (Logger.isDebug()) {
+            Logger.log.info("Checking HTML strictly.");
+
+            if (Logger.debugMode > 1) {
+                Logger.log.info("original HTML:\n" + body);
+            }
+        }
+
+        // Remove comments.
+        body = Pattern.compile("(?m)\\A(\\s*<!--[\\s\\S]*?-->\\s*)+").matcher(body).replaceAll("");
+
+        // Remove spaces.
+        body = Pattern.compile("(?m)\\A\\s+").matcher(body).replaceAll("");
+
+        if (Logger.debugMode > 1) {
+            Logger.log.info("HTML after removing comment tags and spaces:\n" + body);
+        }
+
+        if (Pattern.compile("(?m)\\A<\\?xml\\b", Pattern.CASE_INSENSITIVE).matcher(body).find()             // <?xml
+                || Pattern.compile("(?m)\\A<!DOCTYPE\\b", Pattern.CASE_INSENSITIVE).matcher(body).find()    // <!DOCTYPE
+                || Pattern.compile("(?m)\\A<html\\b", Pattern.CASE_INSENSITIVE).matcher(body).find()        // <html
+                ) {
+            if (Logger.isDebug()) {
+                Logger.log.info("This data is HTML.");
+            }
+            return true;
+        } else {
+            if (Logger.isDebug()) {
+                Logger.log.info("This data is not HTML.");
+            }
+            return false;
+        }
     }
 
     private String addLangCode(String href, String pattern, String lang, Headers headers) {
