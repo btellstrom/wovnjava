@@ -1,19 +1,34 @@
-# wovnjava
+# WOVN.io Java Library
 
-This is WOVN backend for Java, which is implemented as a servlet filter.
+The WOVN.io Java library is a backend library that uses WOVN.io in order to provide translations. The WOVN.io Java library is packaged as a Servlet Filter.
 
-## 1. Installation
+This document explains the WOVN.io Java Library's install process and parameter settings.
 
-### 1.1. Maven
+## 1. Install Procedure
 
-#### 1.1.1. Add the JitPack repository to your project's pom.xml.
+### 1.1. Create a WOVN.io account
+
+In order to use the WOVN.io Java Library, you need a WOVN.io account.
+If you do not have a WOVN.io account, first please sign up at [WOVN.io](https://wovn.io).
+
+1.2. Adding a page to translate
+
+Sign into [WOVN.io](https://wovn.io), and add a page you would like translated.
+
+### 1.3. Java Application Settings
+
+#### 1.3.1. If you're using Maven
+
+* If you're not using Maven, please refer to https://jitpack.io/#wovnio/wovnjava.
+
+##### 1.3.1.1. To use this library within your application, you must add the JitPack repository to your application's pom.xml file.
 
 ```XML
 <repositories>
   <repository>
     <id>jitpack.io</id>
     <url>https://jitpack.io</url>
-    <!-- These lines are not needed if you do not use SNAPSHOT version. -->
+    <!-- These lines are not needed if you're using a SNAPSHOT version. -->
     <snapshots>
       <enabled>true</enabled>
       <updatePolicy>always</updatePolicy>
@@ -24,21 +39,21 @@ This is WOVN backend for Java, which is implemented as a servlet filter.
 </repositories>
 ```
 
-#### 1.1.2. Add the dependency to your project's pom.xml.
+##### 1.3.1.2. Add the WOVN.io library as a dependency to your project's pom.xml.
 
 ```XML
 <dependency>
   <groupId>com.github.wovnio</groupId>
   <artifactId>wovnjava</artifactId>
-  <!-- set the version of wovnjava you use. -->
-  <!-- if you want to use development version of wovnjava, please set "-SNAPSHOT" here. -->
+  <!-- set the wovnjava version you're using here -->
+  <!-- if you want to use a development version of wovnjava, set the version to "-SNAPSHOT" -->
   <version>0.1.0</version>
 </dependency>
 ```
 
 You can see all available versions of wovnjava [here](https://jitpack.io/#wovnio/wovnjava).
 
-#### 1.1.3. Add the settings of wovnjava to your servlet's web.xml.
+##### 1.3.1.3. Add the wovnjava library's settings to your servlet's web.xml.
 
 ```XML
 <filter>
@@ -46,23 +61,23 @@ You can see all available versions of wovnjava [here](https://jitpack.io/#wovnio
   <filter-class>com.github.wovnio.wovnjava.WovnServletFilter</filter-class>
   <init-param>
     <param-name>userToken</param-name>
-    <param-value>2Wle3</param-value><!-- set your user token. -->
+    <param-value>2Wle3</param-value><!-- set your user token -->
   </init-param>
   <init-param>
     <param-name>secretKey</param-name>
-    <param-value>secret</param-value>
+    <param-value>secret</param-value><!-- set your secret key -->
   </init-param>
 </filter>
 
 <filter-mapping>
   <filter-name>wovn</filter-name>
-  <url-pattern>/*</url-pattern><!-- set filter URL pattern you use wovnjava. -->
+  <url-pattern>/*</url-pattern><!-- set the URL pattern the wovnjava library (Servlet Filter) will be applicable to -->
 </filter-mapping>
 ```
 
-## 2. Parameter setting
+## 2. Parameter Settings
 
-wovnjava's valid parameters are as follows.
+The following parameters can be set within the WOVN.io Java Library.
 
 Parameter Name            | Required | Default Setting
 ------------------------- | -------- | ------------
@@ -77,47 +92,51 @@ originalUrlHeader         |          | ''
 originalQueryStringHeader |          | ''
 strictHtmlCheck           |          | 'false'
 
+* A required parameter with a default setting does not need to be set within the web.xml. (Only the userToken and secretKey parameters must be set in order for the library to work)
+
 ### 2.1. userToken
 
 Set your WOVN.io Account's user token. This parameter is required.
 
 ### 2.2. secretKey
 
-This parameter is in development; it is not currently used. However, it is a required parameter, so ensure to set a value for it.
+This parameter is currently in development and is not being used. However, it is a required parameter, so make to sure to include a value in it (e.g. "secret").
 
 ### 2.3. urlPattern
 
-The Library works in the Java Application by adding new URL's to be translated. You can set the type of url with the url_pattern parameter. There are 3 types that can be set.
+Within the Java Application, the library works by adding new URL's for translation. You can set the URL type by using the Url Pattern Parameter. There are 3 URL types that can be set.
 
 parameters  | Translated page's URL           | Notes
 ----------- | ------------------------------- | ------
 'path'      | https://wovn.io/ja/contact      | Default Value. If no settings have been set, url_pattern defaults to this value.
-'subdomain' | https://ja.wovn.io/contact      | DNS settings must be set.
+'subdomain' | https://ja.wovn.io/contact      | The server's DNS settings must be configured.
 'query'     | https://wovn.io/contact?wovn=ja | The least amount of changes to the application required to complete setup.
 
-※ The following is an example of a URL that has been translated by the library using the above URL's.
+※ The previously mentioned URL's are examples of the following URL translated via the WOVN.io library. As can be seen, depending on the URL Parameter the url will change.
 
     https://wovn.io/contact
 
 ### 2.4. query
 
-WOVN.io ignores query parameters when searching translated page. If you want to add query parameter to translated page's URL, you should configure "query" parameter. (You need to configure WOVN.io too)
+When WOVN.io identifies a page for translation, it ignores the query parameter. If you want to include a query parameter within the URL, you must set it using the "query" parameter. (You must set this on WOVN.io's side)
 
     https://wovn.io/ja/contact?os=mac&keyboard=us
 
-If the defualt_lang is 'en', and the query is set to '', the above URL will be modified into the following URL to search for the page's translation.
+If the defualt_lang is 'en', and the query is \[\] (unset), the above URL will be modified into the following URL to search for the page's translation.
 
     https://wovn.io/contact
 
-If the default_lang is 'en', and the query is set to 'os', the above URL will be modified into the following URL to search for the page's translation.
+If the default_lang is 'en', and the query is set to ['os'], the above URL will be modified into the following URL to search for the page's translation.
 
     https://wovn.io/contact?os=mac
+
+If you want to set multiple queries, you can separate them via a comma.
 
 ### 2.5. defaultLang
 
 This sets the Java application's default language. The default value is english ('en').
 
-If a requested page, where the default language's parameter is included in the URL, the request is redirected before translating. The default_lang parameter is used for this purpose.
+If a request is made with the default language inserted as a parameter in the URL, before the library begins translating the URL is redirected. The Default Lang parameter is used for this purpose.
 
 If the default_lang is set to 'en', when receiving a request for the following URL,
 
@@ -125,23 +144,23 @@ If the default_lang is set to 'en', when receiving a request for the following U
 
 The library will redirect to the following URL.
 
-    https://wovn.io/contact"
+    https://wovn.io/contact
 
 ### 2.6. useProxy
 
-There is some case that wovnjava with reverse proxy cannot get translated data. When useProxy setting is true, wovnjava uses X-Forwarded-Host header for getting translated data.
+When using a reverse proxy, if the WOVN.io Java Library is not given an appropriate host name, the page's translation data may not be accessible. If you set useProxy to true, during the WOVN.io Java Library's processing, it will use the HTTP Request Header's X-Forwarded-Host in order to receive the translation data.
 
 ### 2.7. debugMode
 
-When debugMode is 1, wovnjava outputs debug logs. This setting is for development.
+As a development feature, if debugMode is set to 1, wovnjava will output debug logs.
 
 ### 2.8. originalUrlHeader, originalQueryStringHeader
 
-When you are using mod_rewrite module of Apache HTTP server and it is rewriting Request URL, wovnjava receives URL after rewriting and it sometimes cannot get correct translation data from API server.
+When you're using the Apache HTTP Server's mod_rewrite module, wovnjava is given the URL after rewriting. In this case, wovnjava is sometimes unable to retreive the correct translation data from the API server.
 
-If you configure originalUrlHeader and originalQueryStringHeader in your Application setting file, wovnjava uses request header values set in originalUrlHeader and originalQueryStringHeader.
+If you've configured originalUrlHeader and originalQueryStringHeader in your Application's settings file, wovnjava will use these request headers's values to retreive translation data.
 
-In following setting of Apache HTTP server, if you configure URL before rewriting in request headers,
+Using the following Apache HTTP Server settings, if the URL (prior to rewriting) is set within the request headers,
 
 ```
 SetEnvIf Request_URI "^(.*)$" REQUEST_URI=$1
@@ -150,7 +169,7 @@ RewriteRule .* - [E=REQUEST_QUERY_STRING:%{QUERY_STRING}]
 RequestHeader set X-Query-String "%{REQUEST_QUERY_STRING}e"
 ```
 
-wovnjava uses URL before rewriting with following setting, and can get correct translation data from API server.
+wovnjava will use the following settings along with the correct URL (prior to rewriting) to retreive the correct translation data from the APi server.
 
 ```XML
 <filter>
@@ -166,17 +185,22 @@ wovnjava uses URL before rewriting with following setting, and can get correct t
   ...
 </filter>
 ```
-※ Above sample of request header setting is referred from following site.
+* The sample request header shown above was referenced from the following site.
 
 https://coderwall.com/p/jhkw7w/passing-request-uri-into-request-header
 
 ### 2.9. strictHtmlCheck
 
-(This is an experimental setting. So it is possible to remove this setting in the future.)
+(This is an experimental setting. As such, there is a possibility it will be removed in the future.)
+
+
+By default, wovnjava uses the Content-Type header to determine the data type of the response body; by default, it translates only HTMl. If you set strictHtmlCheck to true, along with checking the Content-Type, it does a check on whether it should translate the response body's contents as well. This feature is used for example when the Content-type is text/html, however you wish to exclude non-HTML content from being translated as well.
 
 wovnjava with default settings translates only HTML requests and wovnjava determines data type of response body by only Content-Type. When you set true to srictHtmlCheck setting, wovnjava determines data type of response body not only by Content-Type but also by the content of response body. This setting is used when you want to eliminate HTML responses that has wrong Content-Type.
 
-wovnjava determines reponse body as HTML when the response body starts any following strings. wovnjava ignores first comment tags and blanks in response body.
+wovnjava は HTML に対してのみ翻訳処理を行い、その判定は Content-Type ヘッダのチェックによって行っています。strictHtmlCheck の設定を true にすると、Content-Type ヘッダのチェックに加えて、レスポンスボディの内容も翻訳するかどうかのチェックに利用します。本機能は例えば Content-Type は text/html であるけれども、内容は HTML ではないものを翻訳処理から除外したい場合に有効です。
+
+wovnjava determines the response body as HTML if it starts with any of the following strings. wovnjava ignores comment tags and blanks during this process and is not case sensitive.
 
 * <?xml
 * <!DOCTYPE
