@@ -169,7 +169,7 @@ RewriteRule .* - [E=REQUEST_QUERY_STRING:%{QUERY_STRING}]
 RequestHeader set X-Query-String "%{REQUEST_QUERY_STRING}e"
 ```
 
-wovnjava will use the following settings along with the correct URL (prior to rewriting) to retreive the correct translation data from the APi server.
+wovnjava will use the following settings along with the correct URL (prior to rewriting) to retreive the correct translation data from the API server.
 
 ```XML
 <filter>
