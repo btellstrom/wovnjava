@@ -193,12 +193,7 @@ https://coderwall.com/p/jhkw7w/passing-request-uri-into-request-header
 
 (This is an experimental setting. As such, there is a possibility it will be removed in the future.)
 
-
-By default, wovnjava uses the Content-Type header to determine the data type of the response body; by default, it translates only HTMl. If you set strictHtmlCheck to true, along with checking the Content-Type, it does a check on whether it should translate the response body's contents as well. This feature is used for example when the Content-type is text/html, however you wish to exclude non-HTML content from being translated as well.
-
-wovnjava with default settings translates only HTML requests and wovnjava determines data type of response body by only Content-Type. When you set true to srictHtmlCheck setting, wovnjava determines data type of response body not only by Content-Type but also by the content of response body. This setting is used when you want to eliminate HTML responses that has wrong Content-Type.
-
-wovnjava は HTML に対してのみ翻訳処理を行い、その判定は Content-Type ヘッダのチェックによって行っています。strictHtmlCheck の設定を true にすると、Content-Type ヘッダのチェックに加えて、レスポンスボディの内容も翻訳するかどうかのチェックに利用します。本機能は例えば Content-Type は text/html であるけれども、内容は HTML ではないものを翻訳処理から除外したい場合に有効です。
+wovnjava uses the Content-Type header to determine the data type of the response body; by default, it translates only HTML requests. If you set strictHtmlCheck to true, wovnJava determines the data type of the response body, not only by the Content-Type, but also by checking the contents of the response body. This feature is used for example when the Content-type is text/html, however the actual content is not HTML. We can then prevent unnecessary translation of the page.
 
 wovnjava determines the response body as HTML if it starts with any of the following strings. wovnjava ignores comment tags and blanks during this process and is not case sensitive.
 
