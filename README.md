@@ -136,7 +136,7 @@ If you want to set multiple queries, you can separate them via a comma.
 
 This sets the Java application's default language. The default value is english ('en').
 
-If a request is made with the default language inserted as a parameter in the URL, before the library begins translating the URL is redirected. The Default Lang parameter is used for this purpose.
+If a request is made with the default language inserted as a parameter in the URL, before the library begins translating the URL is redirected. The defaultLang parameter is used for this purpose.
 
 If the default_lang is set to 'en', when receiving a request for the following URL,
 
