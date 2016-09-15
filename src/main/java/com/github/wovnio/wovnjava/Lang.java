@@ -77,4 +77,15 @@ class Lang {
         String langCode = getCode(langName);
         return LANG.get(langCode);
     }
+
+    static String normalizeIso639_1(String langCode) {
+        String langCodeLC = langCode.toLowerCase();
+        if (langCodeLC.equals("zh-cht")) {
+            return "zh-Hant";
+        } else if (langCodeLC.equals("zh-chs")) {
+            return "zh-Hans";
+        } else {
+            return langCode;
+        }
+    }
 }
