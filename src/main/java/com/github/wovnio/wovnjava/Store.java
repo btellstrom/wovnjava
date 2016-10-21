@@ -51,6 +51,7 @@ class Store {
             try {
                 connection = (HttpURLConnection) uri.openConnection();
                 connection.setRequestMethod("GET");
+                connection.setRequestProperty("User-Agent", "WOVNjava " + WovnServletFilter.VERSION);
 
                 if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
                     InputStreamReader isr = new InputStreamReader(connection.getInputStream(), Charset.forName("UTF-8"));
