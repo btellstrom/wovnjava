@@ -3,4 +3,5 @@
 /.idea/workspace.xml
 /META-INF/
 /.vagrant/
-
+/.idea/
+*.swp
