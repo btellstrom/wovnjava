@@ -27,6 +27,8 @@ class Lang {
         map.put("ja", new Lang("日本語", "ja", "Japanese"));
         map.put("ko", new Lang("한국어", "ko", "Korean"));
         map.put("ms", new Lang("Bahasa Melayu", "ms", "Malay"));
+        map.put("my", new Lang("ဗမာစာ", "my", "Burmese"));
+        map.put("ne", new Lang("नेपाली भाषा", "ne", "Nepali"));
         map.put("no", new Lang("Norsk", "no", "Norwegian"));
         map.put("pl", new Lang("Polski", "pl", "Polish"));
         map.put("pt", new Lang("Português", "pt", "Portuguese"));

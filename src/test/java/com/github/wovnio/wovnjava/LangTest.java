@@ -11,7 +11,7 @@ public class LangTest extends TestCase {
     }
 
     public void testLangsSize() {
-        assertEquals(28, Lang.LANG.size());
+        assertEquals(30, Lang.LANG.size());
     }
 
     public void testKeyExist() {
@@ -112,6 +112,8 @@ public class LangTest extends TestCase {
         assertEquals("ja",       Lang.normalizeIso639_1("ja"));
         assertEquals("ko",       Lang.normalizeIso639_1("ko"));
         assertEquals("ms",       Lang.normalizeIso639_1("ms"));
+        assertEquals("my",       Lang.normalizeIso639_1("my"));
+        assertEquals("ne",       Lang.normalizeIso639_1("ne"));
         assertEquals("no",       Lang.normalizeIso639_1("no"));
         assertEquals("pl",       Lang.normalizeIso639_1("pl"));
         assertEquals("pt",       Lang.normalizeIso639_1("pt"));
