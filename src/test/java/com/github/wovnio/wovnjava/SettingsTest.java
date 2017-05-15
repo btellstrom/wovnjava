@@ -12,7 +12,7 @@ public class SettingsTest extends TestCase {
 
     private static FilterConfig mockEmptyConfig() {
         FilterConfig mock = EasyMock.createMock(FilterConfig.class);
-        EasyMock.expect(mock.getInitParameter("userToken")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("projectToken")).andReturn("");
         EasyMock.expect(mock.getInitParameter("secretKey")).andReturn("");
         EasyMock.expect(mock.getInitParameter("urlPattern")).andReturn("");
         EasyMock.expect(mock.getInitParameter("urlPatternReg")).andReturn("");
@@ -34,7 +34,7 @@ public class SettingsTest extends TestCase {
 
     private static FilterConfig mockValidConfig() {
         FilterConfig mock = EasyMock.createMock(FilterConfig.class);
-        EasyMock.expect(mock.getInitParameter("userToken")).andReturn("2Wle3");
+        EasyMock.expect(mock.getInitParameter("projectToken")).andReturn("2Wle3");
         EasyMock.expect(mock.getInitParameter("secretKey")).andReturn("secret");
         EasyMock.expect(mock.getInitParameter("urlPattern")).andReturn("query");
         EasyMock.expect(mock.getInitParameter("urlPatternReg")).andReturn("aaa");
@@ -56,7 +56,7 @@ public class SettingsTest extends TestCase {
 
     private static FilterConfig mockQueryConfig() {
         FilterConfig mock = EasyMock.createMock(FilterConfig.class);
-        EasyMock.expect(mock.getInitParameter("userToken")).andReturn("2Wle3");
+        EasyMock.expect(mock.getInitParameter("projectToken")).andReturn("2Wle3");
         EasyMock.expect(mock.getInitParameter("secretKey")).andReturn("secret");
         EasyMock.expect(mock.getInitParameter("urlPattern")).andReturn("query");
         EasyMock.expect(mock.getInitParameter("urlPatternReg")).andReturn("");
@@ -82,7 +82,7 @@ public class SettingsTest extends TestCase {
         Settings s = new Settings(mock);
 
         assertNotNull(s);
-        assertEquals("", s.userToken);
+        assertEquals("", s.projectToken);
         assertEquals("", s.secretKey);
         assertEquals("path", s.urlPattern);
         assertEquals(Settings.UrlPatternRegPath, s.urlPatternReg);
@@ -104,7 +104,7 @@ public class SettingsTest extends TestCase {
         Settings s = new Settings(mock);
 
         assertNotNull(s);
-        assertEquals("2Wle3", s.userToken);
+        assertEquals("2Wle3", s.projectToken);
         assertEquals("secret", s.secretKey);
         assertEquals("query", s.urlPattern);
         assertEquals(Settings.UrlPatternRegQuery, s.urlPatternReg);

@@ -487,7 +487,7 @@ class Interceptor {
         String version = WovnServletFilter.VERSION;
         insertNode.setAttribute(
                 "data-wovnio",
-                "key=" + this.store.settings.userToken + "&backend=true&currentLang=" + lang
+                "key=" + this.store.settings.projectToken + "&backend=true&currentLang=" + lang
                         + "&defaultLang=" + this.store.settings.defaultLang
                         + "&urlPattern=" + this.store.settings.urlPattern + "&version=" + version
         );

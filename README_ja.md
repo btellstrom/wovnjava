@@ -59,7 +59,7 @@ WOVN.io Java ライブラリを使用するためには、WOVN.io のアカウ�
   <filter-name>wovn</filter-name>
   <filter-class>com.github.wovnio.wovnjava.WovnServletFilter</filter-class>
   <init-param>
-    <param-name>userToken</param-name>
+    <param-name>projectToken</param-name>
     <param-value>2Wle3</param-value><!-- ユーザートークンを設定してください。 -->
   </init-param>
   <init-param>
@@ -80,7 +80,7 @@ WOVN.io Java ライブラリに設定可能なパラメータは以下の通り�
 
 パラメータ名              | 必須かどうか | 初期値
 ------------------------- | ------------ | ------------
-userToken                 | yes          | ''
+projectToken                 | yes          | ''
 secretKey                 | yes          | ''
 urlPattern                | yes          | 'path'
 query                     |              | ''
@@ -91,9 +91,9 @@ originalUrlHeader         |              | ''
 originalQueryStringHeader |              | ''
 strictHtmlCheck           |              | 'false'
 
-※ 初期値が設定されている必須パラメータは、web.xml で設定しなくても大丈夫です。（userToken と secretKey だけ指定すればライブラリを動作させることができます）
+※ 初期値が設定されている必須パラメータは、web.xml で設定しなくても大丈夫です。（projectToken と secretKey だけ指定すればライブラリを動作させることができます）
 
-### 2.1. userToken
+### 2.1. projectToken
 
 あなたの WOVN.io アカウントのユーザートークンを設定してください。このパラメータは必須です。
 

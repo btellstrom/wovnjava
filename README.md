@@ -60,8 +60,8 @@ You can see all available versions of wovnjava [here](https://jitpack.io/#wovnio
   <filter-name>wovn</filter-name>
   <filter-class>com.github.wovnio.wovnjava.WovnServletFilter</filter-class>
   <init-param>
-    <param-name>userToken</param-name>
-    <param-value>2Wle3</param-value><!-- set your user token -->
+    <param-name>projectToken</param-name>
+    <param-value>2Wle3</param-value><!-- set your project token -->
   </init-param>
   <init-param>
     <param-name>secretKey</param-name>
@@ -81,7 +81,7 @@ The following parameters can be set within the WOVN.io Java Library.
 
 Parameter Name            | Required | Default Setting
 ------------------------- | -------- | ------------
-userToken                 | yes      | ''
+projectToken                 | yes      | ''
 secretKey                 | yes      | ''
 urlPattern                | yes      | 'path'
 query                     |          | ''
@@ -92,11 +92,11 @@ originalUrlHeader         |          | ''
 originalQueryStringHeader |          | ''
 strictHtmlCheck           |          | 'false'
 
-* A required parameter with a default setting does not need to be set within the web.xml. (Only the userToken and secretKey parameters must be set in order for the library to work)
+* A required parameter with a default setting does not need to be set within the web.xml. (Only the projectToken and secretKey parameters must be set in order for the library to work)
 
-### 2.1. userToken
+### 2.1. projectToken
 
-Set your WOVN.io Account's user token. This parameter is required.
+Set your WOVN.io Account's project token. This parameter is required.
 
 ### 2.2. secretKey
 

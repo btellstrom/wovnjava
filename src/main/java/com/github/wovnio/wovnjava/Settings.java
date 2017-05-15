@@ -12,7 +12,7 @@ class Settings {
     static final String UrlPatternRegQuery = "(?:(?:\\?.*&)|\\?)wovn=([^&]+)(?:&|$)";
     static final String UrlPatternRegSubdomain = "^([^.]+)\\.";
 
-    String userToken = "";
+    String projectToken = "";
     String secretKey = "";
     String urlPattern = "path";
     String urlPatternReg = UrlPatternRegPath;
@@ -37,9 +37,9 @@ class Settings {
 
         String p;
 
-        p = config.getInitParameter("userToken");
+        p = config.getInitParameter("projectToken");
         if (p != null && p.length() > 0) {
-            this.userToken = p;
+            this.projectToken = p;
         }
 
         p = config.getInitParameter("secretKey");
@@ -171,9 +171,9 @@ class Settings {
         boolean valid = true;
         ArrayList<String> errors = new ArrayList<String>();
 
-        if (userToken == null || userToken.length() < 5 || userToken.length() > 6) {
+        if (projectToken == null || projectToken.length() < 5 || projectToken.length() > 6) {
             valid = false;
-            errors.add("User token is not valid: " + userToken);
+            errors.add("Project token is not valid: " + projectToken);
         }
         if (secretKey == null || secretKey.length() == 0) {
             valid = false;
