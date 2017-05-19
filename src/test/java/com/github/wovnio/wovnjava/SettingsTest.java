@@ -12,6 +12,7 @@ public class SettingsTest extends TestCase {
 
     private static FilterConfig mockEmptyConfig() {
         FilterConfig mock = EasyMock.createMock(FilterConfig.class);
+        EasyMock.expect(mock.getInitParameter("userToken")).andReturn("");
         EasyMock.expect(mock.getInitParameter("projectToken")).andReturn("");
         EasyMock.expect(mock.getInitParameter("secretKey")).andReturn("");
         EasyMock.expect(mock.getInitParameter("urlPattern")).andReturn("");
@@ -34,6 +35,7 @@ public class SettingsTest extends TestCase {
 
     private static FilterConfig mockValidConfig() {
         FilterConfig mock = EasyMock.createMock(FilterConfig.class);
+        EasyMock.expect(mock.getInitParameter("userToken")).andReturn("2Wle3");
         EasyMock.expect(mock.getInitParameter("projectToken")).andReturn("2Wle3");
         EasyMock.expect(mock.getInitParameter("secretKey")).andReturn("secret");
         EasyMock.expect(mock.getInitParameter("urlPattern")).andReturn("query");
@@ -56,6 +58,7 @@ public class SettingsTest extends TestCase {
 
     private static FilterConfig mockQueryConfig() {
         FilterConfig mock = EasyMock.createMock(FilterConfig.class);
+        EasyMock.expect(mock.getInitParameter("userToken")).andReturn("2Wle3");
         EasyMock.expect(mock.getInitParameter("projectToken")).andReturn("2Wle3");
         EasyMock.expect(mock.getInitParameter("secretKey")).andReturn("secret");
         EasyMock.expect(mock.getInitParameter("urlPattern")).andReturn("query");

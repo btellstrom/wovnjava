@@ -10,6 +10,7 @@ public class InterceptorTest extends TestCase {
 
     private static FilterConfig mockConfigPath() {
         FilterConfig mock = EasyMock.createMock(FilterConfig.class);
+        EasyMock.expect(mock.getInitParameter("userToken")).andReturn("2Wle3");
         EasyMock.expect(mock.getInitParameter("projectToken")).andReturn("2Wle3");
         EasyMock.expect(mock.getInitParameter("secretKey")).andReturn("secret");
         EasyMock.expect(mock.getInitParameter("urlPattern")).andReturn("");
@@ -31,6 +32,7 @@ public class InterceptorTest extends TestCase {
 
     private static FilterConfig mockConfigSubDomain() {
         FilterConfig mock = EasyMock.createMock(FilterConfig.class);
+        EasyMock.expect(mock.getInitParameter("userToken")).andReturn("2Wle3");
         EasyMock.expect(mock.getInitParameter("projectToken")).andReturn("2Wle3");
         EasyMock.expect(mock.getInitParameter("secretKey")).andReturn("secret");
         EasyMock.expect(mock.getInitParameter("urlPattern")).andReturn("subdomain");
@@ -52,6 +54,7 @@ public class InterceptorTest extends TestCase {
 
     private static FilterConfig mockConfigQuery() {
         FilterConfig mock = EasyMock.createMock(FilterConfig.class);
+        EasyMock.expect(mock.getInitParameter("userToken")).andReturn("2Wle3");
         EasyMock.expect(mock.getInitParameter("projectToken")).andReturn("2Wle3");
         EasyMock.expect(mock.getInitParameter("secretKey")).andReturn("secret");
         EasyMock.expect(mock.getInitParameter("urlPattern")).andReturn("query");
