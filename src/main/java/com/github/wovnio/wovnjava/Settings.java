@@ -37,6 +37,11 @@ class Settings {
 
         String p;
 
+        p = config.getInitParameter("userToken");
+        if (p != null && p.length() > 0) {
+            this.projectToken = p;
+        }
+
         p = config.getInitParameter("projectToken");
         if (p != null && p.length() > 0) {
             this.projectToken = p;
