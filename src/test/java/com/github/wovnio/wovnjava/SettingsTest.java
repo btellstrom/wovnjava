@@ -13,6 +13,7 @@ public class SettingsTest extends TestCase {
     private static FilterConfig mockEmptyConfig() {
         FilterConfig mock = EasyMock.createMock(FilterConfig.class);
         EasyMock.expect(mock.getInitParameter("userToken")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("projectToken")).andReturn("");
         EasyMock.expect(mock.getInitParameter("secretKey")).andReturn("");
         EasyMock.expect(mock.getInitParameter("urlPattern")).andReturn("");
         EasyMock.expect(mock.getInitParameter("urlPatternReg")).andReturn("");
@@ -35,6 +36,30 @@ public class SettingsTest extends TestCase {
     private static FilterConfig mockValidConfig() {
         FilterConfig mock = EasyMock.createMock(FilterConfig.class);
         EasyMock.expect(mock.getInitParameter("userToken")).andReturn("2Wle3");
+        EasyMock.expect(mock.getInitParameter("projectToken")).andReturn("2Wle3");
+        EasyMock.expect(mock.getInitParameter("secretKey")).andReturn("secret");
+        EasyMock.expect(mock.getInitParameter("urlPattern")).andReturn("query");
+        EasyMock.expect(mock.getInitParameter("urlPatternReg")).andReturn("aaa");
+        EasyMock.expect(mock.getInitParameter("query")).andReturn("foo,bar");
+        EasyMock.expect(mock.getInitParameter("apiUrl")).andReturn("https://example.com/v0/values");
+        EasyMock.expect(mock.getInitParameter("defaultLang")).andReturn("ja");
+        EasyMock.expect(mock.getInitParameter("supportedLangs")).andReturn("en,ja");
+        EasyMock.expect(mock.getInitParameter("testMode")).andReturn("true");
+        EasyMock.expect(mock.getInitParameter("testUrl")).andReturn("https://example.com");
+        EasyMock.expect(mock.getInitParameter("useProxy")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("debugMode")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("originalUrlHeader")).andReturn("REDIRECT_URL");
+        EasyMock.expect(mock.getInitParameter("originalQueryStringHeader")).andReturn("REDIRECT_QUERY_STRING");
+        EasyMock.expect(mock.getInitParameter("strictHtmlCheck")).andReturn("");
+        EasyMock.replay(mock);
+
+        return mock;
+    }
+
+    private static FilterConfig mockValidConfigMultipleToken() {
+        FilterConfig mock = EasyMock.createMock(FilterConfig.class);
+        EasyMock.expect(mock.getInitParameter("userToken")).andReturn("2Wle3");
+        EasyMock.expect(mock.getInitParameter("projectToken")).andReturn("3elW2");
         EasyMock.expect(mock.getInitParameter("secretKey")).andReturn("secret");
         EasyMock.expect(mock.getInitParameter("urlPattern")).andReturn("query");
         EasyMock.expect(mock.getInitParameter("urlPatternReg")).andReturn("aaa");
@@ -57,6 +82,7 @@ public class SettingsTest extends TestCase {
     private static FilterConfig mockQueryConfig() {
         FilterConfig mock = EasyMock.createMock(FilterConfig.class);
         EasyMock.expect(mock.getInitParameter("userToken")).andReturn("2Wle3");
+        EasyMock.expect(mock.getInitParameter("projectToken")).andReturn("2Wle3");
         EasyMock.expect(mock.getInitParameter("secretKey")).andReturn("secret");
         EasyMock.expect(mock.getInitParameter("urlPattern")).andReturn("query");
         EasyMock.expect(mock.getInitParameter("urlPatternReg")).andReturn("");
@@ -82,7 +108,7 @@ public class SettingsTest extends TestCase {
         Settings s = new Settings(mock);
 
         assertNotNull(s);
-        assertEquals("", s.userToken);
+        assertEquals("", s.projectToken);
         assertEquals("", s.secretKey);
         assertEquals("path", s.urlPattern);
         assertEquals(Settings.UrlPatternRegPath, s.urlPatternReg);
@@ -104,7 +130,7 @@ public class SettingsTest extends TestCase {
         Settings s = new Settings(mock);
 
         assertNotNull(s);
-        assertEquals("2Wle3", s.userToken);
+        assertEquals("2Wle3", s.projectToken);
         assertEquals("secret", s.secretKey);
         assertEquals("query", s.urlPattern);
         assertEquals(Settings.UrlPatternRegQuery, s.urlPatternReg);
@@ -184,5 +210,31 @@ public class SettingsTest extends TestCase {
         assertEquals(1, Settings.getIntParameter("1"));
         assertEquals(2, Settings.getIntParameter("2"));
         assertEquals(13, Settings.getIntParameter("13"));
+    }
+
+    public void testSettingsWithValidConfigMultipleToken() {
+        FilterConfig mock = mockValidConfigMultipleToken();
+        Settings s = new Settings(mock);
+
+        assertNotNull(s);
+        assertEquals("3elW2", s.projectToken);
+        assertEquals("secret", s.secretKey);
+        assertEquals("query", s.urlPattern);
+        assertEquals(Settings.UrlPatternRegQuery, s.urlPatternReg);
+        ArrayList<String> query = new ArrayList<String>();
+        query.add("foo");
+        query.add("bar");
+        assertEquals(query, s.query);
+        assertEquals("https://example.com/v0/values", s.apiUrl);
+        assertEquals("ja", s.defaultLang);
+        ArrayList<String> supportedLangs = new ArrayList<String>();
+        supportedLangs.add("en");
+        supportedLangs.add("ja");
+        assertEquals(supportedLangs, s.supportedLangs);
+        assertTrue(s.testMode);
+        assertEquals("https://example.com", s.testUrl);
+
+        assertEquals("REDIRECT_URL", s.originalUrlHeader);
+        assertEquals("REDIRECT_QUERY_STRING", s.originalQueryStringHeader);
     }
 }

@@ -54,6 +54,7 @@ public class WovnHttpServletRequestTest extends TestCase {
     private static FilterConfig mockConfigPath() {
         FilterConfig mock = EasyMock.createMock(FilterConfig.class);
         EasyMock.expect(mock.getInitParameter("userToken")).andReturn("2Wle3");
+        EasyMock.expect(mock.getInitParameter("projectToken")).andReturn("2Wle3");
         EasyMock.expect(mock.getInitParameter("secretKey")).andReturn("secret");
         EasyMock.expect(mock.getInitParameter("urlPattern")).andReturn("");
         EasyMock.expect(mock.getInitParameter("urlPatternReg")).andReturn("");
@@ -75,6 +76,7 @@ public class WovnHttpServletRequestTest extends TestCase {
     private static FilterConfig mockConfigSubDomain() {
         FilterConfig mock = EasyMock.createMock(FilterConfig.class);
         EasyMock.expect(mock.getInitParameter("userToken")).andReturn("2Wle3");
+        EasyMock.expect(mock.getInitParameter("projectToken")).andReturn("2Wle3");
         EasyMock.expect(mock.getInitParameter("secretKey")).andReturn("secret");
         EasyMock.expect(mock.getInitParameter("urlPattern")).andReturn("subdomain");
         EasyMock.expect(mock.getInitParameter("urlPatternReg")).andReturn("");
@@ -96,6 +98,7 @@ public class WovnHttpServletRequestTest extends TestCase {
     private static FilterConfig mockConfigQuery() {
         FilterConfig mock = EasyMock.createMock(FilterConfig.class);
         EasyMock.expect(mock.getInitParameter("userToken")).andReturn("2Wle3");
+        EasyMock.expect(mock.getInitParameter("projectToken")).andReturn("2Wle3");
         EasyMock.expect(mock.getInitParameter("secretKey")).andReturn("secret");
         EasyMock.expect(mock.getInitParameter("urlPattern")).andReturn("query");
         EasyMock.expect(mock.getInitParameter("urlPatternReg")).andReturn("");

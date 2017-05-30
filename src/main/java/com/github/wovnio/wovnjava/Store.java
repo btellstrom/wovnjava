@@ -27,10 +27,10 @@ class Store {
 
         String encodedToken, encodedUrl;
         try {
-            encodedToken = URLEncoder.encode(settings.userToken, "UTF-8");
+            encodedToken = URLEncoder.encode(settings.projectToken, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             Logger.log.error("UnsupportedEncodingException while encoding token", e);
-            encodedToken = settings.userToken;
+            encodedToken = settings.projectToken;
         }
         try {
             encodedUrl = URLEncoder.encode(url, "UTF-8");
