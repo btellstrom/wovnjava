@@ -282,7 +282,7 @@ class Interceptor {
         return this.checkWovnIgnore(node.getParentNode());
     }
 
-    private static String getStringFromDocument(Document doc)
+    private static String getStringFromDocument(String body, Document doc)
     {
         try
         {
@@ -293,7 +293,8 @@ class Interceptor {
             Transformer transformer = tf.newTransformer();
             transformer.setOutputProperty(OutputKeys.METHOD, "html");
             transformer.transform(domSource, result);
-            return writer.toString();
+            String html = writer.toString();
+            return DoctypeDetectation.addDoctypeIfNotExists(body, html);
         }
         catch(TransformerException ex)
         {
@@ -301,6 +302,7 @@ class Interceptor {
             return null;
         }
     }
+
     private String switchLang(String body, Values values, HashMap<String, String> url, String lang, Headers headers) {
 
         lang = Lang.getCode(lang);
@@ -321,9 +323,8 @@ class Interceptor {
 
         XPathFactory factory = XPathFactory.newInstance();
         XPath xpath = factory.newXPath();
-
         if (doc.getDocumentElement().hasAttribute("wovn-ignore")) {
-            return getStringFromDocument(doc);
+            return getStringFromDocument(body, doc);
         }
 
         if (!lang.equals(this.store.settings.defaultLang)) {
@@ -504,6 +505,6 @@ class Interceptor {
 
         doc.getDocumentElement().setAttribute("lang", lang);
 
-        return getStringFromDocument(doc);
+        return getStringFromDocument(body, doc);
     }
 }
