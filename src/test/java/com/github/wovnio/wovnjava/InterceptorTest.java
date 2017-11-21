@@ -168,12 +168,16 @@ public class InterceptorTest extends TestCase {
     }
 
     private void assertDocType(String doctype, String input, String expect) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        assertDocTypeWithCase(doctype, input, expect);
+        assertDocTypeWithCase(doctype.replace(" ", "\n"), input, expect);
+        assertDocTypeWithCase(doctype.replace(" ", "  "), input, expect);
+        assertDocTypeWithCase(doctype.replace(" ", "\n  "), input, expect);
+    }
+
+    private void assertDocTypeWithCase(String doctype, String input, String expect) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         assertEquals(doctype + expect, switchLang(doctype + input));
-        assertEquals(doctype + expect, switchLang(doctype.toUpperCase() + input));
-        assertEquals(doctype + expect, switchLang(doctype.toLowerCase() + input));
-        assertEquals(doctype + expect, switchLang(doctype.replace(" ", "\n") + input));
-        assertEquals(doctype + expect, switchLang(doctype.replace(" ", "  ") + input));
-        assertEquals(doctype + expect, switchLang(doctype.replace(" ", "\n  ") + input));
+        assertEquals(doctype.toUpperCase() + expect, switchLang(doctype.toUpperCase() + input));
+        assertEquals(doctype.toLowerCase() + expect, switchLang(doctype.toLowerCase() + input));
     }
 
     private String switchLang(String html) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
