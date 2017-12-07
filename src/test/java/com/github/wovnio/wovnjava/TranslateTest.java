@@ -26,12 +26,14 @@ public class TranslateTest extends TestCase {
             "</head><body>" +
             "<a href=\"https://www.français.fr/path/to\">link</a>" +
             "<img src=\"//www.日本語ドメイン.co.jp/a.png\">" +
+            "<iframe src=\"//www.日本語ドメイン.co.jp/a.html\">" +
             "</body></html>";
         Document doc = parse(switchLang(html));
         assertEquals("//j.wovn.io/1", get(doc, "script", "src")); // does not change
         assertEquals("//www.xn--eckwd4c7c5976acvb2w6i.co.jp/a.png", get(doc, "img", "src"));
         assertEquals("http://www.xn--eckwd4c7c5976acvb2w6i.co.jp/%E3%81%AB%E3%81%BB%E3%82%93%E3%81%94", get(doc, "link", "href"));
         assertEquals("https://www.xn--franais-xxa.fr/path/to", get(doc, "a", "href"));
+        assertEquals("//www.xn--eckwd4c7c5976acvb2w6i.co.jp/a.html", get(doc, "iframe", "src"));
     }
 
     private String get(Document doc, String tag, String attr) throws SAXException {

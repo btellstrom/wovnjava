@@ -333,6 +333,7 @@ class Interceptor {
         changeUrlToPunyCode(doc, "a", "href");
         changeUrlToPunyCode(doc, "script", "src");
         changeUrlToPunyCode(doc, "img", "src");
+        changeUrlToPunyCode(doc, "iframe", "src");
 
         if (!lang.equals(this.store.settings.defaultLang)) {
             NodeList anchors = null;
