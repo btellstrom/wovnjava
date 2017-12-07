@@ -329,11 +329,7 @@ class Interceptor {
             return getStringFromDocument(body, doc);
         }
 
-        changeUrlToPunyCode(doc, "link", "href");
-        changeUrlToPunyCode(doc, "a", "href");
-        changeUrlToPunyCode(doc, "script", "src");
-        changeUrlToPunyCode(doc, "img", "src");
-        changeUrlToPunyCode(doc, "iframe", "src");
+        changeUrlToPunyCode(doc);
 
         if (!lang.equals(this.store.settings.defaultLang)) {
             NodeList anchors = null;
@@ -518,14 +514,23 @@ class Interceptor {
 
     private final Pattern extractDomain = Pattern.compile("(?:https?:)?//([^/]+)");
 
-    private void changeUrlToPunyCode(Document doc, String tag, String attribute) {
-        NodeList metas = doc.getElementsByTagName(tag);
-        for (int i = 0; i < metas.getLength(); i++) {
-            Node meta = metas.item(i);
-            if (meta == null) {
+    private void changeUrlToPunyCode(Document doc) {
+        changeUrlToPunyCodeAttr(doc, "link", "href");
+        changeUrlToPunyCodeAttr(doc, "a", "href");
+        changeUrlToPunyCodeAttr(doc, "script", "src");
+        changeUrlToPunyCodeAttr(doc, "img", "src");
+        changeUrlToPunyCodeAttr(doc, "iframe", "src");
+        changeUrlToPunyCodeAttr(doc, "meta", "content");
+    }
+
+    private void changeUrlToPunyCodeAttr(Document doc, String tag, String attribute) {
+        NodeList nodes = doc.getElementsByTagName(tag);
+        for (int i = 0; i < nodes.getLength(); i++) {
+            Node node = nodes.item(i);
+            if (node == null) {
                 continue;
             }
-            NamedNodeMap attrs = meta.getAttributes();
+            NamedNodeMap attrs = node.getAttributes();
             if (attrs == null) {
                 continue;
             }
@@ -537,6 +542,9 @@ class Interceptor {
             if (value == null) {
                 continue;
             }
+            if (!canReplace(attrs, tag, attribute)) {
+                continue;
+            }
             Matcher matcher = extractDomain.matcher(value);
             if (matcher.find()) {
                 String host = matcher.group(1);
@@ -544,5 +552,24 @@ class Interceptor {
                 attr.setNodeValue(value.replaceFirst(host, punyCode));
             }
         }
+    }
+
+    private boolean canReplace(NamedNodeMap attrs, String tag, String attribute) {
+        if (tag == "meta" && attribute == "content") {
+            Node attr = attrs.getNamedItem("property"); // property for Open Graph data
+            if (attr == null) {
+                attr = attrs.getNamedItem("name"); // name for Twitter Card data
+                if (attr == null) {
+                    return false;
+                }
+            }
+            String value = attr.getNodeValue();
+            if (value == null) {
+                return false;
+            }
+            return value.indexOf(":url") >= 0 ||
+                value.indexOf(":image") >= 0;
+        }
+        return true;
     }
 }

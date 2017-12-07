@@ -1,5 +1,6 @@
 package com.github.wovnio.wovnjava;
 
+import static org.junit.Assert.assertArrayEquals;
 import junit.framework.TestCase;
 
 import org.easymock.EasyMock;
@@ -15,29 +16,87 @@ import javax.servlet.http.HttpServletRequest;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
 import nu.validator.htmlparser.dom.*;
 
 public class TranslateTest extends TestCase {
 
     public void testPunyCode() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, SAXException, IOException {
         String html = "<html><head>" +
-            "<script src=\"//j.wovn.io/1\"></script>" +
-            "<link href=\"http://www.日本語ドメイン.co.jp/にほんご\" rel=\"canonical\">" +
-            "</head><body>" +
-            "<a href=\"https://www.français.fr/path/to\">link</a>" +
-            "<img src=\"//www.日本語ドメイン.co.jp/a.png\">" +
-            "<iframe src=\"//www.日本語ドメイン.co.jp/a.html\">" +
+            "<meta name=\"twitter:title\" content=\"ページタイトル\">" +
+            "<meta name=\"twitter:url\" content=\"http://www.日本語.com/twitter\">" +
+            "<meta name=\"twitter:image:src\" content=\"http://www.日本語.com/twitter.gif\">" +
+            "<meta property=\"og:url\" content=\"http://www.日本語.com/og\">" +
+            "<meta property=\"og:image\" content=\"http://www.日本語.com/og.gif\">" +
+            makeHtml("script", "src") +
+            makeHtml("link", "href") +
+            makeHtml("a", "href") +
+            makeHtml("img", "src") +
+            makeHtml("iframe", "src") +
             "</body></html>";
+        String[] expects = makeExpects();
+        String[] expectScripts = new String[expects.length + 1];
+        System.arraycopy(expects, 0, expectScripts, 1, expects.length);
+        expectScripts[0] = "//j.wovn.io/1";
+        String[] expectMetas = new String[] {
+            "text/html; charset=UTF-8",
+            "ページタイトル",
+            "http://www.xn--wgv71a119e.com/twitter",
+            "http://www.xn--wgv71a119e.com/twitter.gif",
+            "http://www.xn--wgv71a119e.com/og",
+            "http://www.xn--wgv71a119e.com/og.gif",
+        };
+
         Document doc = parse(switchLang(html));
-        assertEquals("//j.wovn.io/1", get(doc, "script", "src")); // does not change
-        assertEquals("//www.xn--eckwd4c7c5976acvb2w6i.co.jp/a.png", get(doc, "img", "src"));
-        assertEquals("http://www.xn--eckwd4c7c5976acvb2w6i.co.jp/%E3%81%AB%E3%81%BB%E3%82%93%E3%81%94", get(doc, "link", "href"));
-        assertEquals("https://www.xn--franais-xxa.fr/path/to", get(doc, "a", "href"));
-        assertEquals("//www.xn--eckwd4c7c5976acvb2w6i.co.jp/a.html", get(doc, "iframe", "src"));
+
+        assertArrayEquals(expectScripts, getAttrs(doc, "script", "src"));
+        assertArrayEquals(expects, getAttrs(doc, "link", "href"));
+        assertArrayEquals(expects, getAttrs(doc, "a", "href"));
+        assertArrayEquals(expects, getAttrs(doc, "img", "src"));
+        assertArrayEquals(expects, getAttrs(doc, "iframe", "src"));
+        assertArrayEquals(expectMetas, getAttrs(doc, "meta", "content"));
     }
 
-    private String get(Document doc, String tag, String attr) throws SAXException {
-        return doc.getElementsByTagName(tag).item(0).getAttributes().getNamedItem(attr).getNodeValue();
+    private String makeHtml(String tag, String attr) {
+        return makeTag(tag, attr, "http://example.com/") +
+            makeTag(tag, attr, "http://example.com/path/to") +
+            makeTag(tag, attr, "https://example.com/path/to") +
+            makeTag(tag, attr, "//example.com/path/to") +
+            makeTag(tag, attr, "//example.com/あいうえお") +
+            makeTag(tag, attr, "http://www.日本語.com/") +
+            makeTag(tag, attr, "http://www.日本語.com/path/to") +
+            makeTag(tag, attr, "https://www.日本語.com/path/to") +
+            makeTag(tag, attr, "//www.日本語.com/path/to") +
+            makeTag(tag, attr, "//www.日本語.com/あいうえお");
+    }
+
+    private String[] makeExpects() {
+        return new String[] {
+            "http://example.com/",
+            "http://example.com/path/to",
+            "https://example.com/path/to",
+            "//example.com/path/to",
+            "//example.com/%E3%81%82%E3%81%84%E3%81%86%E3%81%88%E3%81%8A",
+            "http://www.xn--wgv71a119e.com/",
+            "http://www.xn--wgv71a119e.com/path/to",
+            "https://www.xn--wgv71a119e.com/path/to",
+            "//www.xn--wgv71a119e.com/path/to",
+            "//www.xn--wgv71a119e.com/%E3%81%82%E3%81%84%E3%81%86%E3%81%88%E3%81%8A"
+        };
+    }
+
+    private String makeTag(String tag, String attr, String value) {
+        String closeTag = tag == "link" || tag == "img" ? "" : "</" + tag + ">";
+        return "<" + tag + " " + attr + "=\"" + value + "\">" + closeTag;
+    }
+
+    private String[] getAttrs(Document doc, String tag, String attr) throws SAXException {
+        NodeList nodes = doc.getElementsByTagName(tag);
+        String[] attrs = new String[nodes.getLength()];
+        for (int i = 0; i < nodes.getLength(); i++) {
+            attrs[i] = nodes.item(i).getAttributes().getNamedItem(attr).getNodeValue();
+        }
+        return attrs;
     }
 
     private Document parse(String html) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, SAXException, IOException {
