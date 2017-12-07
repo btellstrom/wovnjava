@@ -19,14 +19,23 @@ import nu.validator.htmlparser.dom.*;
 
 public class TranslateTest extends TestCase {
 
-    public void testInterceptor() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, SAXException, IOException {
-        String html = "<html lang=\"en\"><head><META http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script async=\"true\" data-wovnio=\"key=2Wle3&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=path&amp;version=0.1.9\" src=\"//j.wovn.io/1\"> </script><link href=\"http://www.日本語ドメイン.co.jp\" rel=\"canonical\"></head><body></body></html>";
-        Document doc = parse(html);
-        assertEquals("http://www.xn--eckwd4c7c5976acvb2w6i.co.jp/", get(doc, "link", "href"));
+    public void testPunyCode() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, SAXException, IOException {
+        String html = "<html><head>" +
+            "<script src=\"//j.wovn.io/1\"></script>" +
+            "<link href=\"http://www.日本語ドメイン.co.jp/にほんご\" rel=\"canonical\">" +
+            "</head><body>" +
+            "<a href=\"https://www.français.fr/path/to\">link</a>" +
+            "<img src=\"//www.日本語ドメイン.co.jp/a.png\">" +
+            "</body></html>";
+        Document doc = parse(switchLang(html));
+        assertEquals("//j.wovn.io/1", get(doc, "script", "src")); // does not change
+        assertEquals("//www.xn--eckwd4c7c5976acvb2w6i.co.jp/a.png", get(doc, "img", "src"));
+        assertEquals("http://www.xn--eckwd4c7c5976acvb2w6i.co.jp/%E3%81%AB%E3%81%BB%E3%82%93%E3%81%94", get(doc, "link", "href"));
+        assertEquals("https://www.xn--franais-xxa.fr/path/to", get(doc, "a", "href"));
     }
 
     private String get(Document doc, String tag, String attr) throws SAXException {
-        return doc.getElementsByTagName("link").item(0).getAttributes().getNamedItem(attr).getNodeValue();
+        return doc.getElementsByTagName(tag).item(0).getAttributes().getNamedItem(attr).getNodeValue();
     }
 
     private Document parse(String html) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, SAXException, IOException {
@@ -80,49 +89,4 @@ public class TranslateTest extends TestCase {
         EasyMock.replay(mock);
         return mock;
     }
-
-    private static FilterConfig mockConfigSubDomain() {
-        FilterConfig mock = EasyMock.createMock(FilterConfig.class);
-        EasyMock.expect(mock.getInitParameter("userToken")).andReturn("2Wle3");
-        EasyMock.expect(mock.getInitParameter("projectToken")).andReturn("2Wle3");
-        EasyMock.expect(mock.getInitParameter("secretKey")).andReturn("secret");
-        EasyMock.expect(mock.getInitParameter("urlPattern")).andReturn("subdomain");
-        EasyMock.expect(mock.getInitParameter("urlPatternReg")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("query")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("apiUrl")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("defaultLang")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("supportedLangs")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("testMode")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("testUrl")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("useProxy")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("debugMode")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("originalUrlHeader")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("originalQueryStringHeader")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("strictHtmlCheck")).andReturn("");
-        EasyMock.replay(mock);
-        return mock;
-    }
-
-    private static FilterConfig mockConfigQuery() {
-        FilterConfig mock = EasyMock.createMock(FilterConfig.class);
-        EasyMock.expect(mock.getInitParameter("userToken")).andReturn("2Wle3");
-        EasyMock.expect(mock.getInitParameter("projectToken")).andReturn("2Wle3");
-        EasyMock.expect(mock.getInitParameter("secretKey")).andReturn("secret");
-        EasyMock.expect(mock.getInitParameter("urlPattern")).andReturn("query");
-        EasyMock.expect(mock.getInitParameter("urlPatternReg")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("query")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("apiUrl")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("defaultLang")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("supportedLangs")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("testMode")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("testUrl")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("useProxy")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("debugMode")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("originalUrlHeader")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("originalQueryStringHeader")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("strictHtmlCheck")).andReturn("");
-        EasyMock.replay(mock);
-        return mock;
-    }
-
 }
