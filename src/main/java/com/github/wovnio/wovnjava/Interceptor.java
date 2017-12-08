@@ -519,6 +519,7 @@ class Interceptor {
         changeUrlToPunyCodeAttr(doc, "a", "href");
         changeUrlToPunyCodeAttr(doc, "script", "src");
         changeUrlToPunyCodeAttr(doc, "img", "src");
+        changeUrlToPunyCodeAttr(doc, "input", "src");
         changeUrlToPunyCodeAttr(doc, "iframe", "src");
         changeUrlToPunyCodeAttr(doc, "meta", "content");
     }

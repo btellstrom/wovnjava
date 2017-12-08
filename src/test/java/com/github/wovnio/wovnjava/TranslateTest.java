@@ -32,6 +32,7 @@ public class TranslateTest extends TestCase {
             makeHtml("link", "href") +
             makeHtml("a", "href") +
             makeHtml("img", "src") +
+            makeHtml("input", "src") +
             makeHtml("iframe", "src") +
             "</body></html>";
         String[] expects = makeExpects();
@@ -53,6 +54,7 @@ public class TranslateTest extends TestCase {
         assertArrayEquals(expects, getAttrs(doc, "link", "href"));
         assertArrayEquals(expects, getAttrs(doc, "a", "href"));
         assertArrayEquals(expects, getAttrs(doc, "img", "src"));
+        assertArrayEquals(expects, getAttrs(doc, "input", "src"));
         assertArrayEquals(expects, getAttrs(doc, "iframe", "src"));
         assertArrayEquals(expectMetas, getAttrs(doc, "meta", "content"));
     }
