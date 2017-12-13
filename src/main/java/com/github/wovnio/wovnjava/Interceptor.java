@@ -9,6 +9,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.net.IDN;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -31,6 +32,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.NamedNodeMap;
 
 import nu.validator.htmlparser.dom.*;
 
@@ -327,6 +329,8 @@ class Interceptor {
             return getStringFromDocument(body, doc);
         }
 
+        changeUrlToPunyCode(doc);
+
         if (!lang.equals(this.store.settings.defaultLang)) {
             NodeList anchors = null;
             try {
@@ -506,5 +510,67 @@ class Interceptor {
         doc.getDocumentElement().setAttribute("lang", lang);
 
         return getStringFromDocument(body, doc);
+    }
+
+    private final Pattern extractDomain = Pattern.compile("(?:https?:)?//([^/]+)");
+
+    private void changeUrlToPunyCode(Document doc) {
+        changeUrlToPunyCodeAttr(doc, "link", "href");
+        changeUrlToPunyCodeAttr(doc, "a", "href");
+        changeUrlToPunyCodeAttr(doc, "script", "src");
+        changeUrlToPunyCodeAttr(doc, "img", "src");
+        changeUrlToPunyCodeAttr(doc, "input", "src");
+        changeUrlToPunyCodeAttr(doc, "iframe", "src");
+        changeUrlToPunyCodeAttr(doc, "meta", "content");
+    }
+
+    private void changeUrlToPunyCodeAttr(Document doc, String tag, String attribute) {
+        NodeList nodes = doc.getElementsByTagName(tag);
+        for (int i = 0; i < nodes.getLength(); i++) {
+            Node node = nodes.item(i);
+            if (node == null) {
+                continue;
+            }
+            NamedNodeMap attrs = node.getAttributes();
+            if (attrs == null) {
+                continue;
+            }
+            Node attr = attrs.getNamedItem(attribute);
+            if (attr == null) {
+                continue;
+            }
+            String value = attr.getNodeValue();
+            if (value == null) {
+                continue;
+            }
+            if (!canReplace(attrs, tag, attribute)) {
+                continue;
+            }
+            Matcher matcher = extractDomain.matcher(value);
+            if (matcher.find()) {
+                String host = matcher.group(1);
+                String punyCode = IDN.toASCII(host);
+                attr.setNodeValue(value.replaceFirst(host, punyCode));
+            }
+        }
+    }
+
+    private boolean canReplace(NamedNodeMap attrs, String tag, String attribute) {
+        if (tag == "meta" && attribute == "content") {
+            Node attr = attrs.getNamedItem("property"); // property for Open Graph data
+            if (attr == null) {
+                attr = attrs.getNamedItem("name"); // name for Twitter Card data
+                if (attr == null) {
+                    return false;
+                }
+            }
+            String value = attr.getNodeValue();
+            if (value == null) {
+                return false;
+            }
+            return value.indexOf(":url") >= 0 ||
+                value.indexOf(":image") >= 0;
+        }
+        return true;
     }
 }
