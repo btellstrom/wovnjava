@@ -4,6 +4,7 @@ import junit.framework.TestCase;
 
 import org.easymock.EasyMock;
 
+import java.util.HashMap;
 import java.util.ArrayList;
 
 import javax.servlet.FilterConfig;
@@ -104,6 +105,24 @@ public class SettingsTest extends TestCase {
         EasyMock.replay(mock);
 
         return mock;
+    }
+
+    private static FilterConfig mockSpecificConfig(HashMap<String, String> option) {
+        FilterConfig mock = EasyMock.createMock(FilterConfig.class);
+        String[] keys = {"userToken", "projectToken", "sitePrefixPath", "secretKey", "urlPattern", "urlPatternReg", "query", "apiUrl", "defaultLang", "supportedLangs", "testMode", "testUrl", "useProxy", "debugMode", "originalUrlHeader", "originalQueryStringHeader", "strictHtmlCheck"};
+        for (int i=0; i<keys.length; ++i) {
+            String key = keys[i];
+            String val = option.get(key);
+            val = val == null ? "" : val;
+            EasyMock.expect(mock.getInitParameter(key)).andReturn(val);
+        }
+        EasyMock.replay(mock);
+        return mock;
+    }
+
+    private static Settings newSettings(HashMap<String, String> option) {
+        FilterConfig mock = mockSpecificConfig(option);
+        return new Settings(mock);
     }
 
     // urlPattern is "path".
@@ -240,5 +259,21 @@ public class SettingsTest extends TestCase {
 
         assertEquals("REDIRECT_URL", s.originalUrlHeader);
         assertEquals("REDIRECT_QUERY_STRING", s.originalQueryStringHeader);
+    }
+
+    public void testSettingsWithSitePrefixWithTailingSlash() {
+        HashMap<String, String> option = new HashMap<String, String>();
+        option.put("sitePrefixPath", "/global/");
+        Settings s = newSettings(option);
+        assertEquals("/global/", s.sitePrefixPathWithSlash);
+        assertEquals("/global", s.sitePrefixPathWithoutSlash);
+    }
+
+    public void testSettingsWithSitePrefixWithoutTailingSlash() {
+        HashMap<String, String> option = new HashMap<String, String>();
+        option.put("sitePrefixPath", "/global");
+        Settings s = newSettings(option);
+        assertEquals("/global/", s.sitePrefixPathWithSlash);
+        assertEquals("/global", s.sitePrefixPathWithoutSlash);
     }
 }
