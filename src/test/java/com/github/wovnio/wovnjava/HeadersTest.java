@@ -13,6 +13,7 @@ public class HeadersTest extends TestCase {
         FilterConfig mock = EasyMock.createMock(FilterConfig.class);
         EasyMock.expect(mock.getInitParameter("userToken")).andReturn("2Wle3");
         EasyMock.expect(mock.getInitParameter("projectToken")).andReturn("2Wle3");
+        EasyMock.expect(mock.getInitParameter("sitePrefixPath")).andReturn("");
         EasyMock.expect(mock.getInitParameter("secretKey")).andReturn("secret");
         EasyMock.expect(mock.getInitParameter("urlPattern")).andReturn("");
         EasyMock.expect(mock.getInitParameter("urlPatternReg")).andReturn("");
@@ -35,6 +36,7 @@ public class HeadersTest extends TestCase {
         FilterConfig mock = EasyMock.createMock(FilterConfig.class);
         EasyMock.expect(mock.getInitParameter("userToken")).andReturn("2Wle3");
         EasyMock.expect(mock.getInitParameter("projectToken")).andReturn("2Wle3");
+        EasyMock.expect(mock.getInitParameter("sitePrefixPath")).andReturn("");
         EasyMock.expect(mock.getInitParameter("secretKey")).andReturn("secret");
         EasyMock.expect(mock.getInitParameter("urlPattern")).andReturn("subdomain");
         EasyMock.expect(mock.getInitParameter("urlPatternReg")).andReturn("");
@@ -57,6 +59,7 @@ public class HeadersTest extends TestCase {
         FilterConfig mock = EasyMock.createMock(FilterConfig.class);
         EasyMock.expect(mock.getInitParameter("userToken")).andReturn("2Wle3");
         EasyMock.expect(mock.getInitParameter("projectToken")).andReturn("2Wle3");
+        EasyMock.expect(mock.getInitParameter("sitePrefixPath")).andReturn("");
         EasyMock.expect(mock.getInitParameter("secretKey")).andReturn("secret");
         EasyMock.expect(mock.getInitParameter("urlPattern")).andReturn("query");
         EasyMock.expect(mock.getInitParameter("urlPatternReg")).andReturn("");
@@ -80,6 +83,7 @@ public class HeadersTest extends TestCase {
         FilterConfig mock = EasyMock.createMock(FilterConfig.class);
         EasyMock.expect(mock.getInitParameter("userToken")).andReturn("2Wle3");
         EasyMock.expect(mock.getInitParameter("projectToken")).andReturn("2Wle3");
+        EasyMock.expect(mock.getInitParameter("sitePrefixPath")).andReturn("");
         EasyMock.expect(mock.getInitParameter("secretKey")).andReturn("secret");
         EasyMock.expect(mock.getInitParameter("urlPattern")).andReturn("query");
         EasyMock.expect(mock.getInitParameter("urlPatternReg")).andReturn("");
@@ -103,6 +107,7 @@ public class HeadersTest extends TestCase {
         FilterConfig mock = EasyMock.createMock(FilterConfig.class);
         EasyMock.expect(mock.getInitParameter("userToken")).andReturn("2Wle3");
         EasyMock.expect(mock.getInitParameter("projectToken")).andReturn("2Wle3");
+        EasyMock.expect(mock.getInitParameter("sitePrefixPath")).andReturn("");
         EasyMock.expect(mock.getInitParameter("secretKey")).andReturn("secret");
         EasyMock.expect(mock.getInitParameter("urlPattern")).andReturn("query");
         EasyMock.expect(mock.getInitParameter("urlPatternReg")).andReturn("");
@@ -126,6 +131,7 @@ public class HeadersTest extends TestCase {
         FilterConfig mock = EasyMock.createMock(FilterConfig.class);
         EasyMock.expect(mock.getInitParameter("userToken")).andReturn("2Wle3");
         EasyMock.expect(mock.getInitParameter("projectToken")).andReturn("2Wle3");
+        EasyMock.expect(mock.getInitParameter("sitePrefixPath")).andReturn("");
         EasyMock.expect(mock.getInitParameter("secretKey")).andReturn("secret");
         EasyMock.expect(mock.getInitParameter("urlPattern")).andReturn("");
         EasyMock.expect(mock.getInitParameter("urlPatternReg")).andReturn("");

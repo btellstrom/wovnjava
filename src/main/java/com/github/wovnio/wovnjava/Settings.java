@@ -13,6 +13,7 @@ class Settings {
     static final String UrlPatternRegSubdomain = "^([^.]+)\\.";
 
     String projectToken = "";
+    String sitePrefixPath = "";
     String secretKey = "";
     String urlPattern = "path";
     String urlPatternReg = UrlPatternRegPath;
@@ -45,6 +46,11 @@ class Settings {
         p = config.getInitParameter("projectToken");
         if (p != null && p.length() > 0) {
             this.projectToken = p;
+        }
+
+        p = config.getInitParameter("sitePrefixPath");
+        if (p != null && p.length() > 0) {
+            this.sitePrefixPath = p;
         }
 
         p = config.getInitParameter("secretKey");
