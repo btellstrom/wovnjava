@@ -261,18 +261,19 @@ public class SettingsTest extends TestCase {
         assertEquals("REDIRECT_QUERY_STRING", s.originalQueryStringHeader);
     }
 
-    public void testSettingsWithSitePrefixWithTailingSlash() {
+    public void testSettingsWithoutSitePrefix() {
+        HashMap<String, String> option = new HashMap<String, String>();
+        Settings s = newSettings(option);
+        assertFalse(s.hasSitePrefixPath);
+        assertEquals("/", s.sitePrefixPathWithSlash);
+        assertEquals("", s.sitePrefixPathWithoutSlash);
+    }
+
+    public void testSettingsWithSitePrefix() {
         HashMap<String, String> option = new HashMap<String, String>();
         option.put("sitePrefixPath", "/global/");
         Settings s = newSettings(option);
-        assertEquals("/global/", s.sitePrefixPathWithSlash);
-        assertEquals("/global", s.sitePrefixPathWithoutSlash);
-    }
-
-    public void testSettingsWithSitePrefixWithoutTailingSlash() {
-        HashMap<String, String> option = new HashMap<String, String>();
-        option.put("sitePrefixPath", "/global");
-        Settings s = newSettings(option);
+        assertTrue(s.hasSitePrefixPath);
         assertEquals("/global/", s.sitePrefixPathWithSlash);
         assertEquals("/global", s.sitePrefixPathWithoutSlash);
     }

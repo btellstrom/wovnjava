@@ -245,7 +245,8 @@ class Headers {
             return Pattern.compile("(^|(//))" + lang + "\\.", Pattern.CASE_INSENSITIVE)
                     .matcher(uri).replaceFirst("$1");
         } else {
-            return uri.replaceFirst("/" + lang + "(/|$)", "/");
+            String prefix = this.settings.sitePrefixPathWithSlash;
+            return uri.replaceFirst(prefix + lang + "(/|$)", prefix);
         }
     }
 

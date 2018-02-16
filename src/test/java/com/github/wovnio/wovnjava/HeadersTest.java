@@ -4,6 +4,7 @@ import junit.framework.TestCase;
 
 import org.easymock.EasyMock;
 
+import java.util.HashMap;
 import javax.servlet.FilterConfig;
 import javax.servlet.http.HttpServletRequest;
 
@@ -152,10 +153,13 @@ public class HeadersTest extends TestCase {
     }
 
     private static HttpServletRequest mockRequestPath() {
+        return mockRequestPath("/ja/test");
+    }
+    private static HttpServletRequest mockRequestPath(String path) {
         HttpServletRequest mock = EasyMock.createMock(HttpServletRequest.class);
         EasyMock.expect(mock.getScheme()).andReturn("https");
         EasyMock.expect(mock.getRemoteHost()).andReturn("example.com");
-        EasyMock.expect(mock.getRequestURI()).andReturn("/ja/test").atLeastOnce();
+        EasyMock.expect(mock.getRequestURI()).andReturn(path).atLeastOnce();
         EasyMock.expect(mock.getServerName()).andReturn("example.com").atLeastOnce();
         EasyMock.expect(mock.getQueryString()).andReturn("").atLeastOnce();
         EasyMock.expect(mock.getServerPort()).andReturn(443).atLeastOnce();
@@ -228,6 +232,24 @@ public class HeadersTest extends TestCase {
 
         return mock;
 
+    }
+
+    private static FilterConfig mockSpecificConfig(HashMap<String, String> option) {
+        FilterConfig mock = EasyMock.createMock(FilterConfig.class);
+        String[] keys = {"userToken", "projectToken", "sitePrefixPath", "secretKey", "urlPattern", "urlPatternReg", "query", "apiUrl", "defaultLang", "supportedLangs", "testMode", "testUrl", "useProxy", "debugMode", "originalUrlHeader", "originalQueryStringHeader", "strictHtmlCheck"};
+        for (int i=0; i<keys.length; ++i) {
+            String key = keys[i];
+            String val = option.get(key);
+            val = val == null ? "" : val;
+            EasyMock.expect(mock.getInitParameter(key)).andReturn(val);
+        }
+        EasyMock.replay(mock);
+        return mock;
+    }
+
+    private static Settings makeSettings(HashMap<String, String> option) {
+        FilterConfig mock = mockSpecificConfig(option);
+        return new Settings(mock);
     }
 
     public void testHeaders() {
@@ -356,15 +378,16 @@ public class HeadersTest extends TestCase {
         assertEquals("example.com:8080/test", h.pageUrl);
     }
 
-    public void testOriginalHeaders() {
-        HttpServletRequest mockRequest = mockRequestOriginalHeaders();
-        FilterConfig mockConfig = mockConfigOriginalHeaders();
+    public void testSitePrefixPath() {
+        Headers h = makeHeader("/global/en/foo", "/global/");
+        assertEquals("/global/", h.removeLang("/global/en/", null));
+        assertEquals("/en/global/", h.removeLang("/en/global/", null));
+    }
 
-        Settings s = new Settings(mockConfig);
-        Headers h = new Headers(mockRequest, s);
-
-        assertEquals("/foo/bar", h.pathName);
-        assertEquals("?baz=123", h.query);
-        assertEquals("example.com/foo/bar?baz=123", h.pageUrl);
+    private Headers makeHeader(String requestPath, String sitePrefix) {
+        HttpServletRequest mockRequest = mockRequestPath(requestPath);
+        HashMap<String, String> option = new HashMap<String, String>(){ { put("sitePrefixPath", "/global/"); } };
+        Settings s = makeSettings(option);
+        return new Headers(mockRequest, s);
     }
 }
