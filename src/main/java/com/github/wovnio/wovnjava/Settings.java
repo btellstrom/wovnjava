@@ -182,7 +182,7 @@ class Settings {
             this.urlPatternReg = UrlPatternRegPath;
             String prefix = this.sitePrefixPathWithoutSlash;
             if (prefix.length() > 0 && !this.urlPatternReg.contains(prefix)) {
-                this.urlPatternReg = prefix +  UrlPatternRegPath;
+                this.urlPatternReg = prefix + UrlPatternRegPath;
             }
         } else if (this.urlPattern.equals("query")) {
             this.urlPatternReg = UrlPatternRegQuery;
