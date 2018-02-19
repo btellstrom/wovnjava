@@ -35,48 +35,15 @@ public class InterceptorTest extends TestCase {
         return mock;
     }
 
-    private static FilterConfig mockConfigSubDomain() {
+    private static FilterConfig mockSpecificConfig(HashMap<String, String> option) {
         FilterConfig mock = EasyMock.createMock(FilterConfig.class);
-        EasyMock.expect(mock.getInitParameter("userToken")).andReturn("2Wle3");
-        EasyMock.expect(mock.getInitParameter("projectToken")).andReturn("2Wle3");
-        EasyMock.expect(mock.getInitParameter("sitePrefixPath")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("secretKey")).andReturn("secret");
-        EasyMock.expect(mock.getInitParameter("urlPattern")).andReturn("subdomain");
-        EasyMock.expect(mock.getInitParameter("urlPatternReg")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("query")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("apiUrl")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("defaultLang")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("supportedLangs")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("testMode")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("testUrl")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("useProxy")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("debugMode")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("originalUrlHeader")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("originalQueryStringHeader")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("strictHtmlCheck")).andReturn("");
-        EasyMock.replay(mock);
-        return mock;
-    }
-
-    private static FilterConfig mockConfigQuery() {
-        FilterConfig mock = EasyMock.createMock(FilterConfig.class);
-        EasyMock.expect(mock.getInitParameter("userToken")).andReturn("2Wle3");
-        EasyMock.expect(mock.getInitParameter("projectToken")).andReturn("2Wle3");
-        EasyMock.expect(mock.getInitParameter("sitePrefixPath")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("secretKey")).andReturn("secret");
-        EasyMock.expect(mock.getInitParameter("urlPattern")).andReturn("query");
-        EasyMock.expect(mock.getInitParameter("urlPatternReg")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("query")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("apiUrl")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("defaultLang")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("supportedLangs")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("testMode")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("testUrl")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("useProxy")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("debugMode")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("originalUrlHeader")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("originalQueryStringHeader")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("strictHtmlCheck")).andReturn("");
+        String[] keys = {"userToken", "projectToken", "sitePrefixPath", "secretKey", "urlPattern", "urlPatternReg", "query", "apiUrl", "defaultLang", "supportedLangs", "testMode", "testUrl", "useProxy", "debugMode", "originalUrlHeader", "originalQueryStringHeader", "strictHtmlCheck"};
+        for (int i=0; i<keys.length; ++i) {
+            String key = keys[i];
+            String val = option.get(key);
+            val = val == null ? "" : val;
+            EasyMock.expect(mock.getInitParameter(key)).andReturn(val);
+        }
         EasyMock.replay(mock);
         return mock;
     }
@@ -170,6 +137,40 @@ public class InterceptorTest extends TestCase {
         assertDocType("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Frameset//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd\">", input, xhtml);
     }
 
+    public void testSitePrefixPath() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        assertEquals("/global/fr/file", getTranslatedLink("/global/", "/global/", "/global/file", "fr"));
+        assertEquals("/global/fr/dir/", getTranslatedLink("/global/", "/global/", "/global/dir/", "fr"));
+        assertEquals("/global/fr/file", getTranslatedLink("/global/", "/global/", "file", "fr"));
+        assertEquals("/global/fr/dir/", getTranslatedLink("/global/", "/global/", "dir/", "fr"));
+        assertEquals("/global/fr/dir/../file", getTranslatedLink("/global/", "/global/dir/", "../file", "fr"));
+        assertEquals("/global/fr/dir/../dir/", getTranslatedLink("/global/", "/global/dir/", "../dir/", "fr"));
+        assertEquals("/global/fr/dir/../file", getTranslatedLink("/global/", "/global/dir/file", "../file", "fr"));
+        assertEquals("/global/fr/dir/../dir/", getTranslatedLink("/global/", "/global/dir/file", "../dir/", "fr"));
+    }
+
+    public void testNoSitePrefix() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        assertEquals("/fr/global/file", getTranslatedLink("", "/global/", "/global/file", "fr"));
+        assertEquals("/fr/global/dir/", getTranslatedLink("", "/global/", "/global/dir/", "fr"));
+        assertEquals("/fr/global/file", getTranslatedLink("", "/global/", "file", "fr"));
+        assertEquals("/fr/global/dir/", getTranslatedLink("", "/global/", "dir/", "fr"));
+        assertEquals("/fr/global/dir/../file", getTranslatedLink("", "/global/dir/", "../file", "fr"));
+        assertEquals("/fr/global/dir/../dir/", getTranslatedLink("", "/global/dir/", "../dir/", "fr"));
+        assertEquals("/fr/global/dir/../file", getTranslatedLink("", "/global/dir/file", "../file", "fr"));
+        assertEquals("/fr/global/dir/../dir/", getTranslatedLink("", "/global/dir/file", "../dir/", "fr"));
+    }
+
+    private String getTranslatedLink(final String sitePrefixPath, String requestPath, String linkPath, String lang) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        String html = "<a href=" + linkPath + ">link</a>";
+        HashMap<String, String> option = new HashMap<String, String>(){ {
+            put("sitePrefixPath", sitePrefixPath);
+            put("supportedLangs", "ar,bg,zh-CHS,zh-CHT,da,nl,en,fi,fr,de,el,he,id,it,ja,ko,ms,my,ne,no,pl,pt,ru,es,sv,th,hi,tr,uk,vi");
+        } };
+        FilterConfig config = mockSpecificConfig(option);
+        HttpServletRequest request = mockRequestPath(requestPath);
+        String result = switchLang(html, config, request, lang);
+        return result.substring(result.indexOf("href=") + 6, result.indexOf(">link<") - 1);
+    }
+
     private void assertDocType(String doctype, String input, String expect) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         assertDocTypeWithCase(doctype, input, expect);
         assertDocTypeWithCase(doctype.replace(" ", "\n"), input, expect);
@@ -184,22 +185,24 @@ public class InterceptorTest extends TestCase {
     }
 
     private String switchLang(String html) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-        Interceptor interceptor = new Interceptor(mockConfigPath());
+        return switchLang(html, mockConfigPath(), mockRequestPath("/ja/test"), "en");
+    }
+
+    private String switchLang(String html, FilterConfig config, HttpServletRequest mockRequest, String lang) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        Interceptor interceptor = new Interceptor(config);
         Method method = interceptor.getClass().getDeclaredMethod("switchLang", String.class, Values.class, HashMap.class, String.class, Headers.class);
         method.setAccessible(true);
         Values values = new Values("");
         HashMap<String, String> url = new HashMap<String, String>();
-        String lang = "en";
-        HttpServletRequest mockRequest = mockRequestPath();
         Headers headers = new Headers(mockRequest, new Settings(mockConfigPath()));
         return (String)method.invoke(interceptor, html, values, url, lang, headers);
     }
 
-    private static HttpServletRequest mockRequestPath() {
+    private static HttpServletRequest mockRequestPath(String path) {
         HttpServletRequest mock = EasyMock.createMock(HttpServletRequest.class);
         EasyMock.expect(mock.getScheme()).andReturn("https");
         EasyMock.expect(mock.getRemoteHost()).andReturn("example.com");
-        EasyMock.expect(mock.getRequestURI()).andReturn("/ja/test").atLeastOnce();
+        EasyMock.expect(mock.getRequestURI()).andReturn(path).atLeastOnce();
         EasyMock.expect(mock.getServerName()).andReturn("example.com").atLeastOnce();
         EasyMock.expect(mock.getQueryString()).andReturn("").atLeastOnce();
         EasyMock.expect(mock.getServerPort()).andReturn(443).atLeastOnce();

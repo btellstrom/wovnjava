@@ -239,7 +239,7 @@ class Interceptor {
                         newHref = href + "?wovn=" + lang;
                     }
                 } else {
-                    newHref = href.replaceFirst("([^\\.]*\\.[^/]*)(/|$)", "$1/" + lang + "/");
+					newHref = addLangToPath(href, lang, headers.getPathLang());
                 }
             }
         } else if (href != null && href.length() > 0) {
@@ -264,16 +264,43 @@ class Interceptor {
                 }
             } else {
                 if (Pattern.compile("^/").matcher(href).find()) {
-                    newHref = "/" + lang + href;
+					newHref = addLangToPath(href, lang, headers.getPathLang());
                 } else {
-                    currentDir = headers.pathName.replaceFirst("[^/]*\\.[^\\.]{2,6}$", "");
-                    newHref = "/" + lang + currentDir + href;
+                    //currentDir = headers.pathName.replaceFirst("[^/]*\\.[^\\.]{2,6}$", "");
+                    currentDir = headers.pathNameKeepTrailingSlash.replaceFirst("[^/]+$", "");
+					newHref = addLangToPath(currentDir + href, lang, headers.getPathLang());
                 }
             }
         }
 
         return newHref;
     }
+
+	private String addLangToPath(String path, String lang, String pathLang) {
+		if (lang == pathLang) {
+			return path;
+		}
+		String prefix = this.store.settings.sitePrefixPathWithSlash;
+		String newPath = prefix + lang + "/";
+		boolean hasPathLang = pathLang.length() > 0;
+		boolean hasPrefix = path.contains(prefix);
+		if (path.length() ==0) {
+			return newPath;
+		}
+		if (hasPrefix) {
+			if(hasPathLang) {
+				return path.replaceFirst(prefix + pathLang + "(/|$)", newPath);
+			} else {
+				return path.replaceFirst(prefix, newPath);
+			}
+		} else {
+			if(hasPathLang) {
+				return path.replaceFirst("/" + pathLang + "(/|$)", newPath);
+			} else {
+				return "/" + lang + "/" + path;
+			}
+		}
+	}
 
     private boolean checkWovnIgnore(Node node) {
         if (node.getAttributes() != null && node.getAttributes().getNamedItem("wovn-ignore") != null) {

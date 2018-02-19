@@ -18,6 +18,7 @@ class Headers {
     String host;
     private String pathLang;
     String pathName;
+    String pathNameKeepTrailingSlash;
     String protocol;
     String pageUrl;
     String query;
@@ -138,6 +139,7 @@ class Headers {
             this.query = "";
         }
         this.query = this.removeLang(this.query, this.langCode());
+        this.pathNameKeepTrailingSlash = this.pathName;
         this.pathName = Pattern.compile("/$").matcher(this.pathName).replaceAll("");
         this.pageUrl = this.host + this.pathName + this.query;
     }
