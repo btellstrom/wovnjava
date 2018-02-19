@@ -266,7 +266,6 @@ class Interceptor {
                 if (Pattern.compile("^/").matcher(href).find()) {
                     newHref = addLangToPath(href, lang, headers.getPathLang());
                 } else {
-                    //currentDir = headers.pathName.replaceFirst("[^/]*\\.[^\\.]{2,6}$", "");
                     currentDir = headers.pathNameKeepTrailingSlash.replaceFirst("[^/]+$", "");
                     newHref = addLangToPath(currentDir + href, lang, headers.getPathLang());
                 }
