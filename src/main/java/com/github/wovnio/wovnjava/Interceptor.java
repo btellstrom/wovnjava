@@ -517,11 +517,16 @@ class Interceptor {
         insertNode.setAttribute("src", "//j.wovn.io/1");
         insertNode.setAttribute("async", "true");
         String version = WovnServletFilter.VERSION;
+        String sitePrefixPath = "";
+        if (this.store.settings.hasSitePrefixPath) {
+            sitePrefixPath = "&site_prefix_path=" + this.store.settings.sitePrefixPathWithSlash;
+        }
         insertNode.setAttribute(
                 "data-wovnio",
                 "key=" + this.store.settings.projectToken + "&backend=true&currentLang=" + lang
                         + "&defaultLang=" + this.store.settings.defaultLang
                         + "&urlPattern=" + this.store.settings.urlPattern + "&version=" + version
+                        + sitePrefixPath
         );
         insertNode.setTextContent(" ");
         parentNode.insertBefore(insertNode, parentNode.getFirstChild());
