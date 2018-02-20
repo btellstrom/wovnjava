@@ -276,29 +276,9 @@ class Interceptor {
     }
 
     private String addLangToPath(String path, String lang, String pathLang) {
-        if (lang == pathLang) {
-            return path;
-        }
         String prefix = this.store.settings.sitePrefixPathWithSlash;
         String newPath = prefix + lang + "/";
-        boolean hasPathLang = pathLang.length() > 0;
-        boolean hasPrefix = path.contains(prefix);
-        if (path.length() ==0) {
-            return newPath;
-        }
-        if (hasPrefix) {
-            if(hasPathLang) {
-                return path.replaceFirst(prefix + pathLang + "(/|$)", newPath);
-            } else {
-                return path.replaceFirst(prefix, newPath);
-            }
-        } else {
-            if(hasPathLang) {
-                return path.replaceFirst("/" + pathLang + "(/|$)", newPath);
-            } else {
-                return "/" + lang + "/" + path;
-            }
-        }
+        return path.replaceFirst("^" + prefix, newPath);
     }
 
     private boolean checkWovnIgnore(Node node) {
