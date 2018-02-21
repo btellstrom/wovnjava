@@ -498,7 +498,7 @@ class Interceptor {
         String version = WovnServletFilter.VERSION;
         String sitePrefixPath = "";
         if (this.store.settings.hasSitePrefixPath) {
-            sitePrefixPath = "&site_prefix_path=" + this.store.settings.sitePrefixPathWithSlash;
+            sitePrefixPath = "&site_prefix_path=" + this.store.settings.sitePrefixPathWithoutSlash;
         }
         insertNode.setAttribute(
                 "data-wovnio",
