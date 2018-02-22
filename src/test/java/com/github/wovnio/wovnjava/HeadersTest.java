@@ -390,4 +390,16 @@ public class HeadersTest extends TestCase {
         Settings s = makeSettings(option);
         return new Headers(mockRequest, s);
     }
+
+    public void testOriginalHeaders() {
+        HttpServletRequest mockRequest = mockRequestOriginalHeaders();
+        FilterConfig mockConfig = mockConfigOriginalHeaders();
+
+        Settings s = new Settings(mockConfig);
+        Headers h = new Headers(mockRequest, s);
+
+        assertEquals("/foo/bar", h.pathName);
+        assertEquals("?baz=123", h.query);
+        assertEquals("example.com/foo/bar?baz=123", h.pageUrl);
+    }
 }
