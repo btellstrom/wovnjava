@@ -4,6 +4,7 @@ import junit.framework.TestCase;
 
 import org.easymock.EasyMock;
 
+import java.util.HashMap;
 import java.util.ArrayList;
 
 import javax.servlet.FilterConfig;
@@ -14,6 +15,7 @@ public class SettingsTest extends TestCase {
         FilterConfig mock = EasyMock.createMock(FilterConfig.class);
         EasyMock.expect(mock.getInitParameter("userToken")).andReturn("");
         EasyMock.expect(mock.getInitParameter("projectToken")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("sitePrefixPath")).andReturn("");
         EasyMock.expect(mock.getInitParameter("secretKey")).andReturn("");
         EasyMock.expect(mock.getInitParameter("urlPattern")).andReturn("");
         EasyMock.expect(mock.getInitParameter("urlPatternReg")).andReturn("");
@@ -37,6 +39,7 @@ public class SettingsTest extends TestCase {
         FilterConfig mock = EasyMock.createMock(FilterConfig.class);
         EasyMock.expect(mock.getInitParameter("userToken")).andReturn("2Wle3");
         EasyMock.expect(mock.getInitParameter("projectToken")).andReturn("2Wle3");
+        EasyMock.expect(mock.getInitParameter("sitePrefixPath")).andReturn("");
         EasyMock.expect(mock.getInitParameter("secretKey")).andReturn("secret");
         EasyMock.expect(mock.getInitParameter("urlPattern")).andReturn("query");
         EasyMock.expect(mock.getInitParameter("urlPatternReg")).andReturn("aaa");
@@ -60,6 +63,7 @@ public class SettingsTest extends TestCase {
         FilterConfig mock = EasyMock.createMock(FilterConfig.class);
         EasyMock.expect(mock.getInitParameter("userToken")).andReturn("2Wle3");
         EasyMock.expect(mock.getInitParameter("projectToken")).andReturn("3elW2");
+        EasyMock.expect(mock.getInitParameter("sitePrefixPath")).andReturn("");
         EasyMock.expect(mock.getInitParameter("secretKey")).andReturn("secret");
         EasyMock.expect(mock.getInitParameter("urlPattern")).andReturn("query");
         EasyMock.expect(mock.getInitParameter("urlPatternReg")).andReturn("aaa");
@@ -83,6 +87,7 @@ public class SettingsTest extends TestCase {
         FilterConfig mock = EasyMock.createMock(FilterConfig.class);
         EasyMock.expect(mock.getInitParameter("userToken")).andReturn("2Wle3");
         EasyMock.expect(mock.getInitParameter("projectToken")).andReturn("2Wle3");
+        EasyMock.expect(mock.getInitParameter("sitePrefixPath")).andReturn("");
         EasyMock.expect(mock.getInitParameter("secretKey")).andReturn("secret");
         EasyMock.expect(mock.getInitParameter("urlPattern")).andReturn("query");
         EasyMock.expect(mock.getInitParameter("urlPatternReg")).andReturn("");
@@ -100,6 +105,24 @@ public class SettingsTest extends TestCase {
         EasyMock.replay(mock);
 
         return mock;
+    }
+
+    private static FilterConfig mockSpecificConfig(HashMap<String, String> option) {
+        FilterConfig mock = EasyMock.createMock(FilterConfig.class);
+        String[] keys = {"userToken", "projectToken", "sitePrefixPath", "secretKey", "urlPattern", "urlPatternReg", "query", "apiUrl", "defaultLang", "supportedLangs", "testMode", "testUrl", "useProxy", "debugMode", "originalUrlHeader", "originalQueryStringHeader", "strictHtmlCheck"};
+        for (int i=0; i<keys.length; ++i) {
+            String key = keys[i];
+            String val = option.get(key);
+            val = val == null ? "" : val;
+            EasyMock.expect(mock.getInitParameter(key)).andReturn(val);
+        }
+        EasyMock.replay(mock);
+        return mock;
+    }
+
+    private static Settings newSettings(HashMap<String, String> option) {
+        FilterConfig mock = mockSpecificConfig(option);
+        return new Settings(mock);
     }
 
     // urlPattern is "path".
@@ -236,5 +259,22 @@ public class SettingsTest extends TestCase {
 
         assertEquals("REDIRECT_URL", s.originalUrlHeader);
         assertEquals("REDIRECT_QUERY_STRING", s.originalQueryStringHeader);
+    }
+
+    public void testSettingsWithoutSitePrefix() {
+        HashMap<String, String> option = new HashMap<String, String>();
+        Settings s = newSettings(option);
+        assertFalse(s.hasSitePrefixPath);
+        assertEquals("/", s.sitePrefixPathWithSlash);
+        assertEquals("", s.sitePrefixPathWithoutSlash);
+    }
+
+    public void testSettingsWithSitePrefix() {
+        HashMap<String, String> option = new HashMap<String, String>();
+        option.put("sitePrefixPath", "/global/");
+        Settings s = newSettings(option);
+        assertTrue(s.hasSitePrefixPath);
+        assertEquals("/global/", s.sitePrefixPathWithSlash);
+        assertEquals("/global", s.sitePrefixPathWithoutSlash);
     }
 }

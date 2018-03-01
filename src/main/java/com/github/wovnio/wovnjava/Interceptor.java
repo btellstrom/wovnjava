@@ -239,7 +239,7 @@ class Interceptor {
                         newHref = href + "?wovn=" + lang;
                     }
                 } else {
-                    newHref = href.replaceFirst("([^\\.]*\\.[^/]*)(/|$)", "$1/" + lang + "/");
+                    newHref = addLangToPath(href, lang, headers.getPathLang());
                 }
             }
         } else if (href != null && href.length() > 0) {
@@ -264,15 +264,21 @@ class Interceptor {
                 }
             } else {
                 if (Pattern.compile("^/").matcher(href).find()) {
-                    newHref = "/" + lang + href;
+                    newHref = addLangToPath(href, lang, headers.getPathLang());
                 } else {
-                    currentDir = headers.pathName.replaceFirst("[^/]*\\.[^\\.]{2,6}$", "");
-                    newHref = "/" + lang + currentDir + href;
+                    currentDir = headers.pathNameKeepTrailingSlash.replaceFirst("[^/]+$", "");
+                    newHref = addLangToPath(currentDir + href, lang, headers.getPathLang());
                 }
             }
         }
 
         return newHref;
+    }
+
+    private String addLangToPath(String path, String lang, String pathLang) {
+        String prefix = this.store.settings.sitePrefixPathWithSlash;
+        String newPath = prefix + lang + "/";
+        return path.replaceFirst("^" + prefix, newPath);
     }
 
     private boolean checkWovnIgnore(Node node) {
@@ -490,11 +496,16 @@ class Interceptor {
         insertNode.setAttribute("src", "//j.wovn.io/1");
         insertNode.setAttribute("async", "true");
         String version = WovnServletFilter.VERSION;
+        String sitePrefixPath = "";
+        if (this.store.settings.hasSitePrefixPath) {
+            sitePrefixPath = "&site_prefix_path=" + this.store.settings.sitePrefixPathWithoutSlash;
+        }
         insertNode.setAttribute(
                 "data-wovnio",
                 "key=" + this.store.settings.projectToken + "&backend=true&currentLang=" + lang
                         + "&defaultLang=" + this.store.settings.defaultLang
                         + "&urlPattern=" + this.store.settings.urlPattern + "&version=" + version
+                        + sitePrefixPath
         );
         insertNode.setTextContent(" ");
         parentNode.insertBefore(insertNode, parentNode.getFirstChild());

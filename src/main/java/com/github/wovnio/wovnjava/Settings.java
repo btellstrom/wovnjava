@@ -13,6 +13,9 @@ class Settings {
     static final String UrlPatternRegSubdomain = "^([^.]+)\\.";
 
     String projectToken = "";
+    boolean hasSitePrefixPath = false;
+    String sitePrefixPathWithSlash = "/";
+    String sitePrefixPathWithoutSlash = "";
     String secretKey = "";
     String urlPattern = "path";
     String urlPatternReg = UrlPatternRegPath;
@@ -45,6 +48,18 @@ class Settings {
         p = config.getInitParameter("projectToken");
         if (p != null && p.length() > 0) {
             this.projectToken = p;
+        }
+
+        p = config.getInitParameter("sitePrefixPath");
+        this.hasSitePrefixPath = p != null && p.length() > 0;
+        if (this.hasSitePrefixPath) {
+            if (p.endsWith("/")) {
+                this.sitePrefixPathWithSlash = p;
+                this.sitePrefixPathWithoutSlash = p.substring(0, p.length() - 1);
+            } else {
+                this.sitePrefixPathWithSlash = p + "/";
+                this.sitePrefixPathWithoutSlash = p;
+            }
         }
 
         p = config.getInitParameter("secretKey");
@@ -165,6 +180,10 @@ class Settings {
 
         if (this.urlPattern.equals("path")) {
             this.urlPatternReg = UrlPatternRegPath;
+            String prefix = this.sitePrefixPathWithoutSlash;
+            if (prefix.length() > 0 && !this.urlPatternReg.contains(prefix)) {
+                this.urlPatternReg = prefix + UrlPatternRegPath;
+            }
         } else if (this.urlPattern.equals("query")) {
             this.urlPatternReg = UrlPatternRegQuery;
         } else if (this.urlPattern.equals("subdomain")) {

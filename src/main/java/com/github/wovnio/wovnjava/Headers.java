@@ -18,6 +18,7 @@ class Headers {
     String host;
     private String pathLang;
     String pathName;
+    String pathNameKeepTrailingSlash;
     String protocol;
     String pageUrl;
     String query;
@@ -138,6 +139,7 @@ class Headers {
             this.query = "";
         }
         this.query = this.removeLang(this.query, this.langCode());
+        this.pathNameKeepTrailingSlash = this.pathName;
         this.pathName = Pattern.compile("/$").matcher(this.pathName).replaceAll("");
         this.pageUrl = this.host + this.pathName + this.query;
     }
@@ -245,7 +247,8 @@ class Headers {
             return Pattern.compile("(^|(//))" + lang + "\\.", Pattern.CASE_INSENSITIVE)
                     .matcher(uri).replaceFirst("$1");
         } else {
-            return uri.replaceFirst("/" + lang + "(/|$)", "/");
+            String prefix = this.settings.sitePrefixPathWithSlash;
+            return uri.replaceFirst(prefix + lang + "(/|$)", prefix);
         }
     }
 
