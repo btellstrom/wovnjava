@@ -12,32 +12,9 @@ import javax.servlet.http.HttpServletRequest;
 
 public class InterceptorTest extends TestCase {
 
-    private static FilterConfig mockConfigPath() {
-        FilterConfig mock = EasyMock.createMock(FilterConfig.class);
-        EasyMock.expect(mock.getInitParameter("userToken")).andReturn("2Wle3");
-        EasyMock.expect(mock.getInitParameter("projectToken")).andReturn("2Wle3");
-        EasyMock.expect(mock.getInitParameter("sitePrefixPath")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("secretKey")).andReturn("secret");
-        EasyMock.expect(mock.getInitParameter("urlPattern")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("urlPatternReg")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("query")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("apiUrl")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("defaultLang")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("supportedLangs")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("testMode")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("testUrl")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("useProxy")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("debugMode")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("originalUrlHeader")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("originalQueryStringHeader")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("strictHtmlCheck")).andReturn("");
-        EasyMock.replay(mock);
-        return mock;
-    }
-
     private static FilterConfig mockSpecificConfig(HashMap<String, String> option) {
         FilterConfig mock = EasyMock.createMock(FilterConfig.class);
-        String[] keys = {"userToken", "projectToken", "sitePrefixPath", "secretKey", "urlPattern", "urlPatternReg", "query", "apiUrl", "defaultLang", "supportedLangs", "testMode", "testUrl", "useProxy", "debugMode", "originalUrlHeader", "originalQueryStringHeader", "strictHtmlCheck"};
+        String[] keys = {"userToken", "projectToken", "sitePrefixPath", "secretKey", "urlPattern", "urlPatternReg", "query", "apiUrl", "defaultLang", "supportedLangs", "testMode", "testUrl", "useProxy", "debugMode", "originalUrlHeader", "originalQueryStringHeader", "strictHtmlCheck", "deleteInvalidClosingTag"};
         for (int i=0; i<keys.length; ++i) {
             String key = keys[i];
             String val = option.get(key);
@@ -46,6 +23,15 @@ public class InterceptorTest extends TestCase {
         }
         EasyMock.replay(mock);
         return mock;
+    }
+
+    private static FilterConfig mockConfigPath() {
+        HashMap<String, String> option = new HashMap<String, String>(){ {
+            put("userToken", "2Wle3");
+            put("projectToken", "2Wle3");
+            put("secretKey", "secret");
+        } };
+        return mockSpecificConfig(option);
     }
 
     public void testInterceptor() {

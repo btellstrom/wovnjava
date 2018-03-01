@@ -70,6 +70,7 @@ public class WovnHttpServletRequestTest extends TestCase {
         EasyMock.expect(mock.getInitParameter("originalUrlHeader")).andReturn("");
         EasyMock.expect(mock.getInitParameter("originalQueryStringHeader")).andReturn("");
         EasyMock.expect(mock.getInitParameter("strictHtmlCheck")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("deleteInvalidClosingTag")).andReturn("");
         EasyMock.replay(mock);
         return mock;
     }
@@ -93,6 +94,7 @@ public class WovnHttpServletRequestTest extends TestCase {
         EasyMock.expect(mock.getInitParameter("originalUrlHeader")).andReturn("");
         EasyMock.expect(mock.getInitParameter("originalQueryStringHeader")).andReturn("");
         EasyMock.expect(mock.getInitParameter("strictHtmlCheck")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("deleteInvalidClosingTag")).andReturn("");
         EasyMock.replay(mock);
         return mock;
     }
@@ -116,6 +118,7 @@ public class WovnHttpServletRequestTest extends TestCase {
         EasyMock.expect(mock.getInitParameter("originalUrlHeader")).andReturn("");
         EasyMock.expect(mock.getInitParameter("originalQueryStringHeader")).andReturn("");
         EasyMock.expect(mock.getInitParameter("strictHtmlCheck")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("deleteInvalidClosingTag")).andReturn("");
         EasyMock.replay(mock);
         return mock;
     }

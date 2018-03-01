@@ -26,6 +26,7 @@ class Settings {
     boolean testMode = false;
     String testUrl = "";
     boolean useProxy = false;
+    boolean deleteInvalidClosingTag = false;
     int debugMode = 0;
     String originalUrlHeader = "";
     String originalQueryStringHeader = "";
@@ -130,6 +131,11 @@ class Settings {
         p = config.getInitParameter("strictHtmlCheck");
         if (p != null && !p.isEmpty()) {
             this.strictHtmlCheck = getBoolParameter(p);
+        }
+
+        p = config.getInitParameter("deleteInvalidClosingTag");
+        if (p != null && !p.isEmpty()) {
+            this.deleteInvalidClosingTag = getBoolParameter(p);
         }
 
         this.initialize();

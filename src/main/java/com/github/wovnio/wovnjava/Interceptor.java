@@ -290,7 +290,7 @@ class Interceptor {
         return this.checkWovnIgnore(node.getParentNode());
     }
 
-    private static String getStringFromDocument(String body, Document doc)
+    private static String getStringFromDocument(String body, Document doc, Settings settings)
     {
         try
         {
@@ -302,7 +302,11 @@ class Interceptor {
             transformer.setOutputProperty(OutputKeys.METHOD, "html");
             transformer.transform(domSource, result);
             String html = writer.toString();
-            return DoctypeDetectation.addDoctypeIfNotExists(body, html);
+            html = DoctypeDetectation.addDoctypeIfNotExists(body, html);
+            if (settings.deleteInvalidClosingTag) {
+                html = FixHtml.deleteClosingTagIfNeed(html);
+            }
+            return html;
         }
         catch(TransformerException ex)
         {
@@ -332,7 +336,7 @@ class Interceptor {
         XPathFactory factory = XPathFactory.newInstance();
         XPath xpath = factory.newXPath();
         if (doc.getDocumentElement().hasAttribute("wovn-ignore")) {
-            return getStringFromDocument(body, doc);
+            return getStringFromDocument(body, doc, this.store.settings);
         }
 
         changeUrlToPunyCode(doc);
@@ -520,7 +524,7 @@ class Interceptor {
 
         doc.getDocumentElement().setAttribute("lang", lang);
 
-        return getStringFromDocument(body, doc);
+        return getStringFromDocument(body, doc, this.store.settings);
     }
 
     private final Pattern extractDomain = Pattern.compile("(?:https?:)?//([^/]+)");

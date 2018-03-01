@@ -29,6 +29,7 @@ public class HeadersTest extends TestCase {
         EasyMock.expect(mock.getInitParameter("originalUrlHeader")).andReturn("");
         EasyMock.expect(mock.getInitParameter("originalQueryStringHeader")).andReturn("");
         EasyMock.expect(mock.getInitParameter("strictHtmlCheck")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("deleteInvalidClosingTag")).andReturn("");
         EasyMock.replay(mock);
 
         return mock;
@@ -52,6 +53,7 @@ public class HeadersTest extends TestCase {
         EasyMock.expect(mock.getInitParameter("originalUrlHeader")).andReturn("");
         EasyMock.expect(mock.getInitParameter("originalQueryStringHeader")).andReturn("");
         EasyMock.expect(mock.getInitParameter("strictHtmlCheck")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("deleteInvalidClosingTag")).andReturn("");
         EasyMock.replay(mock);
 
         return mock;
@@ -75,6 +77,7 @@ public class HeadersTest extends TestCase {
         EasyMock.expect(mock.getInitParameter("originalUrlHeader")).andReturn("");
         EasyMock.expect(mock.getInitParameter("originalQueryStringHeader")).andReturn("");
         EasyMock.expect(mock.getInitParameter("strictHtmlCheck")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("deleteInvalidClosingTag")).andReturn("");
         EasyMock.replay(mock);
 
         return mock;
@@ -99,6 +102,7 @@ public class HeadersTest extends TestCase {
         EasyMock.expect(mock.getInitParameter("originalUrlHeader")).andReturn("");
         EasyMock.expect(mock.getInitParameter("originalQueryStringHeader")).andReturn("");
         EasyMock.expect(mock.getInitParameter("strictHtmlCheck")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("deleteInvalidClosingTag")).andReturn("");
         EasyMock.replay(mock);
 
         return mock;
@@ -123,6 +127,7 @@ public class HeadersTest extends TestCase {
         EasyMock.expect(mock.getInitParameter("originalUrlHeader")).andReturn("");
         EasyMock.expect(mock.getInitParameter("originalQueryStringHeader")).andReturn("");
         EasyMock.expect(mock.getInitParameter("strictHtmlCheck")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("deleteInvalidClosingTag")).andReturn("");
         EasyMock.replay(mock);
 
         return mock;
@@ -147,6 +152,7 @@ public class HeadersTest extends TestCase {
         EasyMock.expect(mock.getInitParameter("originalUrlHeader")).andReturn("REDIRECT_URL");
         EasyMock.expect(mock.getInitParameter("originalQueryStringHeader")).andReturn("REDIRECT_QUERY_STRING");
         EasyMock.expect(mock.getInitParameter("strictHtmlCheck")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("deleteInvalidClosingTag")).andReturn("");
         EasyMock.replay(mock);
 
         return mock;
@@ -236,7 +242,7 @@ public class HeadersTest extends TestCase {
 
     private static FilterConfig mockSpecificConfig(HashMap<String, String> option) {
         FilterConfig mock = EasyMock.createMock(FilterConfig.class);
-        String[] keys = {"userToken", "projectToken", "sitePrefixPath", "secretKey", "urlPattern", "urlPatternReg", "query", "apiUrl", "defaultLang", "supportedLangs", "testMode", "testUrl", "useProxy", "debugMode", "originalUrlHeader", "originalQueryStringHeader", "strictHtmlCheck"};
+        String[] keys = {"userToken", "projectToken", "sitePrefixPath", "secretKey", "urlPattern", "urlPatternReg", "query", "apiUrl", "defaultLang", "supportedLangs", "testMode", "testUrl", "useProxy", "debugMode", "originalUrlHeader", "originalQueryStringHeader", "strictHtmlCheck", "deleteInvalidClosingTag"};
         for (int i=0; i<keys.length; ++i) {
             String key = keys[i];
             String val = option.get(key);
