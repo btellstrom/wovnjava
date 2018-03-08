@@ -7,7 +7,7 @@ import java.util.regex.Matcher;
 class FixJavaScript {
 
     static final String marker = "<script>/* WOVNJAVA-SCRIPT-TAG-MARKER */</script>";
-    static final Pattern scriptPattern = Pattern.compile("<script[\\s>].*?</script>");
+    static final Pattern scriptPattern = Pattern.compile("<script[\\s>][\\s\\S]*?</script>");
     static final Pattern markerPattern = Pattern.compile(Pattern.quote(marker));
 
     final ArrayList<String> memory = new ArrayList<String>();
