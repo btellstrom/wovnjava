@@ -316,6 +316,16 @@ class Interceptor {
     }
 
     private String switchLang(String body, Values values, HashMap<String, String> url, String lang, Headers headers) {
+        if (this.store.settings.deleteInvalidClosingTag) {
+            FixJavaScript fjs = new FixJavaScript(body);
+            String newBody = switchLangInternal(fjs.escape(), values, url, lang, headers);
+            return fjs.unescape(newBody);
+        } else {
+            return switchLangInternal(body, values, url, lang, headers);
+        }
+    }
+
+    private String switchLangInternal(String body, Values values, HashMap<String, String> url, String lang, Headers headers) {
 
         lang = Lang.getCode(lang);
 
