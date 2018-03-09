@@ -33,7 +33,7 @@ class FixJavaScript {
         StringBuffer sb = new StringBuffer(html.length());
         int index = 0;
         while (m.find()) {
-            m.appendReplacement(sb, memory.get(index));
+            m.appendReplacement(sb, Matcher.quoteReplacement(memory.get(index)));
             ++index;
             if (index >= memory.size()) {
                 break;

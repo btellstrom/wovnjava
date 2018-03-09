@@ -17,7 +17,7 @@ public class FixJavaScriptTest extends TestCase {
             + "</head>"
             + "<body>"
             + "hello"
-            + "<script>\nalert(1)\nconsole.log(2)\n</script>"
+            + "<script>\nalert(1)\nconsole.log(\"$.*&%#@+_{}!$\")</script>"
             + "world"
             + "</body>"
             + "</html>";
