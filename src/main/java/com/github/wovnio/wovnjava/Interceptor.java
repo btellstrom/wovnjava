@@ -10,11 +10,6 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.net.IDN;
-import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
-import java.nio.charset.CharsetDecoder;
-import java.nio.charset.CodingErrorAction;
-import java.nio.charset.CharacterCodingException;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -322,11 +317,7 @@ class Interceptor {
 
     private String switchLang(String body, Values values, HashMap<String, String> url, String lang, Headers headers) {
         if (this.store.settings.deleteInvalidUTF8) {
-            try {
-                body = deleteInvalidUTF8(body);
-            } catch (CharacterCodingException e) {
-                Logger.log.error("Failed delete invalid UTF8 ", e);
-            }
+            body = deleteInvalidUTF8(body);
         }
         if (this.store.settings.deleteInvalidClosingTag) {
             FixJavaScript fjs = new FixJavaScript(body);
@@ -337,7 +328,7 @@ class Interceptor {
         }
     }
 
-    private String deleteInvalidUTF8(String src) throws CharacterCodingException {
+    private String deleteInvalidUTF8(String src) {
         return src.replaceAll("[^\\u0009\\u000A\\u000D\\u0020-\\u007E\\u00A0-\\uD7FF\\uE000-\\uFFFC\\x{10000}-\\x{10FFFF}]", "");
     }
 
