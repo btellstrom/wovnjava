@@ -110,8 +110,8 @@ public class InterceptorTest extends TestCase {
 
     public void testDoctype() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         String input = "<html></html>";
-        String html = "<html lang=\"en\"><head><META http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script async=\"true\" data-wovnio=\"key=2Wle3&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=path&amp;version=0.1.9\" src=\"//j.wovn.io/1\"> </script></head><body></body></html>";
-        String xhtml = "<html lang=\"en\" xmlns=\"http://www.w3.org/1999/xhtml\"><head><META http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script async=\"true\" data-wovnio=\"key=2Wle3&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=path&amp;version=0.1.9\" src=\"//j.wovn.io/1\"> </script></head><body></body></html>";
+        String html = "<html lang=\"en\"><head><META http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script async=\"true\" data-wovnio=\"key=2Wle3&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=path&amp;version=0.2.1\" src=\"//j.wovn.io/1\"> </script></head><body></body></html>";
+        String xhtml = "<html lang=\"en\" xmlns=\"http://www.w3.org/1999/xhtml\"><head><META http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script async=\"true\" data-wovnio=\"key=2Wle3&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=path&amp;version=0.2.1\" src=\"//j.wovn.io/1\"> </script></head><body></body></html>";
 
         assertDocType("<!DOCTYPE html>", input, html);
         assertDocType("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">", input, html);
