@@ -31,6 +31,7 @@ class Settings {
     String originalUrlHeader = "";
     String originalQueryStringHeader = "";
     boolean strictHtmlCheck = false;
+    boolean deleteInvalidUTF8 = false;
 
     Settings(FilterConfig config) {
         super();
@@ -131,6 +132,11 @@ class Settings {
         p = config.getInitParameter("strictHtmlCheck");
         if (p != null && !p.isEmpty()) {
             this.strictHtmlCheck = getBoolParameter(p);
+        }
+
+        p = config.getInitParameter("deleteInvalidUTF8");
+        if (p != null && !p.isEmpty()) {
+            this.deleteInvalidUTF8 = getBoolParameter(p);
         }
 
         p = config.getInitParameter("deleteInvalidClosingTag");

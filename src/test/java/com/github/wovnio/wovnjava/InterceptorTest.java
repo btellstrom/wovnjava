@@ -14,7 +14,7 @@ public class InterceptorTest extends TestCase {
 
     private static FilterConfig mockSpecificConfig(HashMap<String, String> option) {
         FilterConfig mock = EasyMock.createMock(FilterConfig.class);
-        String[] keys = {"userToken", "projectToken", "sitePrefixPath", "secretKey", "urlPattern", "urlPatternReg", "query", "apiUrl", "defaultLang", "supportedLangs", "testMode", "testUrl", "useProxy", "debugMode", "originalUrlHeader", "originalQueryStringHeader", "strictHtmlCheck", "deleteInvalidClosingTag"};
+        String[] keys = {"userToken", "projectToken", "sitePrefixPath", "secretKey", "urlPattern", "urlPatternReg", "query", "apiUrl", "defaultLang", "supportedLangs", "testMode", "testUrl", "useProxy", "debugMode", "originalUrlHeader", "originalQueryStringHeader", "strictHtmlCheck", "deleteInvalidClosingTag", "deleteInvalidUTF8"};
         for (int i=0; i<keys.length; ++i) {
             String key = keys[i];
             String val = option.get(key);
@@ -145,6 +145,30 @@ public class InterceptorTest extends TestCase {
         assertEquals("/fr/global/dir/../dir/", getTranslatedLink("", "/global/dir/file", "../dir/", "fr"));
     }
 
+    public void testNoDeleteInvalidUTF8() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        String result = switchLang(new String(invalidUtf8));
+        assertEquals("1Az", between("<title>", "</title>", result));
+        assertEquals("2�z", between("<h1>", "</h1>", result));
+        assertEquals("3&#130;z", between("<h2>", "</h2>", result));
+    }
+
+    public void testDeleteInvalidUTF8() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        String result = deleteInvalidUTF8(new String(invalidUtf8));
+        assertEquals("1Az", between("<title>", "</title>", result));
+        assertEquals("2z", between("<h1>", "</h1>", result));
+        assertEquals("3z", between("<h2>", "</h2>", result));
+    }
+
+    private String between(String prefix, String suffix, String target) {
+        int begin = target.indexOf(prefix);
+        int end = target.indexOf(suffix);
+        if (begin >= 0 && end >= 0) {
+            return target.substring(begin + prefix.length(), end);
+        } else {
+            return "";
+        }
+    }
+
     private String getTranslatedLink(final String sitePrefixPath, String requestPath, String linkPath, String lang) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         String html = "<a href=" + linkPath + ">link</a>";
         HashMap<String, String> option = new HashMap<String, String>(){ {
@@ -184,6 +208,14 @@ public class InterceptorTest extends TestCase {
         return (String)method.invoke(interceptor, html, values, url, lang, headers);
     }
 
+    private String deleteInvalidUTF8(String html) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        HashMap<String, String> option = new HashMap<String, String>() {{
+            put("deleteInvalidUTF8", "1");
+        }};
+        FilterConfig config = mockSpecificConfig(option);
+        return switchLang(html, config, mockRequestPath("/ja/test"), "en");
+    }
+
     private static HttpServletRequest mockRequestPath(String path) {
         HttpServletRequest mock = EasyMock.createMock(HttpServletRequest.class);
         EasyMock.expect(mock.getScheme()).andReturn("https");
@@ -194,5 +226,31 @@ public class InterceptorTest extends TestCase {
         EasyMock.expect(mock.getServerPort()).andReturn(443).atLeastOnce();
         EasyMock.replay(mock);
         return mock;
+    }
+
+    private static byte[] invalidUtf8 = flatten(new byte[][] {
+        "<!DOCTYPE html><head><title>1".getBytes(),
+        new byte[]{ 65 }, // A
+        "z</title></head><body><h1>2".getBytes(),
+        new byte[]{ -126 }, // invalid utf8
+        "z</h1><h2>3".getBytes(),
+        new byte[]{ -62, -126 }, // valid utf8 but this is controll charactor
+        "z</h2></body></html>".getBytes()
+    });
+
+    private static byte[] flatten(byte[][] src) {
+        int sum = 0;
+        for (int i=0; i<src.length; ++i) {
+            sum += src[i].length;
+        }
+        int offset = 0;
+        byte[] dst = new byte[sum];
+        for (int i=0; i<src.length; ++i) {
+            byte[] bytes = src[i];
+            int size = bytes.length;
+            System.arraycopy(bytes, 0, dst, offset, size);
+            offset += size;
+        }
+        return dst;
     }
 }
