@@ -27,6 +27,7 @@ import javax.xml.bind.DatatypeConverter;
 import net.arnx.jsonic.JSON;
 
 class Api {
+    private final int READ_BUFFER_SIZE = 8196;
     private final String version;
     private final Settings settings;
     private final Headers headers;
@@ -45,14 +46,12 @@ class Api {
             byte[] data = getApiBody(lang, body).getBytes();
 
             con = (HttpURLConnection) url.openConnection();
+            con.setDoOutput(true);
             con.setRequestProperty("Accept-Encoding", "gzip");
             con.setRequestProperty("Content-Type", "application/octet-stream");
             con.setRequestProperty("Content-Length", String.valueOf(data.length));
-            con.setDoOutput(true);
             con.setRequestMethod("POST");
-
             writeGzip(con.getOutputStream(), data);
-
             con.connect();
             int status = con.getResponseCode();
             if (status == HttpURLConnection.HTTP_OK) {
@@ -83,7 +82,7 @@ class Api {
 
     private String extractHtml(InputStream input) throws ApiException, IOException, UnsupportedEncodingException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        byte[] buffer = new byte[8 * 1024];
+        byte[] buffer = new byte[READ_BUFFER_SIZE];
         int len = 0;
         while ((len = input.read(buffer)) > 0) {
             out.write(buffer, 0, len);
@@ -102,38 +101,31 @@ class Api {
 
     private String getApiBody(String lang, String body) throws UnsupportedEncodingException {
         StringBuilder sb = new StringBuilder();
-		appendField(sb, "url", headers.url);
-		appendField(sb, "token", settings.projectToken);
-		appendField(sb, "lang_code", lang);
-		appendField(sb, "url_pattern", settings.urlPattern);
-		appendField(sb, "body", body);
+        appendKeyValue(sb, "url=", headers.url);
+        appendKeyValue(sb, "&token=", settings.projectToken);
+        appendKeyValue(sb, "&lang_code=", lang);
+        appendKeyValue(sb, "&url_pattern=", settings.urlPattern);
+        appendKeyValue(sb, "&body=", body);
         return sb.toString();
-    }
-
-	private void appendField(StringBuilder sb, String key, String value) throws UnsupportedEncodingException {
-        sb.append(URLEncoder.encode(key, "UTF-8"));
-		sb.append('=');
-        sb.append(URLEncoder.encode(value, "UTF-8"));
-		sb.append('&');
     }
 
     private URL getApiUrl(String lang, String body) throws UnsupportedEncodingException, NoSuchAlgorithmException, MalformedURLException {
         StringBuilder sb = new StringBuilder();
         sb.append(settings.apiUrl);
         sb.append("translation?cache_key=");
-        sb.append(URLEncoder.encode("(token=", "UTF-8"));
-        sb.append(URLEncoder.encode(settings.projectToken, "UTF-8"));
-        sb.append(URLEncoder.encode("&settings_hash=", "UTF-8"));
-        sb.append(URLEncoder.encode(settings.hash(), "UTF-8"));
-        sb.append(URLEncoder.encode("&body_hash=", "UTF-8"));
-        sb.append(URLEncoder.encode(hash(body.getBytes()), "UTF-8"));
-        sb.append(URLEncoder.encode("&path=", "UTF-8"));
-        sb.append(URLEncoder.encode(headers.pathName, "UTF-8"));
-        sb.append(URLEncoder.encode("&lang=", "UTF-8"));
-        sb.append(URLEncoder.encode(lang, "UTF-8"));
-        sb.append(URLEncoder.encode("&version=", "UTF-8"));
-        sb.append(URLEncoder.encode(version, "UTF-8"));
-        sb.append(URLEncoder.encode(")", "UTF-8"));
+        appendValue(sb, "(token=");
+        appendValue(sb, settings.projectToken);
+        appendValue(sb, "&settings_hash=");
+        appendValue(sb, settings.hash());
+        appendValue(sb, "&body_hash=");
+        appendValue(sb, hash(body.getBytes()));
+        appendValue(sb, "&path=");
+        appendValue(sb, headers.pathName);
+        appendValue(sb, "&lang=");
+        appendValue(sb, lang);
+        appendValue(sb, "&version=");
+        appendValue(sb, version);
+        appendValue(sb, ")");
         return new URL(sb.toString());
     }
 
@@ -142,5 +134,14 @@ class Api {
         md.update(item);
         byte[] digest = md.digest();
         return DatatypeConverter.printHexBinary(digest).toUpperCase();
+    }
+
+    private void appendKeyValue(StringBuilder sb, String key, String value) throws UnsupportedEncodingException {
+        sb.append(key);
+        appendValue(sb, value);
+    }
+
+    private void appendValue(StringBuilder sb, String value) throws UnsupportedEncodingException {
+        sb.append(URLEncoder.encode(value, "UTF-8"));
     }
 }

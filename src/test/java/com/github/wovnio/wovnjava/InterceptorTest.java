@@ -15,6 +15,18 @@ import javax.servlet.http.HttpServletResponse;
 
 public class InterceptorTest extends TestCase {
 
+    public void testApiTranslate() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, IOException, ServletException {
+        String originalHtml = "<!DOCTYPE html><html><head><title>test</title></head><body>test</body></html>";
+        Settings settings = makeSettings(new HashMap<String, String>() {{
+            put("projectToken", "token0");
+            put("defaultLang", "en");
+            put("supportedLangs", "en,ja,fr");
+        }});
+        String html = translate("/ja/", originalHtml, settings, mockApi("replace"));
+        String expect = "replaced html";
+        assertEquals(expect, html);
+    }
+
     public void testApiTimeout() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, IOException, ServletException {
         String originalHtml = "<!DOCTYPE html><html><head><title>test</title></head><body>test</body></html>";
         Settings settings = makeSettings(new HashMap<String, String>() {{
