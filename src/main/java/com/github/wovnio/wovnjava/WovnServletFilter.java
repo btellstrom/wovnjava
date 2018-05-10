@@ -56,7 +56,8 @@ public class WovnServletFilter implements Filter {
         String originalBody = wovnResponse.toString();
         if (originalBody != null) {
             // text
-            Interceptor interceptor = new Interceptor(VERSION, headers, settings);
+            API api = new API(VERSION, headers, settings);
+            Interceptor interceptor = new Interceptor(VERSION, headers, settings, api);
             String body = interceptor.translate(originalBody);
             wovnResponse.setContentLength(body.getBytes().length);
             wovnResponse.setContentType("text/html; charset=utf-8");

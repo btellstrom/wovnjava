@@ -4,8 +4,11 @@ import org.jetbrains.annotations.Contract;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import javax.servlet.FilterConfig;
+import javax.xml.bind.DatatypeConverter;
 
 class Settings {
     static final String UrlPatternRegPath = "/([^/.?]+)";
@@ -201,5 +204,25 @@ class Settings {
         }
 
         return valid;
+    }
+
+    String hash() throws NoSuchAlgorithmException {
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        md.update(projectToken.getBytes());
+        md.update(urlPattern.getBytes());
+        md.update(urlPatternReg.getBytes());
+		for (String q : query) {
+        	md.update(q.getBytes());
+		}
+        md.update(sitePrefixPathWithSlash.getBytes());
+        md.update(defaultLang.getBytes());
+		for (String lang : supportedLangs) {
+        	md.update(lang.getBytes());
+		}
+        md.update(useProxy ? new byte[]{ 0 } : new byte[] { 1 });
+        md.update(originalUrlHeader.getBytes());
+        md.update(originalQueryStringHeader.getBytes());
+        byte[] digest = md.digest();
+        return DatatypeConverter.printHexBinary(digest).toUpperCase();
     }
 }
