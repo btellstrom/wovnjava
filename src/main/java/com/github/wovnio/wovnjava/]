@@ -1,11 +1,19 @@
 package com.github.wovnio.wovnjava;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+
 class Interceptor {
     private final String version;
     private final Settings settings;
     private final Headers headers;
 
-    Interceptor(String version, Headers headers, Settings settings) {
+    Interceptor(String version, Headers h, Settings settings) {
         this.version = version;
         this.headers = headers;
         this.settings = settings;
@@ -15,13 +23,8 @@ class Interceptor {
         String lang = headers.langCode();
         boolean canTranslate = lang.length() > 0 && !lang.equals(settings.defaultLang);
         if (canTranslate) {
-            return apiTranslate(body);
         } else {
-            return localTranslate(body);
         }
-    }
-
-    private String apiTranslate(String body) {
         StringBuilder sb = new StringBuilder();
         sb.append("\n");
         appendWovnTag(sb, " data-wovnio-type=\"backend_without_api_because_timeout\"");
@@ -30,18 +33,18 @@ class Interceptor {
         return body.replace("</head>", sb.toString());
     }
 
-    private String localTranslate(String body) {
+    String noTranslate(String body) {
         StringBuilder sb = new StringBuilder();
         sb.append("\n");
-        appendWovnTag(sb, " data-wovnio-type=\"backend_without_api\"");
-        appendHrefLangTag(sb);
+        appendWovnTag(h, sb, " data-wovnio-type=\"backend_without_api\"");
+        appendHrefLangTag(h, sb);
         sb.append("</head>");
         return body.replace("</head>", sb.toString());
     }
 
     private void appendHrefLangTag(StringBuilder sb) {
         for (String lang : settings.supportedLangs) {
-            if (lang.equals(settings.defaultLang)) {
+            if (lang == settings.defaultLang) {
                 continue;
             }
             sb.append("<link ref=\"altername\" hreflang=\"");

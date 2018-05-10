@@ -23,15 +23,9 @@ class Settings {
     String apiUrl = "https://api.wovn.io/v0/values";
     String defaultLang = "en";
     ArrayList<String> supportedLangs;
-    boolean testMode = false;
-    String testUrl = "";
     boolean useProxy = false;
-    boolean deleteInvalidClosingTag = false;
-    int debugMode = 0;
     String originalUrlHeader = "";
     String originalQueryStringHeader = "";
-    boolean strictHtmlCheck = false;
-    boolean deleteInvalidUTF8 = false;
 
     Settings(FilterConfig config) {
         super();
@@ -99,24 +93,9 @@ class Settings {
             this.supportedLangs = getArrayParameter(p);
         }
 
-        p = config.getInitParameter("testMode");
-        if (p != null && p.length() > 0) {
-            this.testMode = getBoolParameter(p);
-        }
-
-        p = config.getInitParameter("testUrl");
-        if (p != null && p.length() > 0) {
-            this.testUrl = p;
-        }
-
         p = config.getInitParameter("useProxy");
         if (p != null && p.length() > 0) {
             this.useProxy = getBoolParameter(p);
-        }
-
-        p = config.getInitParameter("debugMode");
-        if (p != null && !p.isEmpty()) {
-            this.debugMode = getIntParameter(p);
         }
 
         p = config.getInitParameter("originalUrlHeader");
@@ -127,21 +106,6 @@ class Settings {
         p = config.getInitParameter("originalQueryStringHeader");
         if (p != null && !p.isEmpty()) {
             this.originalQueryStringHeader = p;
-        }
-
-        p = config.getInitParameter("strictHtmlCheck");
-        if (p != null && !p.isEmpty()) {
-            this.strictHtmlCheck = getBoolParameter(p);
-        }
-
-        p = config.getInitParameter("deleteInvalidUTF8");
-        if (p != null && !p.isEmpty()) {
-            this.deleteInvalidUTF8 = getBoolParameter(p);
-        }
-
-        p = config.getInitParameter("deleteInvalidClosingTag");
-        if (p != null && !p.isEmpty()) {
-            this.deleteInvalidClosingTag = getBoolParameter(p);
         }
 
         this.initialize();

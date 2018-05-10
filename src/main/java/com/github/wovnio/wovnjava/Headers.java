@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.PrintWriter;
 
 class Headers {
     Settings settings;
@@ -181,41 +182,6 @@ class Headers {
         return this.pathLang;
     }
 
-    // This method is not used in wovnrb.
-    /*
-    public String getBrowserLang() {
-        if (browserLang == null || browserLang.length() == 0) {
-            Cookie cookies[] = request.getCookies();
-            boolean noCookie = true;
-            if (cookies != null) {
-                for (Cookie c : cookies) {
-                    String name = c.getName();
-                    if (name.equals("wovn_selected_lang")) {
-                        String value = c.getValue();
-                        if (Lang.getLang(value) != null) {
-                            browserLang = value;
-                            noCookie = false;
-                        }
-                        break;
-                    }
-                }
-            }
-            if (noCookie) {
-                browserLang = "";
-                Enumeration e = request.getHeaders("Accept-Language");
-                while (e.hasMoreElements()) {
-                    String l = (String) e.nextElement();
-                    if (Lang.getLang(l) != null) {
-                        browserLang = l;
-                        break;
-                    }
-                }
-            }
-        }
-        return browserLang;
-    }
-    */
-
     String redirectLocation(String lang) {
         if (lang.equals(this.settings.defaultLang)) {
             return this.protocol + "://" + this.url;
@@ -229,8 +195,10 @@ class Headers {
                 }
             } else if (this.settings.urlPattern.equals("subdomain")) {
                 location = lang.toLowerCase() + "." + location;
+            } else if (location.endsWith("/")) {
+                location += lang + "/";
             } else {
-                location = location.replaceFirst("(/|$)", lang);
+                location += "/" + lang + "/";
             }
             return protocol + "://" + location;
         }
