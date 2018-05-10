@@ -1,21 +1,21 @@
 package com.github.wovnio.wovnjava;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.lang.IllegalArgumentException;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import junit.framework.TestCase;
 
 import org.easymock.EasyMock;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.lang.reflect.Method;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.IllegalArgumentException;
-import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 public class InterceptorTest extends TestCase {
 
-    public void testApiTranslate() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, IOException, ServletException {
+    public void testApiTranslate() throws NoSuchMethodException, IllegalAccessException, IOException, ServletException {
         String originalHtml = "<!DOCTYPE html><html><head><title>test</title></head><body>test</body></html>";
         Settings settings = makeSettings(new HashMap<String, String>() {{
             put("projectToken", "token0");
@@ -27,7 +27,7 @@ public class InterceptorTest extends TestCase {
         assertEquals(expect, html);
     }
 
-    public void testApiTimeout() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, IOException, ServletException {
+    public void testApiTimeout() throws NoSuchMethodException, IllegalAccessException, IOException, ServletException {
         String originalHtml = "<!DOCTYPE html><html><head><title>test</title></head><body>test</body></html>";
         Settings settings = makeSettings(new HashMap<String, String>() {{
             put("projectToken", "token0");
@@ -44,7 +44,7 @@ public class InterceptorTest extends TestCase {
         assertEquals(expect, html);
     }
 
-    public void testNoApi() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, IOException, ServletException {
+    public void testNoApi() throws NoSuchMethodException, IllegalAccessException, IOException, ServletException {
         String originalHtml = "<!DOCTYPE html><html><head><title>test</title></head><body>test</body></html>";
         Settings settings = makeSettings(new HashMap<String, String>() {{
             put("projectToken", "token0");
@@ -61,7 +61,7 @@ public class InterceptorTest extends TestCase {
         assertEquals(expect, html);
     }
 
-    private String translate(String path, String html, Settings settings, Api api) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, IOException, ServletException {
+    private String translate(String path, String html, Settings settings, Api api) throws NoSuchMethodException, IllegalAccessException, IOException, ServletException {
         HttpServletRequest request = mockRequestPath(path);
         Interceptor interceptor = new Interceptor("test_version", new Headers(request, settings), settings, api);
         return interceptor.translate(html);

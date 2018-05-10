@@ -1,43 +1,26 @@
 package com.github.wovnio.wovnjava;
 
-import junit.framework.TestCase;
-
-import org.easymock.EasyMock;
-
-import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.lang.reflect.Method;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.IllegalArgumentException;
-import java.util.zip.GZIPInputStream;
-import java.net.HttpURLConnection;
-import javax.servlet.FilterConfig;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.DataOutputStream;
-import java.io.BufferedReader;
-import java.io.BufferedInputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.UnsupportedEncodingException;
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.net.ProtocolException;
-import java.net.MalformedURLException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
-import java.util.LinkedHashMap;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import java.net.HttpURLConnection;
+import java.net.ProtocolException;
+import javax.servlet.FilterConfig;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import junit.framework.TestCase;
+
+import org.easymock.EasyMock;
+
 
 public class ApiTest extends TestCase {
     public void testNormal() throws ApiException, IOException, ProtocolException {
