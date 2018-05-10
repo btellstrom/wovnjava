@@ -29,7 +29,7 @@ public class WovnServletFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws ServletException, IOException
     {
         Headers headers = new Headers((HttpServletRequest)request, settings);
-        String lang = headers.langCode();
+        String lang = headers.getPathLang();
         boolean hasShorterPath = lang.length() > 0 && lang.equals(settings.defaultLang);
 
         if (!isHtml(headers.pathName)) {

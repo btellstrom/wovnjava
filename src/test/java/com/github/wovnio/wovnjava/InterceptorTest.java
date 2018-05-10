@@ -24,8 +24,9 @@ public class InterceptorTest extends TestCase {
         }});
         String html = translate("/ja/", originalHtml, settings, mockApi("timeout"));
         String expect = "<!DOCTYPE html><html><head><title>test</title>" +
-                        "\n<script src=\"//j.wovn.io/1\" data-wovnio=\"key=token0&amp;backend=true&amp;currentLang=&amp;defaultLang=en&amp;urlPattern=path;&amp;langCodeAliases=[]&amp;version=test_version\" data-wovnio-type=\"backend_api_fail_timeout\" async></script>" +
+                        "\n<script src=\"//j.wovn.io/1\" data-wovnio=\"key=token0&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=test_version\" data-wovnio-type=\"backend_api_fail_timeout\" async></script>" +
                         "\n<link ref=\"altername\" hreflang=\"en\" href=\"https://example.com/\">" +
+                        "\n<link ref=\"altername\" hreflang=\"ja\" href=\"https://example.com/ja/\">" +
                         "\n<link ref=\"altername\" hreflang=\"fr\" href=\"https://example.com/fr/\">" +
                         "\n</head><body>test</body></html>";
         assertEquals(expect, html);
@@ -40,7 +41,8 @@ public class InterceptorTest extends TestCase {
         }});
         String html = translate("/", originalHtml, settings, null);
         String expect = "<!DOCTYPE html><html><head><title>test</title>" +
-                        "\n<script src=\"//j.wovn.io/1\" data-wovnio=\"key=token0&amp;backend=true&amp;currentLang=&amp;defaultLang=en&amp;urlPattern=path;&amp;langCodeAliases=[]&amp;version=test_version\" data-wovnio-type=\"backend_without_api\" async></script>" +
+                        "\n<script src=\"//j.wovn.io/1\" data-wovnio=\"key=token0&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=test_version\" data-wovnio-type=\"backend_without_api\" async></script>" +
+                        "\n<link ref=\"altername\" hreflang=\"en\" href=\"https://example.com/\">" +
                         "\n<link ref=\"altername\" hreflang=\"ja\" href=\"https://example.com/ja/\">" +
                         "\n<link ref=\"altername\" hreflang=\"fr\" href=\"https://example.com/fr/\">" +
                         "\n</head><body>test</body></html>";

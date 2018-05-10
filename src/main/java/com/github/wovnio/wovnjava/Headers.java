@@ -13,20 +13,20 @@ import java.io.PrintWriter;
 
 class Headers {
     Settings settings;
-    private HttpServletRequest request;
-
-    private String browserLang;
     String host;
-    private String pathLang;
     String pathName;
     String pathNameKeepTrailingSlash;
     String protocol;
     String pageUrl;
     String query;
+    String url;
+
+    private HttpServletRequest request;
+    private String browserLang;
+    private String pathLang;
     private String unmaskedHost;
     private String unmaskedPathName;
     private String unmaskedUrl;
-    String url;
 
     Headers(HttpServletRequest r, Settings s) {
         this.settings = s;
@@ -115,6 +115,7 @@ class Headers {
             this.url += "?";
         }
         this.url += this.removeLang(this.query, this.langCode());
+        this.url = this.url.length() == 0 ? "/" : this.url;
         if (this.settings.query.size() > 0) {
             ArrayList<String> queryVals = new ArrayList<String>();
             for (String q : this.settings.query) {

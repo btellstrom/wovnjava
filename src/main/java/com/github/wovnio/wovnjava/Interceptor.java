@@ -28,15 +28,15 @@ class Interceptor {
 		    return api.translate(lang, body);
         } catch (ApiException e) {
             Logger.log.error("ApiException", e);
-            return apiTranslateFail(lang, body, e.getMessage());
+            return apiTranslateFail(body, e.getMessage());
         }
 	}
 
-    private String apiTranslateFail(String lang, String body, String reason) {
+    private String apiTranslateFail(String body, String reason) {
         StringBuilder sb = new StringBuilder();
         sb.append("\n");
-        appendWovnTag("", sb, " data-wovnio-type=\"backend_api_fail_" + reason + "\"");
-        appendHrefLangTag(lang, sb);
+        appendWovnTag(settings.defaultLang, sb, " data-wovnio-type=\"backend_api_fail_" + reason + "\"");
+        appendHrefLangTag(sb);
         sb.append("</head>");
         return body.replace("</head>", sb.toString());
     }
@@ -44,17 +44,14 @@ class Interceptor {
     private String localTranslate(String lang, String body) {
         StringBuilder sb = new StringBuilder();
         sb.append("\n");
-        appendWovnTag("", sb, " data-wovnio-type=\"backend_without_api\"");
-        appendHrefLangTag(lang, sb);
+        appendWovnTag(lang, sb, " data-wovnio-type=\"backend_without_api\"");
+        appendHrefLangTag(sb);
         sb.append("</head>");
         return body.replace("</head>", sb.toString());
     }
 
-    private void appendHrefLangTag(String skipLang, StringBuilder sb) {
+    private void appendHrefLangTag(StringBuilder sb) {
         for (String lang : settings.supportedLangs) {
-            if (lang.equals(skipLang)) {
-                continue;
-            }
             sb.append("<link ref=\"altername\" hreflang=\"");
             sb.append(Lang.normalizeIso639_1(lang));
             sb.append("\" href=\"");
@@ -72,7 +69,7 @@ class Interceptor {
         sb.append(settings.defaultLang);
         sb.append("&amp;urlPattern=");
         sb.append(settings.urlPattern);
-        sb.append(";&amp;langCodeAliases=[]&amp;version=");
+        sb.append("&amp;langCodeAliases={}&amp;version=");
         sb.append(version);
         sb.append("\"");
         sb.append(extra);
