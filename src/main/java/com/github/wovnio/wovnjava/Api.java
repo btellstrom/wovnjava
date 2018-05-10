@@ -39,20 +39,35 @@ class Api {
         this.settings = settings;
     }
 
-    String translate(String lang, String body) throws ApiException {
+    String translate(String lang, String html) throws ApiException {
         HttpURLConnection con = null;
         try {
-            URL url = getApiUrl(lang, body);
-            byte[] data = getApiBody(lang, body).getBytes();
+            try {
+                URL url = getApiUrl(lang, html);
+                con = (HttpURLConnection) url.openConnection();
+            } catch (Exception e) {
+                Logger.log.error("Api url", e);
+                throw new ApiException("unknown");
+            }
+            return translate(lang, html, con);
+        } finally {
+            con.disconnect();
+        }
+    }
 
-            con = (HttpURLConnection) url.openConnection();
+    String translate(String lang, String html, HttpURLConnection con) throws ApiException {
+        OutputStream out = null;
+        try {
+            ByteArrayOutputStream body = gzipStream(getApiBody(lang, html).getBytes());
             con.setDoOutput(true);
             con.setRequestProperty("Accept-Encoding", "gzip");
             con.setRequestProperty("Content-Type", "application/octet-stream");
-            con.setRequestProperty("Content-Length", String.valueOf(data.length));
+            con.setRequestProperty("Content-Length", String.valueOf(body.size()));
             con.setRequestMethod("POST");
-            writeGzip(con.getOutputStream(), data);
-            con.connect();
+            out = con.getOutputStream();
+            body.writeTo(out);
+            out.close();
+            out = null;
             int status = con.getResponseCode();
             if (status == HttpURLConnection.HTTP_OK) {
                 InputStream input = con.getInputStream();
@@ -65,19 +80,28 @@ class Api {
             }
         } catch (Exception e) {
             Logger.log.error("Api", e);
-            throw new ApiException("unknown");
+            throw new ApiException(e.getMessage());
+            //throw new ApiException("unknown");
         } finally {
-            con.disconnect();
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (Exception e) {
+                    Logger.log.error("Api close", e);
+                }
+            }
         }
     }
 
-    private void writeGzip(OutputStream out, byte[] input) throws IOException, UnsupportedEncodingException {
-        GZIPOutputStream gz = new GZIPOutputStream(out);
+    private ByteArrayOutputStream gzipStream(byte[] input) throws IOException, UnsupportedEncodingException {
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        GZIPOutputStream gz = new GZIPOutputStream(buffer);
         try {
             gz.write(input);
         } finally {
             gz.close();
         }
+        return buffer;
     }
 
     private String extractHtml(InputStream input) throws ApiException, IOException, UnsupportedEncodingException {
