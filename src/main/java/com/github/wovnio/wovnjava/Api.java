@@ -22,19 +22,19 @@ import java.security.NoSuchAlgorithmException;
 import javax.xml.bind.DatatypeConverter;
 
 
-class API {
+class Api {
     private final String version;
     private final Settings settings;
     private final Headers headers;
-    private final String responseEncoding = "UTF-8"; // always API response is UTF8
+    private final String responseEncoding = "UTF-8"; // always response is UTF8
 
-    API(String version, Headers headers, Settings settings) {
+    Api(String version, Headers headers, Settings settings) {
         this.version = version;
         this.headers = headers;
         this.settings = settings;
     }
 
-    String translate(String lang, String body) throws APIException {
+    String translate(String lang, String body) throws ApiException {
         HttpURLConnection con = null;
         try {
             URL url = getApiUrl(lang, body);
@@ -68,11 +68,11 @@ class API {
                 input.close();
                 return out.toString(responseEncoding);
             } else {
-                throw new APIException("status_" + String.valueOf(status));
+                throw new ApiException("status_" + String.valueOf(status));
             }
         } catch (Exception e) {
-            // logging original exception
-            throw new APIException("unknown");
+            Logger.log.error("Api", e);
+            throw new ApiException("unknown");
         } finally {
             con.disconnect();
         }
@@ -153,6 +153,8 @@ class API {
         sb.append(URLEncoder.encode(headers.pathName, "UTF-8"));
         sb.append(URLEncoder.encode("&lang=", "UTF-8"));
         sb.append(URLEncoder.encode(lang, "UTF-8"));
+        sb.append(URLEncoder.encode("&version=", "UTF-8"));
+        sb.append(URLEncoder.encode(version, "UTF-8"));
         sb.append(URLEncoder.encode(")", "UTF-8"));
         return new URL(sb.toString());
     }

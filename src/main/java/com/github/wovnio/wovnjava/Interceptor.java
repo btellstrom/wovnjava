@@ -4,9 +4,9 @@ class Interceptor {
     private final String version;
     private final Settings settings;
     private final Headers headers;
-	private final API api;
+	private final Api api;
 
-    Interceptor(String version, Headers headers, Settings settings, API api) {
+    Interceptor(String version, Headers headers, Settings settings, Api api) {
         this.version = version;
         this.headers = headers;
         this.settings = settings;
@@ -26,8 +26,8 @@ class Interceptor {
 	private String apiTranslate(String lang, String body) {
         try {
 		    return api.translate(lang, body);
-        } catch (APIException e) {
-            // logging error
+        } catch (ApiException e) {
+            Logger.log.error("ApiException", e);
             return apiTranslateFail(lang, body, e.getMessage());
         }
 	}

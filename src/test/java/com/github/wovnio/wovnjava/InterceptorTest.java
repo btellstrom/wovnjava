@@ -22,7 +22,7 @@ public class InterceptorTest extends TestCase {
             put("defaultLang", "en");
             put("supportedLangs", "en,ja,fr");
         }});
-        String html = translate("/ja/", originalHtml, settings, mockAPI("timeout"));
+        String html = translate("/ja/", originalHtml, settings, mockApi("timeout"));
         String expect = "<!DOCTYPE html><html><head><title>test</title>" +
                         "\n<script src=\"//j.wovn.io/1\" data-wovnio=\"key=token0&amp;backend=true&amp;currentLang=&amp;defaultLang=en&amp;urlPattern=path;&amp;langCodeAliases=[]&amp;version=test_version\" data-wovnio-type=\"backend_api_fail_timeout\" async></script>" +
                         "\n<link ref=\"altername\" hreflang=\"en\" href=\"https://example.com/\">" +
@@ -47,23 +47,23 @@ public class InterceptorTest extends TestCase {
         assertEquals(expect, html);
     }
 
-    private String translate(String path, String html, Settings settings, API api) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, IOException, ServletException {
+    private String translate(String path, String html, Settings settings, Api api) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, IOException, ServletException {
         HttpServletRequest request = mockRequestPath(path);
         Interceptor interceptor = new Interceptor("test_version", new Headers(request, settings), settings, api);
         return interceptor.translate(html);
     }
 
-    private API mockAPI(String type) {
-        API mock = EasyMock.createMock(API.class);
+    private Api mockApi(String type) {
+        Api mock = EasyMock.createMock(Api.class);
         try {
             if (type.equals("replace")) {
                 EasyMock.expect(mock.translate(EasyMock.anyString(), EasyMock.anyString())).andReturn("replaced html").atLeastOnce();
             } else if (type.equals("timeout")) {
-                EasyMock.expect(mock.translate(EasyMock.anyString(), EasyMock.anyString())).andThrow(APIException.timeout).atLeastOnce();
+                EasyMock.expect(mock.translate(EasyMock.anyString(), EasyMock.anyString())).andThrow(ApiException.timeout).atLeastOnce();
             } else {
                 throw new IllegalArgumentException("Unknown type " + type);
             }
-        } catch (APIException _) {
+        } catch (ApiException _) {
             throw new RuntimeException("Fail create mock");
         }
         EasyMock.replay(mock);

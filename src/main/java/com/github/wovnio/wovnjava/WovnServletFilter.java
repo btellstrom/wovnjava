@@ -56,7 +56,7 @@ public class WovnServletFilter implements Filter {
         String originalBody = wovnResponse.toString();
         if (originalBody != null) {
             // text
-            API api = new API(VERSION, headers, settings);
+            Api api = new Api(VERSION, headers, settings);
             Interceptor interceptor = new Interceptor(VERSION, headers, settings, api);
             String body = interceptor.translate(originalBody);
             wovnResponse.setContentLength(body.getBytes().length);
