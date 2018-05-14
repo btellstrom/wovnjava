@@ -25,7 +25,10 @@ class Interceptor {
 
 	private String apiTranslate(String lang, String body) {
         try {
-		    return api.translate(lang, body);
+            HtmlConverter converter = new HtmlConverter(settings, body);
+		    String convertedBody = converter.strip();
+		    String translatedBody = api.translate(lang, convertedBody);
+            return converter.restore(translatedBody);
         } catch (ApiException e) {
             Logger.log.error("ApiException", e);
             return apiTranslateFail(body, e.getMessage());

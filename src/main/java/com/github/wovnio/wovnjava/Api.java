@@ -48,11 +48,9 @@ class Api {
         }
     }
 
-    String translate(String lang, String originalHtml, HttpURLConnection con) throws ApiException {
+    String translate(String lang, String html, HttpURLConnection con) throws ApiException {
         OutputStream out = null;
         try {
-            HtmlConverter converter = new HtmlConverter(originalHtml);
-            String html = converter.strip();
             ByteArrayOutputStream body = gzipStream(getApiBody(lang, html).getBytes());
             con.setDoOutput(true);
             con.setRequestProperty("Accept-Encoding", "gzip");
@@ -69,7 +67,7 @@ class Api {
                 if ("gzip".equals(con.getContentEncoding())) {
                     input = new GZIPInputStream(input);
                 }
-                return converter.restore(extractHtml(input));
+                return extractHtml(input);
             } else {
                 throw new ApiException("status_" + String.valueOf(status));
             }

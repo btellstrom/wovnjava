@@ -23,6 +23,7 @@ import org.easymock.EasyMock;
 
 
 public class ApiTest extends TestCase {
+
     public void testNormal() throws ApiException, IOException, ProtocolException {
         Settings settings = makeSettings(new HashMap<String, String>() {{
             put("projectToken", "token0");
@@ -49,7 +50,7 @@ public class ApiTest extends TestCase {
         assertEquals(expect, html);
     }
 
-    String translate(HttpServletRequest request, Settings settings, String html, int code, String encoding, byte[] response) throws ApiException, IOException, ProtocolException {
+    private String translate(HttpServletRequest request, Settings settings, String html, int code, String encoding, byte[] response) throws ApiException, IOException, ProtocolException {
         Headers headers = new Headers(request, settings);
         HttpURLConnection con = mockHttpURLConnection(gzip(html.getBytes()).length, code, encoding, response);
         Api api = new Api("test", headers, settings);
