@@ -53,7 +53,7 @@ public class ApiTest extends TestCase {
     private String translate(HttpServletRequest request, Settings settings, String html, int code, String encoding, byte[] response) throws ApiException, IOException, ProtocolException {
         Headers headers = new Headers(request, settings);
         HttpURLConnection con = mockHttpURLConnection(gzip(html.getBytes()).length, code, encoding, response);
-        Api api = new Api("test", headers, settings);
+        Api api = new Api(settings, headers);
         return api.translate("ja", html, con);
     }
 

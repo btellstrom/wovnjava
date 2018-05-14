@@ -120,7 +120,7 @@ public class SettingsTest extends TestCase {
         assertEquals("path", s.urlPattern);
         assertEquals(Settings.UrlPatternRegPath, s.urlPatternReg);
         assertEquals(new ArrayList<String>(), s.query);
-        assertEquals("https://api.wovn.io/v0/values", s.apiUrl);
+        assertEquals("https://wovn.global.ssl.fastly.net/v0/", s.apiUrl);
         assertEquals("en", s.defaultLang);
         ArrayList<String> supportedLangs = new ArrayList<String>();
         supportedLangs.add("en");

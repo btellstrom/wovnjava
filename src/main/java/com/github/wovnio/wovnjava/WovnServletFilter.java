@@ -20,7 +20,7 @@ public class WovnServletFilter implements Filter {
     //protected Interceptor interceptor;
     private Settings settings;
 
-    public static final String VERSION = "0.3.0";
+    public static final String VERSION = Settings.VERSION;  // for backword compatibility
 
     public void init(FilterConfig config) throws ServletException {
         this.settings = new Settings(config);
@@ -56,8 +56,8 @@ public class WovnServletFilter implements Filter {
         String originalBody = wovnResponse.toString();
         if (originalBody != null) {
             // text
-            Api api = new Api(VERSION, headers, settings);
-            Interceptor interceptor = new Interceptor(VERSION, headers, settings, api);
+            Api api = new Api(settings, headers);
+            Interceptor interceptor = new Interceptor(headers, settings, api);
             String body = interceptor.translate(originalBody);
             wovnResponse.setContentLength(body.getBytes().length);
             wovnResponse.setContentType("text/html; charset=utf-8");

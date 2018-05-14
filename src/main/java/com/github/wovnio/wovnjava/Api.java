@@ -21,15 +21,13 @@ import net.arnx.jsonic.JSON;
 
 class Api {
     private final int READ_BUFFER_SIZE = 8196;
-    private final String version;
     private final Settings settings;
     private final Headers headers;
     private final String responseEncoding = "UTF-8"; // always response is UTF8
 
-    Api(String version, Headers headers, Settings settings) {
-        this.version = version;
-        this.headers = headers;
+    Api(Settings settings, Headers headers) {
         this.settings = settings;
+        this.headers = headers;
     }
 
     String translate(String lang, String html) throws ApiException {
@@ -73,7 +71,7 @@ class Api {
             }
         } catch (Exception e) {
             Logger.log.error("Api", e);
-            throw new ApiException(e.getMessage());
+            throw new ApiException(e.getClass().getSimpleName());
             //throw new ApiException("unknown");
         } finally {
             if (out != null) {
@@ -141,7 +139,7 @@ class Api {
         appendValue(sb, "&lang=");
         appendValue(sb, lang);
         appendValue(sb, "&version=");
-        appendValue(sb, version);
+        appendValue(sb, settings.version);
         appendValue(sb, ")");
         return new URL(sb.toString());
     }

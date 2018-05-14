@@ -11,6 +11,7 @@ import javax.servlet.FilterConfig;
 import javax.xml.bind.DatatypeConverter;
 
 class Settings {
+    public static final String VERSION = "0.3.0";
     static final String UrlPatternRegPath = "/([^/.?]+)";
     static final String UrlPatternRegQuery = "(?:(?:\\?.*&)|\\?)wovn=([^&]+)(?:&|$)";
     static final String UrlPatternRegSubdomain = "^([^.]+)\\.";
@@ -29,6 +30,7 @@ class Settings {
     boolean useProxy = false;
     String originalUrlHeader = "";
     String originalQueryStringHeader = "";
+    final String version = VERSION;
 
     Settings(FilterConfig config) {
         super();
