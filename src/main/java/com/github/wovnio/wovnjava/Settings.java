@@ -23,7 +23,7 @@ class Settings {
     String urlPattern = "path";
     String urlPatternReg = UrlPatternRegPath;
     ArrayList<String> query;
-    String apiUrl = "https://api.wovn.io/v0/values";
+    String apiUrl = "https://wovn.global.ssl.fastly.net/v0/";
     String defaultLang = "en";
     ArrayList<String> supportedLangs;
     boolean useProxy = false;
