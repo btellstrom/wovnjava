@@ -61,6 +61,17 @@ public class HtmlConverterTest extends TestCase {
         assertEquals(original.replace("INPUT", "input"), stripExtraSpaces(converter.restore(html)));
     }
 
+    public void testNested() {
+        String original = "<html><head></head><body><form wovn-ignore><script></script><input type=\"hidden\" name=\"csrf\" value=\"random\"><INPUT TYPE=\"HIDDEN\" NAME=\"CSRF_TOKEN\" VALUE=\"RANDOM\"></form></body></html>";
+        String removedHtml = "<html><head></head><body><!--wovn-marker-1--></body></html>";
+        Settings settings = makeSettings(new HashMap<String, String>() {{ put("supportedLangs", "en,fr,ja"); }});
+        HtmlConverter converter = new HtmlConverter(settings, original);
+        String html = converter.strip();
+        assertEquals(removedHtml, stripExtraSpaces(html));
+        // jsoup make lower case tag name
+        assertEquals(original.replace("INPUT", "input"), stripExtraSpaces(converter.restore(html)));
+    }
+
     public void testMixAllCase() {
         String original = "<html><head>" +
             "<script src=\"//j.wovn.io/1\" data-wovnio=\"key=NCmbvk&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=0.3.0\" data-wovnio-type=\"backend_without_api\" async></script>" +

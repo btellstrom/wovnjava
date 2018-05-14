@@ -30,6 +30,7 @@ class HtmlConverter {
     String restore(String html) {
         StringBuilder sb = new StringBuilder();
         String[] list = html.split("<!--" + prefix);
+
         sb.append(list[0]);
         for (int i=1; i<list.length; i++) {
             String fragment = list[i];
@@ -85,6 +86,6 @@ class HtmlConverter {
     private void replaceNodeToMarkerComment(Element element) {
         Comment comment = new Comment(prefix + String.valueOf(markers.size()));
         element.replaceWith(comment);
-        markers.add(element.outerHtml());
+        markers.add(restore(element.outerHtml())); // restore original text if element has marker
     }
 }
