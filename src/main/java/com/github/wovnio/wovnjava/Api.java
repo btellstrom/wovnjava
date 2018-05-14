@@ -36,6 +36,8 @@ class Api {
             try {
                 URL url = getApiUrl(lang, html);
                 con = (HttpURLConnection) url.openConnection();
+                con.setConnectTimeout(settings.connectTimeout);
+                con.setReadTimeout(settings.readTimeout);
             } catch (Exception e) {
                 Logger.log.error("Api url", e);
                 throw new ApiException("unknown");

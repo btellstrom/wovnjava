@@ -31,6 +31,8 @@ class Settings {
     String originalUrlHeader = "";
     String originalQueryStringHeader = "";
     final String version = VERSION;
+    int connectTimeout = 1000;
+    int readTimeout = 1000;
 
     Settings(FilterConfig config) {
         super();
@@ -111,6 +113,16 @@ class Settings {
         p = config.getInitParameter("originalQueryStringHeader");
         if (p != null && !p.isEmpty()) {
             this.originalQueryStringHeader = p;
+        }
+
+        p = config.getInitParameter("connectTimeout");
+        if (p != null && !p.isEmpty()) {
+            this.connectTimeout = getIntParameter(p);
+        }
+
+        p = config.getInitParameter("readTimeout");
+        if (p != null && !p.isEmpty()) {
+            this.readTimeout = getIntParameter(p);
         }
 
         this.initialize();
