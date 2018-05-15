@@ -2,6 +2,8 @@ package com.github.wovnio.wovnjava;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -54,7 +56,7 @@ public class WovnServletFilter implements Filter {
         WovnHttpServletResponse wovnResponse = new WovnHttpServletResponse((HttpServletResponse)response);
         chain.doFilter(wovnRequest, wovnResponse);
         String originalBody = wovnResponse.toString();
-        if (originalBody != null && (!this.store.settings.strictHtmlCheck || isHtmlContent(originalBody))) {
+        if (originalBody != null && (!settings.strictHtmlCheck || isHtmlContent(originalBody))) {
             // text
             Api api = new Api(settings, headers);
             Interceptor interceptor = new Interceptor(headers, settings, api);
