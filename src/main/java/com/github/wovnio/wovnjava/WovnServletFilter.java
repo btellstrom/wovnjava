@@ -54,7 +54,7 @@ public class WovnServletFilter implements Filter {
         WovnHttpServletResponse wovnResponse = new WovnHttpServletResponse((HttpServletResponse)response);
         chain.doFilter(wovnRequest, wovnResponse);
         String originalBody = wovnResponse.toString();
-        if (originalBody != null) {
+        if (originalBody != null && (!this.store.settings.strictHtmlCheck || isHtmlContent(originalBody))) {
             // text
             Api api = new Api(settings, headers);
             Interceptor interceptor = new Interceptor(headers, settings, api);
@@ -71,5 +71,40 @@ public class WovnServletFilter implements Filter {
             out.close();
         }
         headers.out(wovnRequest, wovnResponse);
+    }
+
+    private boolean isHtmlContent(String body) {
+        if (Logger.isDebug()) {
+            Logger.log.info("Checking HTML strictly.");
+
+            if (Logger.debugMode > 1) {
+                Logger.log.info("original HTML:\n" + body);
+            }
+        }
+
+        // Remove comments.
+        body = Pattern.compile("(?m)\\A(\\s*<!--[\\s\\S]*?-->\\s*)+").matcher(body).replaceAll("");
+
+        // Remove spaces.
+        body = Pattern.compile("(?m)\\A\\s+").matcher(body).replaceAll("");
+
+        if (Logger.debugMode > 1) {
+            Logger.log.info("HTML after removing comment tags and spaces:\n" + body);
+        }
+
+        if (Pattern.compile("(?m)\\A<\\?xml\\b", Pattern.CASE_INSENSITIVE).matcher(body).find()             // <?xml
+                || Pattern.compile("(?m)\\A<!DOCTYPE\\b", Pattern.CASE_INSENSITIVE).matcher(body).find()    // <!DOCTYPE
+                || Pattern.compile("(?m)\\A<html\\b", Pattern.CASE_INSENSITIVE).matcher(body).find()        // <html
+                ) {
+            if (Logger.isDebug()) {
+                Logger.log.info("This data is HTML.");
+            }
+            return true;
+        } else {
+            if (Logger.isDebug()) {
+                Logger.log.info("This data is not HTML.");
+            }
+            return false;
+        }
     }
 }
