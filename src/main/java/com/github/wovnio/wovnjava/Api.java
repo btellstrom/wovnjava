@@ -38,13 +38,22 @@ class Api {
                 con = (HttpURLConnection) url.openConnection();
                 con.setConnectTimeout(settings.connectTimeout);
                 con.setReadTimeout(settings.readTimeout);
-            } catch (Exception e) {
+            } catch (UnsupportedEncodingException e) {
                 Logger.log.error("Api url", e);
-                throw new ApiException("unknown");
+                throw new ApiException("encoding");
+            } catch (IOException e) {
+                Logger.log.error("Api url", e);
+                throw new ApiException("io");
+            } catch (NoSuchAlgorithmException e) {
+                Logger.log.error("Api url", e);
+                throw new ApiException("algorithm");
             }
+
             return translate(lang, html, con);
         } finally {
-            con.disconnect();
+            if (con != null) {
+                con.disconnect();
+            }
         }
     }
 
