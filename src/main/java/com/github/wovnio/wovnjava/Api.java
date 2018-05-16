@@ -33,23 +33,20 @@ class Api {
     String translate(String lang, String html) throws ApiException {
         HttpURLConnection con = null;
         try {
-            try {
-                URL url = getApiUrl(lang, html);
-                con = (HttpURLConnection) url.openConnection();
-                con.setConnectTimeout(settings.connectTimeout);
-                con.setReadTimeout(settings.readTimeout);
-            } catch (UnsupportedEncodingException e) {
-                Logger.log.error("Api url", e);
-                throw new ApiException("encoding");
-            } catch (IOException e) {
-                Logger.log.error("Api url", e);
-                throw new ApiException("io");
-            } catch (NoSuchAlgorithmException e) {
-                Logger.log.error("Api url", e);
-                throw new ApiException("algorithm");
-            }
-
+            URL url = getApiUrl(lang, html);
+            con = (HttpURLConnection) url.openConnection();
+            con.setConnectTimeout(settings.connectTimeout);
+            con.setReadTimeout(settings.readTimeout);
             return translate(lang, html, con);
+        } catch (UnsupportedEncodingException e) {
+            Logger.log.error("Api url", e);
+            throw new ApiException("encoding");
+        } catch (IOException e) {
+            Logger.log.error("Api url", e);
+            throw new ApiException("io");
+        } catch (NoSuchAlgorithmException e) {
+            Logger.log.error("Api url", e);
+            throw new ApiException("algorithm");
         } finally {
             if (con != null) {
                 con.disconnect();
