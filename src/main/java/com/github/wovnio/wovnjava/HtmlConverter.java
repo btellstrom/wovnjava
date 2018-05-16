@@ -11,7 +11,7 @@ import org.jsoup.select.Elements;
 
 class HtmlConverter {
     private final ArrayList<String> markers = new ArrayList<String>();
-    private final String prefix = "wovn-marker-";
+    private final String WOVN_MARKER_PREFIX = "wovn-marker-";
     private final Document doc;
     private final Settings settings;
 
@@ -38,7 +38,7 @@ class HtmlConverter {
 
     String restore(String html) {
         StringBuilder sb = new StringBuilder();
-        String[] list = html.split("<!--" + prefix);
+        String[] list = html.split("<!--" + WOVN_MARKER_PREFIX);
 
         sb.append(list[0]);
         for (int i=1; i<list.length; i++) {
@@ -138,7 +138,7 @@ class HtmlConverter {
     }
 
     private void replaceNodeToMarkerComment(Element element) {
-        Comment comment = new Comment(prefix + String.valueOf(markers.size()));
+        Comment comment = new Comment(WOVN_MARKER_PREFIX + String.valueOf(markers.size()));
         element.replaceWith(comment);
         markers.add(restore(element.outerHtml())); // restore original text if element has marker
     }
