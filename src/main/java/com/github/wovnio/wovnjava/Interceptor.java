@@ -3,12 +3,12 @@ package com.github.wovnio.wovnjava;
 class Interceptor {
     private final Settings settings;
     private final Headers headers;
-	private final Api api;
+    private final Api api;
 
     Interceptor(Headers headers, Settings settings, Api api) {
         this.headers = headers;
         this.settings = settings;
-		this.api = api;
+        this.api = api;
     }
 
     String translate(String body) {
@@ -21,17 +21,17 @@ class Interceptor {
         }
     }
 
-	private String apiTranslate(String lang, String body) {
+    private String apiTranslate(String lang, String body) {
         try {
             HtmlConverter converter = new HtmlConverter(settings, body);
-		    String convertedBody = converter.strip();
-		    String translatedBody = api.translate(lang, convertedBody);
+            String convertedBody = converter.strip();
+            String translatedBody = api.translate(lang, convertedBody);
             return converter.restore(translatedBody);
         } catch (ApiException e) {
             Logger.log.error("ApiException", e);
             return apiTranslateFail(body, e.getMessage());
         }
-	}
+    }
 
     private String apiTranslateFail(String body, String reason) {
         return new HtmlConverter(settings, body).convert(headers, settings.defaultLang, reason);

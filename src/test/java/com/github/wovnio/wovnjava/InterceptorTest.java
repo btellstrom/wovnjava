@@ -18,7 +18,7 @@ public class InterceptorTest extends TestCase {
 
     public void testApiTranslate() throws NoSuchMethodException, IllegalAccessException, IOException, ServletException {
         String originalHtml = "<!doctype html><html><head><title>test</title></head><body>test</body></html>";
-        Settings settings = makeSettings(new HashMap<String, String>() {{
+        Settings settings = TestUtil.makeSettings(new HashMap<String, String>() {{
             put("projectToken", "token0");
             put("defaultLang", "en");
             put("supportedLangs", "en,ja,fr");
@@ -30,7 +30,7 @@ public class InterceptorTest extends TestCase {
 
     public void testApiTimeout() throws NoSuchMethodException, IllegalAccessException, IOException, ServletException {
         String originalHtml = "<!doctype html><html><head><title>test</title></head><body>test</body></html>";
-        Settings settings = makeSettings(new HashMap<String, String>() {{
+        Settings settings = TestUtil.makeSettings(new HashMap<String, String>() {{
             put("projectToken", "token0");
             put("defaultLang", "en");
             put("supportedLangs", "en,ja,fr");
@@ -38,16 +38,16 @@ public class InterceptorTest extends TestCase {
         String html = translate("/ja/", originalHtml, settings, mockApi("timeout"));
         String expect = "<!doctype html><html><head><title>test</title>" +
                         "<script src=\"//j.wovn.io/1\" data-wovnio=\"key=token0&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=" + version + "\" data-wovnio-type=\"timeout\" async></script>" +
-                        "<link ref=\"altername\" hreflang=\"en\" href=\"https://example.com/\">" +
-                        "<link ref=\"altername\" hreflang=\"ja\" href=\"https://example.com/ja/\">" +
-                        "<link ref=\"altername\" hreflang=\"fr\" href=\"https://example.com/fr/\">" +
+                        "<link ref=\"alternate\" hreflang=\"en\" href=\"https://example.com/\">" +
+                        "<link ref=\"alternate\" hreflang=\"ja\" href=\"https://example.com/ja/\">" +
+                        "<link ref=\"alternate\" hreflang=\"fr\" href=\"https://example.com/fr/\">" +
                         "</head><body>test</body></html>";
         assertEquals(expect, stripExtraSpaces(html));
     }
 
     public void testNoApi() throws NoSuchMethodException, IllegalAccessException, IOException, ServletException {
         String originalHtml = "<!doctype html><html><head><title>test</title></head><body>test</body></html>";
-        Settings settings = makeSettings(new HashMap<String, String>() {{
+        Settings settings = TestUtil.makeSettings(new HashMap<String, String>() {{
             put("projectToken", "token0");
             put("defaultLang", "en");
             put("supportedLangs", "en,ja,fr");
@@ -55,9 +55,9 @@ public class InterceptorTest extends TestCase {
         String html = translate("/", originalHtml, settings, null);
         String expect = "<!doctype html><html><head><title>test</title>" +
                         "<script src=\"//j.wovn.io/1\" data-wovnio=\"key=token0&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=" + version + "\" data-wovnio-type=\"backend_without_api\" async></script>" +
-                        "<link ref=\"altername\" hreflang=\"en\" href=\"https://example.com/\">" +
-                        "<link ref=\"altername\" hreflang=\"ja\" href=\"https://example.com/ja/\">" +
-                        "<link ref=\"altername\" hreflang=\"fr\" href=\"https://example.com/fr/\">" +
+                        "<link ref=\"alternate\" hreflang=\"en\" href=\"https://example.com/\">" +
+                        "<link ref=\"alternate\" hreflang=\"ja\" href=\"https://example.com/ja/\">" +
+                        "<link ref=\"alternate\" hreflang=\"fr\" href=\"https://example.com/fr/\">" +
                         "</head><body>test</body></html>";
         assertEquals(expect, stripExtraSpaces(html));
     }
@@ -96,19 +96,6 @@ public class InterceptorTest extends TestCase {
         EasyMock.expect(mock.getHeader("Location")).andReturn(path).atLeastOnce();
         EasyMock.replay(mock);
         return mock;
-    }
-
-    private Settings makeSettings(HashMap<String, String> option) {
-        FilterConfig mock = EasyMock.createMock(FilterConfig.class);
-        String[] keys = {"userToken", "projectToken", "sitePrefixPath", "secretKey", "urlPattern", "urlPatternReg", "query", "apiUrl", "defaultLang", "supportedLangs", "testMode", "testUrl", "useProxy", "debugMode", "originalUrlHeader", "originalQueryStringHeader", "strictHtmlCheck", "deleteInvalidClosingTag", "deleteInvalidUTF8", "connectTimeout", "readTimeout"};
-        for (int i=0; i<keys.length; ++i) {
-            String key = keys[i];
-            String val = option.get(key);
-            val = val == null ? "" : val;
-            EasyMock.expect(mock.getInitParameter(key)).andReturn(val);
-        }
-        EasyMock.replay(mock);
-        return new Settings(mock);
     }
 
     private String stripExtraSpaces(String html) {

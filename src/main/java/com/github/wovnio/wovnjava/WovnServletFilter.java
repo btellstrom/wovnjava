@@ -19,7 +19,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 public class WovnServletFilter implements Filter {
-    //protected Interceptor interceptor;
     private Settings settings;
 
     public static final String VERSION = Settings.VERSION;  // for backword compatibility

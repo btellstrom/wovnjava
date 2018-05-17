@@ -130,7 +130,7 @@ class HtmlConverter {
     private void appendHrefLang(Headers headers) {
         for (String lang : settings.supportedLangs) {
             Element link = new Element(Tag.valueOf("link"), "");
-            link.attr("ref", "altername");
+            link.attr("ref", "alternate");
             link.attr("hreflang", Lang.normalizeIso639_1(lang));
             link.attr("href", headers.redirectLocation(lang));
             doc.head().appendChild(link);

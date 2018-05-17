@@ -231,14 +231,14 @@ class Settings {
         md.update(projectToken.getBytes());
         md.update(urlPattern.getBytes());
         md.update(urlPatternReg.getBytes());
-		for (String q : query) {
-        	md.update(q.getBytes());
-		}
+        for (String q : query) {
+            md.update(q.getBytes());
+        }
         md.update(sitePrefixPathWithSlash.getBytes());
         md.update(defaultLang.getBytes());
-		for (String lang : supportedLangs) {
-        	md.update(lang.getBytes());
-		}
+        for (String lang : supportedLangs) {
+            md.update(lang.getBytes());
+        }
         md.update(useProxy ? new byte[]{ 0 } : new byte[] { 1 });
         md.update(originalUrlHeader.getBytes());
         md.update(originalQueryStringHeader.getBytes());
