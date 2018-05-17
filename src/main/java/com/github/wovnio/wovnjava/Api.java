@@ -77,10 +77,12 @@ class Api {
             } else {
                 throw new ApiException("status_" + String.valueOf(status));
             }
-        } catch (Exception e) {
-            Logger.log.error("Api", e);
-            throw new ApiException(e.getClass().getSimpleName());
-            //throw new ApiException("unknown");
+        } catch (UnsupportedEncodingException e) {
+            Logger.log.error("Api url", e);
+            throw new ApiException("encoding");
+        } catch (IOException e) {
+            Logger.log.error("Api url", e);
+            throw new ApiException("io");
         } finally {
             if (out != null) {
                 try {
