@@ -87,7 +87,7 @@ class Api {
             if (out != null) {
                 try {
                     out.close();
-                } catch (Exception e) {
+                } catch (IOException e) {
                     Logger.log.error("Api close", e);
                 }
             }
