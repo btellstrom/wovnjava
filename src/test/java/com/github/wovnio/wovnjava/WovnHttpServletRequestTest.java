@@ -72,6 +72,8 @@ public class WovnHttpServletRequestTest extends TestCase {
         EasyMock.expect(mock.getInitParameter("strictHtmlCheck")).andReturn("");
         EasyMock.expect(mock.getInitParameter("deleteInvalidClosingTag")).andReturn("");
         EasyMock.expect(mock.getInitParameter("deleteInvalidUTF8")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("connectTimeout")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("readTimeout")).andReturn("");
         EasyMock.replay(mock);
         return mock;
     }
@@ -97,6 +99,8 @@ public class WovnHttpServletRequestTest extends TestCase {
         EasyMock.expect(mock.getInitParameter("strictHtmlCheck")).andReturn("");
         EasyMock.expect(mock.getInitParameter("deleteInvalidClosingTag")).andReturn("");
         EasyMock.expect(mock.getInitParameter("deleteInvalidUTF8")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("connectTimeout")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("readTimeout")).andReturn("");
         EasyMock.replay(mock);
         return mock;
     }
@@ -122,6 +126,8 @@ public class WovnHttpServletRequestTest extends TestCase {
         EasyMock.expect(mock.getInitParameter("strictHtmlCheck")).andReturn("");
         EasyMock.expect(mock.getInitParameter("deleteInvalidClosingTag")).andReturn("");
         EasyMock.expect(mock.getInitParameter("deleteInvalidUTF8")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("connectTimeout")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("readTimeout")).andReturn("");
         EasyMock.replay(mock);
         return mock;
     }

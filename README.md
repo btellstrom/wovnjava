@@ -63,10 +63,6 @@ You can see all available versions of wovnjava [here](https://jitpack.io/#wovnio
     <param-name>projectToken</param-name>
     <param-value>2Wle3</param-value><!-- set your project token -->
   </init-param>
-  <init-param>
-    <param-name>secretKey</param-name>
-    <param-value>secret</param-value><!-- set your secret key -->
-  </init-param>
 </filter>
 
 <filter-mapping>
@@ -81,8 +77,7 @@ The following parameters can be set within the WOVN.io Java Library.
 
 Parameter Name            | Required | Default Setting
 ------------------------- | -------- | ------------
-projectToken                 | yes      | ''
-secretKey                 | yes      | ''
+projectToken              | yes      | ''
 urlPattern                | yes      | 'path'
 query                     |          | ''
 defaultLang               | yes      | 'en'
@@ -197,6 +192,6 @@ wovnjava uses the Content-Type header to determine the data type of the response
 
 wovnjava determines the response body as HTML if it starts with any of the following strings. wovnjava ignores comment tags and blanks during this process and is not case sensitive.
 
-* <?xml
-* <!DOCTYPE
-* <html
+* &lt;?xml
+* &lt;!DOCTYPE
+* &lt;html

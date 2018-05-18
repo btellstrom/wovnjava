@@ -4,10 +4,14 @@ import org.jetbrains.annotations.Contract;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import javax.servlet.FilterConfig;
+import javax.xml.bind.DatatypeConverter;
 
 class Settings {
+    public static final String VERSION = "0.3.0";
     static final String UrlPatternRegPath = "/([^/.?]+)";
     static final String UrlPatternRegQuery = "(?:(?:\\?.*&)|\\?)wovn=([^&]+)(?:&|$)";
     static final String UrlPatternRegSubdomain = "^([^.]+)\\.";
@@ -20,18 +24,16 @@ class Settings {
     String urlPattern = "path";
     String urlPatternReg = UrlPatternRegPath;
     ArrayList<String> query;
-    String apiUrl = "https://api.wovn.io/v0/values";
+    String apiUrl = "https://wovn.global.ssl.fastly.net/v0/";
     String defaultLang = "en";
     ArrayList<String> supportedLangs;
-    boolean testMode = false;
-    String testUrl = "";
     boolean useProxy = false;
-    boolean deleteInvalidClosingTag = false;
-    int debugMode = 0;
     String originalUrlHeader = "";
     String originalQueryStringHeader = "";
     boolean strictHtmlCheck = false;
-    boolean deleteInvalidUTF8 = false;
+    final String version = VERSION;
+    int connectTimeout = 1000;
+    int readTimeout = 1000;
 
     Settings(FilterConfig config) {
         super();
@@ -99,24 +101,9 @@ class Settings {
             this.supportedLangs = getArrayParameter(p);
         }
 
-        p = config.getInitParameter("testMode");
-        if (p != null && p.length() > 0) {
-            this.testMode = getBoolParameter(p);
-        }
-
-        p = config.getInitParameter("testUrl");
-        if (p != null && p.length() > 0) {
-            this.testUrl = p;
-        }
-
         p = config.getInitParameter("useProxy");
         if (p != null && p.length() > 0) {
             this.useProxy = getBoolParameter(p);
-        }
-
-        p = config.getInitParameter("debugMode");
-        if (p != null && !p.isEmpty()) {
-            this.debugMode = getIntParameter(p);
         }
 
         p = config.getInitParameter("originalUrlHeader");
@@ -129,19 +116,19 @@ class Settings {
             this.originalQueryStringHeader = p;
         }
 
+        p = config.getInitParameter("connectTimeout");
+        if (p != null && !p.isEmpty()) {
+            this.connectTimeout = getIntParameter(p);
+        }
+
+        p = config.getInitParameter("readTimeout");
+        if (p != null && !p.isEmpty()) {
+            this.readTimeout = getIntParameter(p);
+        }
+
         p = config.getInitParameter("strictHtmlCheck");
         if (p != null && !p.isEmpty()) {
             this.strictHtmlCheck = getBoolParameter(p);
-        }
-
-        p = config.getInitParameter("deleteInvalidUTF8");
-        if (p != null && !p.isEmpty()) {
-            this.deleteInvalidUTF8 = getBoolParameter(p);
-        }
-
-        p = config.getInitParameter("deleteInvalidClosingTag");
-        if (p != null && !p.isEmpty()) {
-            this.deleteInvalidClosingTag = getBoolParameter(p);
         }
 
         this.initialize();
@@ -237,5 +224,25 @@ class Settings {
         }
 
         return valid;
+    }
+
+    String hash() throws NoSuchAlgorithmException {
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        md.update(projectToken.getBytes());
+        md.update(urlPattern.getBytes());
+        md.update(urlPatternReg.getBytes());
+        for (String q : query) {
+            md.update(q.getBytes());
+        }
+        md.update(sitePrefixPathWithSlash.getBytes());
+        md.update(defaultLang.getBytes());
+        for (String lang : supportedLangs) {
+            md.update(lang.getBytes());
+        }
+        md.update(useProxy ? new byte[]{ 0 } : new byte[] { 1 });
+        md.update(originalUrlHeader.getBytes());
+        md.update(originalQueryStringHeader.getBytes());
+        byte[] digest = md.digest();
+        return DatatypeConverter.printHexBinary(digest).toUpperCase();
     }
 }

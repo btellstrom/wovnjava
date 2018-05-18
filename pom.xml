@@ -7,7 +7,7 @@
     <groupId>com.github.wovnio</groupId>
     <artifactId>wovnjava</artifactId>
     <name>wovnjava</name>
-    <version>0.2.1</version>
+    <version>0.3.0</version>
     <url>https://github.com/WOVNio/wovnjava</url>
 
     <licenses>
@@ -37,12 +37,6 @@
         </dependency>
 
         <dependency>
-            <groupId>nu.validator</groupId>
-            <artifactId>htmlparser</artifactId>
-            <version>1.4.1</version>
-        </dependency>
-
-        <dependency>
             <groupId>xerces</groupId>
             <artifactId>xercesImpl</artifactId>
             <version>2.11.0</version>
@@ -58,6 +52,12 @@
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations-java5</artifactId>
             <version>RELEASE</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.11.3</version>
         </dependency>
 
         <dependency>

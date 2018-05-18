@@ -12,14 +12,12 @@ import javax.servlet.http.HttpServletResponseWrapper;
 class WovnHttpServletResponse extends HttpServletResponseWrapper {
     int status;
 
-    private Headers headers;
     private ByteArrayOutputStream buff;
     private PrintWriter writer;
     private ServletOutputStream output;
 
-    WovnHttpServletResponse(HttpServletResponse response, Headers h) {
+    WovnHttpServletResponse(HttpServletResponse response) {
         super(response);
-        this.headers = h;
         this.buff = new ByteArrayOutputStream();
     }
 
@@ -63,7 +61,7 @@ class WovnHttpServletResponse extends HttpServletResponseWrapper {
     public PrintWriter getWriter() throws IOException {
         if (this.writer == null) {
             this.writer = new PrintWriter(
-                    new OutputStreamWriter(this.getOutputStream(),this.getCharacterEncoding()),
+                    new OutputStreamWriter(this.getOutputStream(), this.getCharacterEncoding()),
                     true
             );
         }

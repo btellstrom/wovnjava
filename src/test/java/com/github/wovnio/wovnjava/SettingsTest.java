@@ -23,15 +23,12 @@ public class SettingsTest extends TestCase {
         EasyMock.expect(mock.getInitParameter("apiUrl")).andReturn("");
         EasyMock.expect(mock.getInitParameter("defaultLang")).andReturn("");
         EasyMock.expect(mock.getInitParameter("supportedLangs")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("testMode")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("testUrl")).andReturn("");
         EasyMock.expect(mock.getInitParameter("useProxy")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("debugMode")).andReturn("");
         EasyMock.expect(mock.getInitParameter("originalUrlHeader")).andReturn("");
         EasyMock.expect(mock.getInitParameter("originalQueryStringHeader")).andReturn("");
         EasyMock.expect(mock.getInitParameter("strictHtmlCheck")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("deleteInvalidClosingTag")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("deleteInvalidUTF8")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("connectTimeout")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("readTimeout")).andReturn("");
         EasyMock.replay(mock);
 
         return mock;
@@ -49,15 +46,12 @@ public class SettingsTest extends TestCase {
         EasyMock.expect(mock.getInitParameter("apiUrl")).andReturn("https://example.com/v0/values");
         EasyMock.expect(mock.getInitParameter("defaultLang")).andReturn("ja");
         EasyMock.expect(mock.getInitParameter("supportedLangs")).andReturn("en,ja");
-        EasyMock.expect(mock.getInitParameter("testMode")).andReturn("true");
-        EasyMock.expect(mock.getInitParameter("testUrl")).andReturn("https://example.com");
         EasyMock.expect(mock.getInitParameter("useProxy")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("debugMode")).andReturn("");
         EasyMock.expect(mock.getInitParameter("originalUrlHeader")).andReturn("REDIRECT_URL");
         EasyMock.expect(mock.getInitParameter("originalQueryStringHeader")).andReturn("REDIRECT_QUERY_STRING");
         EasyMock.expect(mock.getInitParameter("strictHtmlCheck")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("deleteInvalidClosingTag")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("deleteInvalidUTF8")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("connectTimeout")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("readTimeout")).andReturn("");
         EasyMock.replay(mock);
 
         return mock;
@@ -75,15 +69,12 @@ public class SettingsTest extends TestCase {
         EasyMock.expect(mock.getInitParameter("apiUrl")).andReturn("https://example.com/v0/values");
         EasyMock.expect(mock.getInitParameter("defaultLang")).andReturn("ja");
         EasyMock.expect(mock.getInitParameter("supportedLangs")).andReturn("en,ja");
-        EasyMock.expect(mock.getInitParameter("testMode")).andReturn("true");
-        EasyMock.expect(mock.getInitParameter("testUrl")).andReturn("https://example.com");
         EasyMock.expect(mock.getInitParameter("useProxy")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("debugMode")).andReturn("");
         EasyMock.expect(mock.getInitParameter("originalUrlHeader")).andReturn("REDIRECT_URL");
         EasyMock.expect(mock.getInitParameter("originalQueryStringHeader")).andReturn("REDIRECT_QUERY_STRING");
         EasyMock.expect(mock.getInitParameter("strictHtmlCheck")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("deleteInvalidClosingTag")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("deleteInvalidUTF8")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("connectTimeout")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("readTimeout")).andReturn("");
         EasyMock.replay(mock);
 
         return mock;
@@ -101,15 +92,12 @@ public class SettingsTest extends TestCase {
         EasyMock.expect(mock.getInitParameter("apiUrl")).andReturn("");
         EasyMock.expect(mock.getInitParameter("defaultLang")).andReturn("");
         EasyMock.expect(mock.getInitParameter("supportedLangs")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("testMode")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("testUrl")).andReturn("");
         EasyMock.expect(mock.getInitParameter("useProxy")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("debugMode")).andReturn("");
         EasyMock.expect(mock.getInitParameter("originalUrlHeader")).andReturn("");
         EasyMock.expect(mock.getInitParameter("originalQueryStringHeader")).andReturn("");
         EasyMock.expect(mock.getInitParameter("strictHtmlCheck")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("deleteInvalidClosingTag")).andReturn("");
-        EasyMock.expect(mock.getInitParameter("deleteInvalidUTF8")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("connectTimeout")).andReturn("");
+        EasyMock.expect(mock.getInitParameter("readTimeout")).andReturn("");
         EasyMock.replay(mock);
 
         return mock;
@@ -117,7 +105,7 @@ public class SettingsTest extends TestCase {
 
     private static FilterConfig mockSpecificConfig(HashMap<String, String> option) {
         FilterConfig mock = EasyMock.createMock(FilterConfig.class);
-        String[] keys = {"userToken", "projectToken", "sitePrefixPath", "secretKey", "urlPattern", "urlPatternReg", "query", "apiUrl", "defaultLang", "supportedLangs", "testMode", "testUrl", "useProxy", "debugMode", "originalUrlHeader", "originalQueryStringHeader", "strictHtmlCheck", "deleteInvalidClosingTag", "deleteInvalidUTF8"};
+        String[] keys = {"userToken", "projectToken", "sitePrefixPath", "secretKey", "urlPattern", "urlPatternReg", "query", "apiUrl", "defaultLang", "supportedLangs", "useProxy", "originalUrlHeader", "originalQueryStringHeader", "connectTimeout", "readTimeout", "strictHtmlCheck"};
         for (int i=0; i<keys.length; ++i) {
             String key = keys[i];
             String val = option.get(key);
@@ -144,13 +132,11 @@ public class SettingsTest extends TestCase {
         assertEquals("path", s.urlPattern);
         assertEquals(Settings.UrlPatternRegPath, s.urlPatternReg);
         assertEquals(new ArrayList<String>(), s.query);
-        assertEquals("https://api.wovn.io/v0/values", s.apiUrl);
+        assertEquals("https://wovn.global.ssl.fastly.net/v0/", s.apiUrl);
         assertEquals("en", s.defaultLang);
         ArrayList<String> supportedLangs = new ArrayList<String>();
         supportedLangs.add("en");
         assertEquals(supportedLangs, s.supportedLangs);
-        assertFalse(s.testMode);
-        assertEquals("", s.testUrl);
 
         assertEquals("", s.originalUrlHeader);
         assertEquals("", s.originalQueryStringHeader);
@@ -175,8 +161,6 @@ public class SettingsTest extends TestCase {
         supportedLangs.add("en");
         supportedLangs.add("ja");
         assertEquals(supportedLangs, s.supportedLangs);
-        assertTrue(s.testMode);
-        assertEquals("https://example.com", s.testUrl);
 
         assertEquals("REDIRECT_URL", s.originalUrlHeader);
         assertEquals("REDIRECT_QUERY_STRING", s.originalQueryStringHeader);
@@ -262,8 +246,6 @@ public class SettingsTest extends TestCase {
         supportedLangs.add("en");
         supportedLangs.add("ja");
         assertEquals(supportedLangs, s.supportedLangs);
-        assertTrue(s.testMode);
-        assertEquals("https://example.com", s.testUrl);
 
         assertEquals("REDIRECT_URL", s.originalUrlHeader);
         assertEquals("REDIRECT_QUERY_STRING", s.originalQueryStringHeader);
