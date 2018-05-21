@@ -115,23 +115,7 @@ strictHtmlCheck           |              | 'false'
 
     https://wovn.io/contact
 
-### 2.4. query
-
-WOVN.io では翻訳ページの識別の際にクエリパラメータを無視します。クエリパラメータを翻訳ページの URL に含めたい場合、query パラメータで設定する必要があります。（WOVN.io 側の設定も必要です）
-
-    https://wovn.io/ja/contact?os=mac&keyboard=us
-
-defualt_lang が 'en' で、query が '' （未設定）の場合、上記の URL は下記のように変換されて、翻訳ページを探します。
-
-    https://wovn.io/contact
-
-default_lang が 'en' で、query が 'os' の場合、上記の URL は下記のように変換されて、翻訳ページを探します。
-
-    https://wovn.io/contact?os=mac
-
-query パラメータを複数設定したい場合は、カンマ区切りで指定してください。
-
-### 2.5. defaultLang
+### 2.4. defaultLang
 
 Java アプリケーションの言語を設定してください。初期値は英語 ('en') です。
 
@@ -145,16 +129,16 @@ defaultLang が 'en' で下記 URL にリクエストがあった場合、
 
     https://wovn.io/contact
 
-### 2.6. useProxy
+### 2.5. useProxy
 
 リバースプロキシ使用時は wovnjava に適切なホスト名が渡されず、翻訳ページのデータを取得できない場合があります。
 useProxy に true を設定すると、wovnjava の処理に HTTP リクエストヘッダの X-Forwarded-Host を使用します。
 
-### 2.7. debugMode
+### 2.6. debugMode
 
 debugMode に 1 を設定すると、wovnjava はデバッグログを出力します。これは開発用の機能です。
 
-### 2.8. originalUrlHeader, originalQueryStringHeader
+### 2.7. originalUrlHeader, originalQueryStringHeader
 
 Apache HTTP Server の mod_rewrite モジュールなどを使用して URL を書き換えている場合、wovnjava には書き換え前の URL が渡されず、適切な翻訳データを取得できない場合があります。
 
@@ -190,7 +174,7 @@ wovnjava は下記の設定で書き換え前の URL を使って、正しい翻
 
 https://coderwall.com/p/jhkw7w/passing-request-uri-into-request-header
 
-### 2.9. strictHtmlCheck
+### 2.8. strictHtmlCheck
 
 （これは実験的な機能です。将来的に廃止される可能性があります。）
 
