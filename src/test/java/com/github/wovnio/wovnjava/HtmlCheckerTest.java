@@ -6,7 +6,16 @@ import junit.framework.TestCase;
 public class HtmlCheckerTest extends TestCase {
     private final HtmlChecker htmlChecker = new HtmlChecker();
 
+    public void testCanTranslateContentType() {
+        assertEquals(true, htmlChecker.canTranslateContentType(null));
+        assertEquals(true, htmlChecker.canTranslateContentType("html"));
+        assertEquals(true, htmlChecker.canTranslateContentType("text/html"));
+        assertEquals(true, htmlChecker.canTranslateContentType("text/xhtml"));
+        assertEquals(false, htmlChecker.canTranslateContentType("text/plain"));
+    }
+
     public void testCanTranslatePath() {
+        assertCanTranslatePath(true, null);
         assertCanTranslatePath(true, "");
         assertCanTranslatePath(true, "/");
         assertCanTranslatePath(true, "html");
@@ -21,7 +30,9 @@ public class HtmlCheckerTest extends TestCase {
     }
 
     public void testCanTranslate() {
+        assertEquals(false, htmlChecker.canTranslateContent(null));
         assertEquals(false, htmlChecker.canTranslateContent(""));
+        assertEquals(false, htmlChecker.canTranslateContent("hello world"));
         assertCanTranslate(false, "<!doctype html><html ⚡>");
         assertCanTranslate(false, "<!doctype html><html amp>");
         assertCanTranslate(true, "<!doctype html>");

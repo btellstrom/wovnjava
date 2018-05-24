@@ -4,7 +4,15 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 class HtmlChecker {
+    public boolean canTranslateContentType(String type) {
+        return type == null || type.toLowerCase().contains("html");
+    }
+
     public boolean canTranslatePath(String path) {
+        if (path == null) {
+            return true;
+        }
+
         // Reduce strings for performance and keep a simple case
         path = path.replaceFirst("^.*/", "/"); // strip directries
         path = path.replaceFirst("[?#].*$", ""); // strip query or/and hash
@@ -17,6 +25,10 @@ class HtmlChecker {
     }
 
     public boolean canTranslateContent(String html) {
+        if (html == null) {
+            return false;
+        }
+
         String head = getHead(html).toLowerCase();
         return isHtml(head) && !isAmp(head);
     }
