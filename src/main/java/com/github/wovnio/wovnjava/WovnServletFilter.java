@@ -50,11 +50,16 @@ public class WovnServletFilter implements Filter {
         WovnHttpServletResponse wovnResponse = new WovnHttpServletResponse((HttpServletResponse)response);
         chain.doFilter(wovnRequest, wovnResponse);
         String originalBody = wovnResponse.toString();
-        if (originalBody != null && htmlChecker.canTranslateContent(originalBody)) {
+        if (originalBody != null) {
             // text
-            Api api = new Api(settings, headers);
-            Interceptor interceptor = new Interceptor(headers, settings, api);
-            String body = interceptor.translate(originalBody);
+            String body = null;
+            if (htmlChecker.canTranslateContent(originalBody)) {
+                Api api = new Api(settings, headers);
+                Interceptor interceptor = new Interceptor(headers, settings, api);
+                body = interceptor.translate(originalBody);
+            } else {
+                body = originalBody;
+            }
             wovnResponse.setContentLength(body.getBytes().length);
             wovnResponse.setContentType("text/html; charset=utf-8");
             PrintWriter out = response.getWriter();
