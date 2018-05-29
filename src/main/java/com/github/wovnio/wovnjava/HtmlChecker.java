@@ -34,8 +34,15 @@ class HtmlChecker {
     }
 
     private boolean isAmp(String head) {
-        return head.contains("<html ⚡")
-            || head.contains("<html amp");
+        head = REMOVE_QUOTED_ATTRIBUTES.matcher(head).replaceAll("");
+        Matcher m = HTML_TAG_ATTRIBUTE_PATTERN.matcher(head);
+        if (!m.find()) {
+            return false;
+        }
+        String attributes = m.group();
+        System.out.println(attributes);
+        return attributes.contains(" ⚡")
+            || attributes.contains(" amp");
     }
 
     private boolean isHtml(String head) {
@@ -50,6 +57,9 @@ class HtmlChecker {
     }
 
     private final int BUFFER_SIZE = 256;
+
+    private final Pattern HTML_TAG_ATTRIBUTE_PATTERN = Pattern.compile("<html([^>]+)>");
+    private final Pattern REMOVE_QUOTED_ATTRIBUTES = Pattern.compile("(?:\"[^\"]*\")|(?:'[^']*')");
 
     // The pattern come from WOVN.php/src/wovnio/wovnphp/Utils.php
     private final Pattern IMAGE_FILE_PATTERN = Pattern.compile("(\\.((?!jp$)jpe?g?|bmp|gif|png|btif|tiff?|psd|djvu?|xif|wbmp|webp|p(n|b|g|p)m|rgb|tga|x(b|p)m|xwd|pic|ico|fh(c|4|5|7)?|xif|f(bs|px|st)))$");
