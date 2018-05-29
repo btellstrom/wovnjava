@@ -18,7 +18,7 @@ class HtmlConverter {
     HtmlConverter(Settings settings, String original) {
         this.settings = settings;
         doc = Jsoup.parse(original);
-        doc.outputSettings().indentAmount(0).prettyPrint(false);
+        doc.outputSettings().prettyPrint(false);
     }
 
     String strip() {
