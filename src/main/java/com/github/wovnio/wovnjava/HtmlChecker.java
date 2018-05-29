@@ -40,7 +40,6 @@ class HtmlChecker {
             return false;
         }
         String attributes = m.group();
-        System.out.println(attributes);
         return attributes.contains(" ⚡")
             || attributes.contains(" amp");
     }
