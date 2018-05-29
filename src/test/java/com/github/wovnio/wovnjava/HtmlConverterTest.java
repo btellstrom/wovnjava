@@ -11,7 +11,7 @@ import org.easymock.EasyMock;
 public class HtmlConverterTest extends TestCase {
 
     public void testDisablePrettyPrint() {
-        String original = "<html><head></head><body>\n" + "hello" + "\n</body></html>";
+        String original = "<html><head></head><body>\n " + "hello" + "\t\n</body></html>";
         Settings settings = TestUtil.makeSettings(new HashMap<String, String>() {{ put("supportedLangs", "en,fr,ja"); }});
         HtmlConverter converter = new HtmlConverter(settings, original);
         String html = converter.strip();
