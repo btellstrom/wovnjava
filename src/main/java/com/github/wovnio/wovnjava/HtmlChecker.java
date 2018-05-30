@@ -18,7 +18,8 @@ class HtmlChecker {
         path = path.replaceFirst("[?#].*$", ""); // strip query or/and hash
         path = path.toLowerCase();
 
-        return !IMAGE_FILE_PATTERN.matcher(path).find()
+        return !TEXT_FILE_PATTERN.matcher(path).find()
+            && !IMAGE_FILE_PATTERN.matcher(path).find()
             && !AUDIO_FILE_PATTERN.matcher(path).find()
             && !VIDEO_FILE_PATTERN.matcher(path).find()
             && !DOC_FILE_PATTERN.matcher(path).find();
@@ -40,8 +41,9 @@ class HtmlChecker {
             return false;
         }
         String attributes = m.group();
-        return attributes.contains(" ⚡")
-            || attributes.contains(" amp");
+        attributes = attributes.replace(">", " ").replaceAll("[\r\n\t]", " ");
+        return attributes.contains(" ⚡ ")
+            || attributes.contains(" amp ");
     }
 
     private boolean isHtml(String head) {
@@ -59,6 +61,8 @@ class HtmlChecker {
 
     private final Pattern HTML_TAG_ATTRIBUTE_PATTERN = Pattern.compile("<html([^>]+)>");
     private final Pattern REMOVE_QUOTED_ATTRIBUTES = Pattern.compile("(?:\"[^\"]*\")|(?:'[^']*')");
+
+    private final Pattern TEXT_FILE_PATTERN = Pattern.compile("\\.(?:(?:css)|(?:js)|(?:txt))$");
 
     // The pattern come from WOVN.php/src/wovnio/wovnphp/Utils.php
     private final Pattern IMAGE_FILE_PATTERN = Pattern.compile("(\\.((?!jp$)jpe?g?|bmp|gif|png|btif|tiff?|psd|djvu?|xif|wbmp|webp|p(n|b|g|p)m|rgb|tga|x(b|p)m|xwd|pic|ico|fh(c|4|5|7)?|xif|f(bs|px|st)))$");
