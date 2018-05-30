@@ -10,6 +10,14 @@ import org.easymock.EasyMock;
 
 public class HtmlConverterTest extends TestCase {
 
+    public void testDisablePrettyPrint() {
+        String original = "<html><head></head><body>\n " + "hello" + "\t\n</body></html>";
+        Settings settings = TestUtil.makeSettings(new HashMap<String, String>() {{ put("supportedLangs", "en,fr,ja"); }});
+        HtmlConverter converter = new HtmlConverter(settings, original);
+        String html = converter.strip();
+        assertEquals(original, html);
+    }
+
     public void testRemoveWovnSnippet() {
         String original = "<html><head><script src=\"//j.wovn.io/1\" data-wovnio=\"key=NCmbvk&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=0.3.0\" data-wovnio-type=\"backend_without_api\" async></script></head><body></body></html>";
         String removedHtml = "<html><head></head><body></body></html>";
