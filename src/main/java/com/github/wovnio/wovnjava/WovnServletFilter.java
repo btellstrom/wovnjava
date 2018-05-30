@@ -54,14 +54,16 @@ public class WovnServletFilter implements Filter {
             // text
             String body = null;
             if (htmlChecker.canTranslateContent(originalBody)) {
+                // html
                 Api api = new Api(settings, headers);
                 Interceptor interceptor = new Interceptor(headers, settings, api);
                 body = interceptor.translate(originalBody);
             } else {
+                // css, javascript or others
                 body = originalBody;
             }
             wovnResponse.setContentLength(body.getBytes().length);
-            wovnResponse.setContentType("text/html; charset=utf-8");
+            wovnResponse.setCharacterEncoding("utf-8");
             PrintWriter out = response.getWriter();
             out.write(body);
             out.close();
