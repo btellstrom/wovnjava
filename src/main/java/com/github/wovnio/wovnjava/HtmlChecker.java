@@ -1,5 +1,7 @@
 package com.github.wovnio.wovnjava;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Element;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,15 +37,8 @@ class HtmlChecker {
     }
 
     private boolean isAmp(String head) {
-        head = REMOVE_QUOTED_ATTRIBUTES.matcher(head).replaceAll("");
-        Matcher m = HTML_TAG_ATTRIBUTE_PATTERN.matcher(head);
-        if (!m.find()) {
-            return false;
-        }
-        String attributes = m.group();
-        attributes = attributes.replace(">", " ").replaceAll("[\r\n\t]", " ");
-        return attributes.contains(" ⚡ ")
-            || attributes.contains(" amp ");
+        Element element = Jsoup.parse(head).getElementsByTag("html").first();
+        return element != null && (element.hasAttr("amp") || element.hasAttr("⚡"));
     }
 
     private boolean isHtml(String head) {
@@ -58,9 +53,6 @@ class HtmlChecker {
     }
 
     private final int BUFFER_SIZE = 256;
-
-    private final Pattern HTML_TAG_ATTRIBUTE_PATTERN = Pattern.compile("<html([^>]+)>");
-    private final Pattern REMOVE_QUOTED_ATTRIBUTES = Pattern.compile("(?:\"[^\"]*\")|(?:'[^']*')");
 
     private final Pattern TEXT_FILE_PATTERN = Pattern.compile("\\.(?:(?:css)|(?:js)|(?:txt))$");
 

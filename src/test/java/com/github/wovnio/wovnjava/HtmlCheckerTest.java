@@ -41,6 +41,8 @@ public class HtmlCheckerTest extends TestCase {
         assertCanTranslate(false, "<!doctype html><html\ramp>");
         assertCanTranslate(false, "<!doctype html><html\tamp>");
         assertCanTranslate(false, "<!doctype html><html\r\t\namp>");
+        assertCanTranslate(false, "<!doctype html><html amp=amp>");
+        assertCanTranslate(false, "<!doctype html><html amp=1>");
         assertCanTranslate(false, "<!doctype html><html lang=\"en\" amp>");
         assertCanTranslate(false, "<!doctype html><html lang='en' amp>");
         assertCanTranslate(false, "<!doctype html><html lang=en amp>");
@@ -48,6 +50,8 @@ public class HtmlCheckerTest extends TestCase {
         assertCanTranslate(false, "<!doctype html><html onload=\"console.log(1 > 2 && 3 < 4)\" amp lang=en>");
         assertCanTranslate(true, "<!doctype html><html ampute>");
         assertCanTranslate(true, "<!doctype html><html lamp>");
+        assertCanTranslate(true, "<!doctype html><html lang=amp>");
+        assertCanTranslate(true, "<!doctype html><html lang = amp>");
         assertCanTranslate(true, "<!doctype html>");
         assertCanTranslate(true, "<!DOCTYPE html>");
         assertCanTranslate(true, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">");
