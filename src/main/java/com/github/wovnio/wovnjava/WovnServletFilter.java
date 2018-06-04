@@ -30,14 +30,11 @@ public class WovnServletFilter implements Filter {
     {
         Headers headers = new Headers((HttpServletRequest)request, settings);
         String lang = headers.getPathLang();
-        boolean hasLang = lang.length() > 0;
-        boolean hasShorterPath = hasLang && lang.equals(settings.defaultLang);
+        boolean hasShorterPath = lang.length() > 0 && lang.equals(settings.defaultLang);
         if (hasShorterPath) {
             ((HttpServletResponse) response).sendRedirect(headers.redirectLocation(settings.defaultLang));
-        } else if(hasLang) {
-            tryTranslate(headers, (HttpServletRequest)request, response, chain);
         } else {
-            chain.doFilter(request, response);
+            tryTranslate(headers, (HttpServletRequest)request, response, chain);
         }
     }
 
@@ -48,7 +45,11 @@ public class WovnServletFilter implements Filter {
         WovnHttpServletRequest wovnRequest = new WovnHttpServletRequest(request, headers);
         WovnHttpServletResponse wovnResponse = new WovnHttpServletResponse((HttpServletResponse)response);
 
-        wovnRequest.getRequestDispatcher(headers.pathNameKeepTrailingSlash).forward(wovnRequest, wovnResponse);
+        if (headers.getPathLang().length() > 0) {
+            wovnRequest.getRequestDispatcher(headers.pathNameKeepTrailingSlash).forward(wovnRequest, wovnResponse);
+        } else {
+            chain.doFilter(wovnRequest, wovnResponse);
+        }
 
         String originalBody = wovnResponse.toString();
         if (originalBody != null) {

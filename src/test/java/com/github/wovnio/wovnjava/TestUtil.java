@@ -7,6 +7,12 @@ import org.easymock.EasyMock;
 
 
 public class TestUtil {
+    private static final HashMap<String, String> emptySettings = new HashMap<String, String>();
+
+    public static Settings makeSettings() {
+        return makeSettings(emptySettings);
+    }
+
     public static Settings makeSettings(HashMap<String, String> option) {
         FilterConfig mock = EasyMock.createMock(FilterConfig.class);
         String[] keys = {"userToken", "projectToken", "sitePrefixPath", "secretKey", "urlPattern", "urlPatternReg", "query", "apiUrl", "defaultLang", "supportedLangs", "testMode", "testUrl", "useProxy", "debugMode", "originalUrlHeader", "originalQueryStringHeader", "strictHtmlCheck", "deleteInvalidClosingTag", "deleteInvalidUTF8", "connectTimeout", "readTimeout"};

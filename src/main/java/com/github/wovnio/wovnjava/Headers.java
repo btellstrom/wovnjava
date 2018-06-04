@@ -196,10 +196,13 @@ class Headers {
                 }
             } else if (this.settings.urlPattern.equals("subdomain")) {
                 location = lang.toLowerCase() + "." + location;
-            } else if (location.endsWith("/")) {
-                location += lang + "/";
             } else {
-                location += "/" + lang + "/";
+                // path
+                if (location.contains("/")) {
+                    location = location.replaceFirst("/", "/" + lang + "/");
+                } else {
+                    location += "/" + lang + "/";
+                }
             }
             return protocol + "://" + location;
         }
