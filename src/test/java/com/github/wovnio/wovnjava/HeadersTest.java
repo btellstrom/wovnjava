@@ -338,15 +338,36 @@ public class HeadersTest extends TestCase {
         assertEquals("ja", h.getPathLang());
     }
 
-    public void testRedirectLocationPath() {
-        HttpServletRequest mockRequest = mockRequestPath();
-        FilterConfig mockConfig = mockConfigPath();
-
-        Settings s = new Settings(mockConfig);
-        Headers h = new Headers(mockRequest, s);
-
-//        assertEquals("", h.redirectLocation("ja"));
+    public void testRedirectLocationPathTop() {
+        Headers h = new Headers(TestUtil.mockRequestPath("/"), TestUtil.makeSettings());
+        assertEquals("https://example.com/", h.redirectLocation("en"));
+        assertEquals("https://example.com/ja/", h.redirectLocation("ja"));
     }
+
+    public void testRedirectLocationPathDirectory() {
+        Headers h = new Headers(TestUtil.mockRequestPath("/test/"), TestUtil.makeSettings());
+        assertEquals("https://example.com/test/", h.redirectLocation("en"));
+        assertEquals("https://example.com/ja/test/", h.redirectLocation("ja"));
+    }
+
+    public void testRedirectLocationPathFile() {
+        Headers h = new Headers(TestUtil.mockRequestPath("/foo.html"), TestUtil.makeSettings());
+        assertEquals("https://example.com/foo.html", h.redirectLocation("en"));
+        assertEquals("https://example.com/ja/foo.html", h.redirectLocation("ja"));
+    }
+
+    public void testRedirectLocationPathDirectoryAndFile() {
+        Headers h = new Headers(TestUtil.mockRequestPath("/dir/foo.html"), TestUtil.makeSettings());
+        assertEquals("https://example.com/dir/foo.html", h.redirectLocation("en"));
+        assertEquals("https://example.com/ja/dir/foo.html", h.redirectLocation("ja"));
+    }
+
+    public void testRedirectLocationPathNestedDirectory() {
+        Headers h = new Headers(TestUtil.mockRequestPath("/dir1/dir2/"), TestUtil.makeSettings());
+        assertEquals("https://example.com/dir1/dir2/", h.redirectLocation("en"));
+        assertEquals("https://example.com/ja/dir1/dir2/", h.redirectLocation("ja"));
+    }
+
     public void testRedirectLocationSubdomain() {
 
     }
