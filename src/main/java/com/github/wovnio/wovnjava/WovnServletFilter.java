@@ -30,15 +30,14 @@ public class WovnServletFilter implements Filter {
     {
         Headers headers = new Headers((HttpServletRequest)request, settings);
         String lang = headers.getPathLang();
-        boolean hasShorterPath = lang.length() > 0 && lang.equals(settings.defaultLang);
-        boolean canNotTranslate = !htmlChecker.canTranslatePath(headers.pathName)
-                               || !htmlChecker.canTranslateContentType(response.getContentType());
-        if (canNotTranslate) {
-            chain.doFilter(request, response);
-        } else if (hasShorterPath) {
+        boolean hasLang = lang.length() > 0;
+        boolean hasShorterPath = hasLang && lang.equals(settings.defaultLang);
+        if (hasShorterPath) {
             ((HttpServletResponse) response).sendRedirect(headers.redirectLocation(settings.defaultLang));
-        } else {
+        } else if(hasLang) {
             tryTranslate(headers, (HttpServletRequest)request, response, chain);
+        } else {
+            chain.doFilter(request, response);
         }
     }
 
@@ -48,12 +47,14 @@ public class WovnServletFilter implements Filter {
     private void tryTranslate(Headers headers, HttpServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         WovnHttpServletRequest wovnRequest = new WovnHttpServletRequest(request, headers);
         WovnHttpServletResponse wovnResponse = new WovnHttpServletResponse((HttpServletResponse)response);
-        chain.doFilter(wovnRequest, wovnResponse);
+
+        wovnRequest.getRequestDispatcher(headers.pathNameKeepTrailingSlash).forward(wovnRequest, wovnResponse);
+
         String originalBody = wovnResponse.toString();
         if (originalBody != null) {
             // text
             String body = null;
-            if (htmlChecker.canTranslateContent(originalBody)) {
+            if (htmlChecker.canTranslate(response.getContentType(), headers.pathName, originalBody)) {
                 // html
                 Api api = new Api(settings, headers);
                 Interceptor interceptor = new Interceptor(headers, settings, api);

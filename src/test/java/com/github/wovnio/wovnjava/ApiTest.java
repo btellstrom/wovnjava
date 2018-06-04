@@ -33,7 +33,6 @@ public class ApiTest extends TestCase {
         HttpServletRequest request = TestUtil.mockRequestPath("/ja/");
         String html = translate(request, settings, "<html></html>", 200, "gzip", gzip("{\"body\": \"response html\"}".getBytes()));
         String expect = "response html";
-        System.out.println(html);
         assertEquals(expect, html);
     }
 
@@ -46,7 +45,6 @@ public class ApiTest extends TestCase {
         HttpServletRequest request = TestUtil.mockRequestPath("/ja/");
         String html = translate(request, settings, "<html></html>", 200, "", "{\"body\": \"response html\"}".getBytes());
         String expect = "response html";
-        System.out.println(html);
         assertEquals(expect, html);
     }
 
