@@ -45,6 +45,10 @@ public class HtmlCheckerTest extends TestCase {
         assertCanTranslate(false, "<!doctype html><html amp=1>");
         assertCanTranslate(false, "<!doctype html><html amp=\"\">");
         assertCanTranslate(false, "<!doctype html><html amp=''>");
+        assertCanTranslate(false, "<!doctype html><html ⚡=amp>");
+        assertCanTranslate(false, "<!doctype html><html ⚡=1>");
+        assertCanTranslate(false, "<!doctype html><html ⚡=\"\">");
+        assertCanTranslate(false, "<!doctype html><html ⚡=''>");
         assertCanTranslate(false, "<!doctype html><html lang=\"en\" amp>");
         assertCanTranslate(false, "<!doctype html><html lang='en' amp>");
         assertCanTranslate(false, "<!doctype html><html lang=en amp>");
