@@ -18,6 +18,7 @@ class HtmlConverter {
     HtmlConverter(Settings settings, String original) {
         this.settings = settings;
         doc = Jsoup.parse(original);
+        doc.outputSettings().prettyPrint(false);
     }
 
     String strip() {
@@ -25,7 +26,7 @@ class HtmlConverter {
         removeHrefLangIfConflicts();
         removeWovnIgnore();
         removeForm();
-        return doc.outerHtml();
+        return doc.html();
     }
 
     String convert(Headers headers, String lang, String type) {
@@ -33,7 +34,7 @@ class HtmlConverter {
         removeHrefLangIfConflicts();
         appendSnippet(lang, type);
         appendHrefLang(headers);
-        return doc.outerHtml();
+        return doc.html();
     }
 
     String restore(String html) {
