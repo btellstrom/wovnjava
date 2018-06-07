@@ -85,7 +85,6 @@ useProxy                  |          | 'false'
 debugMode                 |          | '0'
 originalUrlHeader         |          | ''
 originalQueryStringHeader |          | ''
-strictHtmlCheck           |          | 'false'
 
 * A required parameter with a default setting does not need to be set within the web.xml. (Only the projectToken and secretKey parameters must be set in order for the library to work)
 
@@ -183,15 +182,3 @@ wovnjava will use the following settings along with the correct URL (prior to re
 * The sample request header shown above was referenced from the following site.
 
 https://coderwall.com/p/jhkw7w/passing-request-uri-into-request-header
-
-### 2.9. strictHtmlCheck
-
-(This is an experimental setting. As such, there is a possibility it will be removed in the future.)
-
-wovnjava uses the Content-Type header to determine the data type of the response body; by default, it translates only HTML requests. If you set strictHtmlCheck to true, wovnJava determines the data type of the response body, not only by the Content-Type, but also by checking the contents of the response body. This feature is used for example when the Content-type is text/html, however the actual content is not HTML. We can then prevent unnecessary translations of the page.
-
-wovnjava determines the response body as HTML if it starts with any of the following strings. wovnjava ignores comment tags and blanks during this process and is not case sensitive.
-
-* &lt;?xml
-* &lt;!DOCTYPE
-* &lt;html
