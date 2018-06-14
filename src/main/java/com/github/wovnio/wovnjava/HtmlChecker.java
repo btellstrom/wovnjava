@@ -6,6 +6,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 class HtmlChecker {
+    public boolean canTranslate(String contentType, String path, String html) {
+        return canTranslateContentType(contentType) &&
+            canTranslatePath(path) &&
+            canTranslateContent(html);
+    }
+
     public boolean canTranslateContentType(String type) {
         return type == null || type.toLowerCase().contains("html");
     }
