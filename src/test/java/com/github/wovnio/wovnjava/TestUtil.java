@@ -98,10 +98,10 @@ public class TestUtil {
 
     public static FilterChainMock doServletFilter(String contentType, String path, String forwardPath) throws ServletException, IOException {
         RequestDispatcherMock dispatcher = new RequestDispatcherMock();
-		HttpServletRequest req = mockRequestPath(path, forwardPath, dispatcher);
-		ServletResponse res = TestUtil.mockResponse(contentType, "");
-		FilterConfig filterConfig = mockFilterConfig();
-		FilterChainMock filterChain = new FilterChainMock();
+        HttpServletRequest req = mockRequestPath(path, forwardPath, dispatcher);
+        ServletResponse res = TestUtil.mockResponse(contentType, "");
+        FilterConfig filterConfig = mockFilterConfig();
+        FilterChainMock filterChain = new FilterChainMock();
         WovnServletFilter filter = new WovnServletFilter();
         filter.init(filterConfig);
         filter.doFilter(req, res, filterChain);
