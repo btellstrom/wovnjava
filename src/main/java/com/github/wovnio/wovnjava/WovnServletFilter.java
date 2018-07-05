@@ -48,7 +48,7 @@ public class WovnServletFilter implements Filter {
         WovnHttpServletRequest wovnRequest = new WovnHttpServletRequest(request, headers);
         WovnHttpServletResponse wovnResponse = new WovnHttpServletResponse((HttpServletResponse)response);
 
-        if (headers.getPathLang().length() > 0) {
+        if (settings.urlPattern.equals("path") && headers.getPathLang().length() > 0) {
             wovnRequest.getRequestDispatcher(headers.pathNameKeepTrailingSlash).forward(wovnRequest, wovnResponse);
         } else {
             chain.doFilter(wovnRequest, wovnResponse);

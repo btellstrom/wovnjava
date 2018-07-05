@@ -15,13 +15,13 @@ import org.easymock.EasyMock;
 
 
 public class TestUtil {
-    private static final HashMap<String, String> emptySettings = new HashMap<String, String>();
+    private static final HashMap<String, String> emptyOption = new HashMap<String, String>();
 
-    public static Settings makeSettings() {
-        return makeSettings(emptySettings);
+    public static FilterConfig makeConfig() {
+        return makeConfig(emptyOption);
     }
 
-    public static Settings makeSettings(HashMap<String, String> option) {
+    public static FilterConfig makeConfig(HashMap<String, String> option) {
         FilterConfig mock = EasyMock.createMock(FilterConfig.class);
         String[] keys = {"userToken", "projectToken", "sitePrefixPath", "secretKey", "urlPattern", "urlPatternReg", "query", "apiUrl", "defaultLang", "supportedLangs", "testMode", "testUrl", "useProxy", "debugMode", "originalUrlHeader", "originalQueryStringHeader", "strictHtmlCheck", "deleteInvalidClosingTag", "deleteInvalidUTF8", "connectTimeout", "readTimeout"};
         for (int i=0; i<keys.length; ++i) {
@@ -31,7 +31,15 @@ public class TestUtil {
             EasyMock.expect(mock.getInitParameter(key)).andReturn(val);
         }
         EasyMock.replay(mock);
-        return new Settings(mock);
+        return mock;
+    }
+
+    public static Settings makeSettings() {
+        return makeSettings(emptyOption);
+    }
+
+    public static Settings makeSettings(HashMap<String, String> option) {
+        return new Settings(makeConfig(option));
     }
 
     public static HttpServletRequest mockRequestPath(String path) {
@@ -93,14 +101,22 @@ public class TestUtil {
     }
 
     public static FilterChainMock doServletFilter(String contentType, String path) throws ServletException, IOException {
-        return doServletFilter(contentType, path, path);
+        return doServletFilter(contentType, path, path, emptyOption);
+    }
+
+    public static FilterChainMock doServletFilter(String contentType, String path, HashMap<String, String> option) throws ServletException, IOException {
+        return doServletFilter(contentType, path, path, option);
     }
 
     public static FilterChainMock doServletFilter(String contentType, String path, String forwardPath) throws ServletException, IOException {
+        return doServletFilter(contentType, path, forwardPath, emptyOption);
+    }
+
+    public static FilterChainMock doServletFilter(String contentType, String path, String forwardPath, HashMap<String, String> option) throws ServletException, IOException {
         RequestDispatcherMock dispatcher = new RequestDispatcherMock();
         HttpServletRequest req = mockRequestPath(path, forwardPath, dispatcher);
         ServletResponse res = TestUtil.mockResponse(contentType, "");
-        FilterConfig filterConfig = mockFilterConfig();
+        FilterConfig filterConfig = makeConfig(option);
         FilterChainMock filterChain = new FilterChainMock();
         WovnServletFilter filter = new WovnServletFilter();
         filter.init(filterConfig);
