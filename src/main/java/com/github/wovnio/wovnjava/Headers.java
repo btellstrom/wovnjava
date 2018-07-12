@@ -20,6 +20,7 @@ class Headers {
     String pageUrl;
     String query;
     String url;
+    String fullUrl;
 
     private HttpServletRequest request;
     private String browserLang;
@@ -111,6 +112,7 @@ class Headers {
         }
 
         this.url = this.host + this.pathName;
+        this.fullUrl = this.protocol + "://" + this.host + this.pathName;
         if (this.query != null && this.query.length() > 0) {
             this.url += "?";
         }
