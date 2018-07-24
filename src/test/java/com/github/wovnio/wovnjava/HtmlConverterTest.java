@@ -58,6 +58,26 @@ public class HtmlConverterTest extends TestCase {
         assertEquals(original, stripExtraSpaces(converter.restore(html)));
     }
 
+    public void testRemoveClassIgnore() {
+        String original = "<html><head></head><body>" +
+          "<p class=\"no-ignore\">The pizza needs <b class=\"ingredient\">pineapple</b>, <span class=\"name\">Chad</span>!</p>" +
+          "<p class=\"ignore-me\">It's a fruit, <span class=\"name\">Louie</span>!</p>" +
+          "</body></html>";
+        String removedHtml = "<html><head></head><body>" +
+          "<p class=\"no-ignore\">The pizza needs <!--wovn-marker-0-->, <!--wovn-marker-1-->!</p>" +
+          "<!--wovn-marker-2-->" +
+          "</body></html>";
+        Settings settings = TestUtil.makeSettings(new HashMap<String, String>() {{
+            put("supportedLangs", "en,fr,ja");
+            put("ignoreClasses", "ignore-me,name,ingredient");
+        }});
+        HtmlConverter converter = new HtmlConverter(settings, original);
+        String html = converter.strip();
+        assertEquals("ignore-me & name & ingredient", String.join(" & ", settings.ignoreClasses));
+        assertEquals(removedHtml, stripExtraSpaces(html));
+        assertEquals(original, stripExtraSpaces(converter.restore(html)));
+    }
+
     public void testRemoveForm() {
         String original = "<html><head></head><body><form><input type=\"hidden\" name=\"csrf\" value=\"random\"><INPUT TYPE=\"HIDDEN\" NAME=\"CSRF_TOKEN\" VALUE=\"RANDOM\"></form></body></html>";
         String removedHtml = "<html><head></head><body><form><!--wovn-marker-0--><!--wovn-marker-1--></form></body></html>";
@@ -94,6 +114,10 @@ public class HtmlConverterTest extends TestCase {
             "<script>6</script>" +
             "<script>7</script>" +
             "<script>8</script>" +
+            "<div class=\"class-ignore-test\">" +
+            "<p class=\"no-ignore\">The pizza needs <b class=\"ingredient\">pineapple</b>, <span class=\"name\" wovn-ignore>Chad</span>!</p>" +
+            "<p class=\"ignore-me\">It's a fruit, <span class=\"name\" wovn-ignore>Louie</span>!</p>" +
+            "</div>" +
             "<script>9</script>" +
             "<script>10</script>" +
             "</body></html>";
@@ -103,16 +127,23 @@ public class HtmlConverterTest extends TestCase {
             "</head><body>" +
             "a <!--wovn-marker-1-->b" +
             "<div>Hello <!--wovn-marker-9-->.</div>" +
-            "<form><!--wovn-marker-10--></form>" +
+            "<form><!--wovn-marker-14--></form>" +
             "<!--wovn-marker-2-->" +
             "<!--wovn-marker-3-->" +
             "<!--wovn-marker-4-->" +
             "<!--wovn-marker-5-->" +
             "<!--wovn-marker-6-->" +
+            "<div class=\"class-ignore-test\">" +
+            "<p class=\"no-ignore\">The pizza needs <!--wovn-marker-12-->, <!--wovn-marker-10-->!</p>" +
+            "<!--wovn-marker-13-->" +
+            "</div>" +
             "<!--wovn-marker-7-->" +
             "<!--wovn-marker-8-->" +
             "</body></html>";
-        Settings settings = TestUtil.makeSettings(new HashMap<String, String>() {{ put("supportedLangs", "en,fr,ja"); }});
+        Settings settings = TestUtil.makeSettings(new HashMap<String, String>() {{
+            put("supportedLangs", "en,fr,ja");
+            put("ignoreClasses", "ignore-me,name,ingredient");
+        }});
         HtmlConverter converter = new HtmlConverter(settings, original);
         String html = converter.strip();
         assertEquals(removedHtml, stripExtraSpaces(html));

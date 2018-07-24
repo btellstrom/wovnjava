@@ -27,6 +27,7 @@ class Settings {
     String apiUrl = "https://wovn.global.ssl.fastly.net/v0/";
     String defaultLang = "en";
     ArrayList<String> supportedLangs;
+    ArrayList<String> ignoreClasses;
     boolean useProxy = false;
     String originalUrlHeader = "";
     String originalQueryStringHeader = "";
@@ -41,6 +42,7 @@ class Settings {
         this.query = new ArrayList<String>();
         this.supportedLangs = new ArrayList<String>();
         this.supportedLangs.add("en");
+        this.ignoreClasses = new ArrayList<String>();
 
         String p;
 
@@ -99,6 +101,11 @@ class Settings {
         p = config.getInitParameter("supportedLangs");
         if (p != null && p.length() > 0) {
             this.supportedLangs = getArrayParameter(p);
+        }
+
+        p = config.getInitParameter("ignoreClasses");
+        if (p != null && p.length() > 0) {
+            this.ignoreClasses = getArrayParameter(p);
         }
 
         p = config.getInitParameter("useProxy");
