@@ -183,6 +183,9 @@ class Headers {
         return this.pathLang;
     }
 
+    /**
+     * @return String Returns request URL with new language code added
+     */
     String redirectLocation(String lang) {
         if (lang.equals(this.settings.defaultLang)) {
             return this.protocol + "://" + this.url;
@@ -206,6 +209,13 @@ class Headers {
             }
             return protocol + "://" + location;
         }
+    }
+
+    /**
+     * @return String Returns request URL without any language code
+     */
+    String getUrlWithoutLanguageCode() {
+        return this.protocol + "://" + this.url;
     }
 
     String removeLang(String uri, String lang) {

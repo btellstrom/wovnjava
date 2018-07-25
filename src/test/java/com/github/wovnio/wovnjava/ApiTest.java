@@ -2,6 +2,7 @@ package com.github.wovnio.wovnjava;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.UnsupportedEncodingException;
@@ -13,6 +14,7 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
+import java.net.URLDecoder;
 import javax.servlet.FilterConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,35 +26,54 @@ import org.easymock.EasyMock;
 
 public class ApiTest extends TestCase {
 
-    public void testNormal() throws ApiException, IOException, ProtocolException {
+    public void testTranslateWithGzipResponse() throws ApiException, IOException, ProtocolException {
+        byte[] apiServerResponse = gzip("{\"body\": \"<html><body>response html</body></html>\"}".getBytes());
+        String encoding = "gzip";
+        String resultingHtml = testTranslate(apiServerResponse, encoding);
+        String expectedHtml = "<html><body>response html</body></html>";
+        assertEquals(expectedHtml, resultingHtml);
+    }
+
+    public void testTranslateWithPlainTextResponse() throws ApiException, IOException, ProtocolException {
+        byte[] apiServerResponse = "{\"body\": \"<html><body>response html</body></html>\"}".getBytes();
+        String encoding = "";
+        String resultingHtml = testTranslate(apiServerResponse, encoding);
+        String expectedHtml = "<html><body>response html</body></html>";
+        assertEquals(expectedHtml, resultingHtml);
+    }
+
+    private String testTranslate(byte[] apiServerResponse, String encoding) throws ApiException, IOException, ProtocolException {
+        String html = "<html>much content</html>";
+
         Settings settings = TestUtil.makeSettings(new HashMap<String, String>() {{
             put("projectToken", "token0");
             put("defaultLang", "en");
             put("supportedLangs", "en,ja,fr");
         }});
-        HttpServletRequest request = TestUtil.mockRequestPath("/ja/");
-        String html = translate(request, settings, "<html></html>", 200, "gzip", gzip("{\"body\": \"response html\"}".getBytes()));
-        String expect = "response html";
-        assertEquals(expect, html);
-    }
 
-    public void testWithPlainTextResponse() throws ApiException, IOException, ProtocolException {
-        Settings settings = TestUtil.makeSettings(new HashMap<String, String>() {{
-            put("projectToken", "token0");
-            put("defaultLang", "en");
-            put("supportedLangs", "en,ja,fr");
-        }});
-        HttpServletRequest request = TestUtil.mockRequestPath("/ja/");
-        String html = translate(request, settings, "<html></html>", 200, "", "{\"body\": \"response html\"}".getBytes());
-        String expect = "response html";
-        assertEquals(expect, html);
-    }
+        HttpServletRequest request = TestUtil.mockRequestPath("/ja/somepage/"); // mocks "https://example.com"
 
-    private String translate(HttpServletRequest request, Settings settings, String html, int code, String encoding, byte[] response) throws ApiException, IOException, ProtocolException {
         Headers headers = new Headers(request, settings);
-        HttpURLConnection con = mockHttpURLConnection(gzip(html.getBytes()).length, code, encoding, response);
+
         Api api = new Api(settings, headers);
-        return api.translate("ja", html, con);
+
+        ByteArrayOutputStream requestStream = new ByteArrayOutputStream();
+        ByteArrayInputStream responseStream = new ByteArrayInputStream(apiServerResponse);
+        int returnCode = 200;
+        HttpURLConnection con = mockHttpURLConnection(requestStream, responseStream, returnCode, encoding);
+
+        String result = api.translate("ja", html, con);
+
+        String encodedApiRequestBody = decompress(requestStream.toByteArray());
+        String apiRequestBody = URLDecoder.decode(encodedApiRequestBody, "UTF-8");
+        String expectedRequestBody = "url=https://example.com/somepage/" +
+                                     "&token=token0" +
+                                     "&lang_code=ja" +
+                                     "&url_pattern=path" +
+                                     "&body=" + html;
+        assertEquals(expectedRequestBody, apiRequestBody);
+
+        return result;
     }
 
     private byte[] gzip(byte[] input) throws IOException, ProtocolException {
@@ -66,8 +87,7 @@ public class ApiTest extends TestCase {
         return buffer.toByteArray();
     }
 
-    private HttpURLConnection mockHttpURLConnection( int sendLength, int code, String encoding, byte[] response) throws IOException, ProtocolException {
-        InputStream responseStream = new ByteArrayInputStream(response);
+    private HttpURLConnection mockHttpURLConnection(ByteArrayOutputStream requestStream, ByteArrayInputStream responseStream, int code, String encoding) throws IOException, ProtocolException {
         HttpURLConnection mock = EasyMock.createMock(HttpURLConnection.class);
         mock.setDoOutput(true);
         mock.setRequestProperty(EasyMock.anyString(), EasyMock.anyString());
@@ -75,9 +95,30 @@ public class ApiTest extends TestCase {
         mock.setRequestMethod("POST");
         EasyMock.expect(mock.getResponseCode()).andReturn(code);
         EasyMock.expect(mock.getContentEncoding()).andReturn(encoding);
-        EasyMock.expect(mock.getOutputStream()).andReturn(new ByteArrayOutputStream());
+        EasyMock.expect(mock.getOutputStream()).andReturn(requestStream);
         EasyMock.expect(mock.getInputStream()).andReturn(responseStream);
         EasyMock.replay(mock);
         return mock;
+    }
+
+    private static String decompress(byte[] compressed) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        ByteArrayInputStream bis = null;
+        GZIPInputStream gis = null;
+        BufferedReader br = null;
+        try {
+            bis = new ByteArrayInputStream(compressed);
+            gis = new GZIPInputStream(bis);
+            br = new BufferedReader(new InputStreamReader(gis, "UTF-8"));
+            String line;
+            while((line = br.readLine()) != null) {
+                sb.append(line);
+            }
+        } finally {
+            gis.close();
+            bis.close();
+            br.close();
+        }
+        return sb.toString();
     }
 }
