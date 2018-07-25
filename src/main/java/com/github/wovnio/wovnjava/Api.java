@@ -126,7 +126,7 @@ class Api {
 
     private String getApiBody(String lang, String body) throws UnsupportedEncodingException {
         StringBuilder sb = new StringBuilder();
-        appendKeyValue(sb, "url=", headers.url);
+        appendKeyValue(sb, "url=", headers.getUrlWithoutLanguageCode());
         appendKeyValue(sb, "&token=", settings.projectToken);
         appendKeyValue(sb, "&lang_code=", lang);
         appendKeyValue(sb, "&url_pattern=", settings.urlPattern);
