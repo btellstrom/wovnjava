@@ -102,17 +102,23 @@ public class ApiTest extends TestCase {
     }
 
     private static String decompress(byte[] compressed) throws IOException {
-        ByteArrayInputStream bis = new ByteArrayInputStream(compressed);
-        GZIPInputStream gis = new GZIPInputStream(bis);
-        BufferedReader br = new BufferedReader(new InputStreamReader(gis, "UTF-8"));
         StringBuilder sb = new StringBuilder();
-        String line;
-        while((line = br.readLine()) != null) {
-            sb.append(line);
+        ByteArrayInputStream bis = null;
+        GZIPInputStream gis = null;
+        BufferedReader br = null;
+        try {
+            bis = new ByteArrayInputStream(compressed);
+            gis = new GZIPInputStream(bis);
+            br = new BufferedReader(new InputStreamReader(gis, "UTF-8"));
+            String line;
+            while((line = br.readLine()) != null) {
+                sb.append(line);
+            }
+        } finally {
+            gis.close();
+            bis.close();
+            br.close();
         }
-        br.close();
-        gis.close();
-        bis.close();
         return sb.toString();
     }
 }
