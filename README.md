@@ -85,6 +85,7 @@ useProxy                  |          | 'false'
 debugMode                 |          | '0'
 originalUrlHeader         |          | ''
 originalQueryStringHeader |          | ''
+ignoreClasses             |          | ''
 
 * A required parameter with a default setting does not need to be set within the web.xml. (Only the projectToken and secretKey parameters must be set in order for the library to work)
 
@@ -182,3 +183,31 @@ wovnjava will use the following settings along with the correct URL (prior to re
 * The sample request header shown above was referenced from the following site.
 
 https://coderwall.com/p/jhkw7w/passing-request-uri-into-request-header
+
+### 2.9. ignoreClasses
+
+This parameter is a comma-separated list of HTML classes for which you would like WOVN to skip the elements of.
+
+For example, if you include `my-secret-class` in this parameter and you have an element as follows
+```HTML
+  <div>
+    <p class="my-secret-class">Some information WOVN does not touch</p>
+  </div>
+```
+WOVN will treat it as
+```HTML
+  <div></div>
+```
+
+Including three classes, `email-address-element`, `my-secret-class`, and `noshow`, in your ignoreClasses parameter would look as follows
+
+```XML
+<filter>
+  ...
+  <init-param>
+    <param-name>ignoreClasses</param-name>
+    <param-value>email-address-element,my-secret-class,noshow</param-value>
+  </init-param>
+  ...
+</filter>
+```

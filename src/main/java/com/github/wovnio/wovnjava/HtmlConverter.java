@@ -25,6 +25,7 @@ class HtmlConverter {
         removeSnippetAndScripts();
         removeHrefLangIfConflicts();
         removeWovnIgnore();
+        removeClassIgnore();
         removeForm();
         return doc.html();
     }
@@ -92,6 +93,15 @@ class HtmlConverter {
 
     private void removeWovnIgnore() {
         Elements elements = doc.getElementsByAttribute("wovn-ignore");
+        for (Element element : elements) {
+            replaceNodeToMarkerComment(element);
+        }
+    }
+
+    private void removeClassIgnore() {
+        if (settings.ignoreClasses.isEmpty()) return;
+        String classNames = "." + String.join(", .", settings.ignoreClasses);
+        Elements elements = doc.select(classNames);
         for (Element element : elements) {
             replaceNodeToMarkerComment(element);
         }
