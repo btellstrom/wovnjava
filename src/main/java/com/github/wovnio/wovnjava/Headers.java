@@ -19,7 +19,6 @@ class Headers {
     String protocol;
     String pageUrl;
     String query;
-    String url;
 
     private HttpServletRequest request;
     private String browserLang;
@@ -110,12 +109,6 @@ class Headers {
             this.host += ":" + port;
         }
 
-        this.url = this.host + this.pathName;
-        if (this.query != null && this.query.length() > 0) {
-            this.url += "?";
-        }
-        this.url += this.removeLang(this.query, this.langCode());
-        this.url = this.url.length() == 0 ? "/" : this.url;
         if (this.settings.query.size() > 0) {
             ArrayList<String> queryVals = new ArrayList<String>();
             for (String q : this.settings.query) {
@@ -187,10 +180,17 @@ class Headers {
      * @return String Returns request URL with new language code added
      */
     String redirectLocation(String lang) {
+        String baseLocation = this.host + this.pathNameKeepTrailingSlash;
+        if (this.query != null && this.query.length() > 0) {
+            baseLocation += "?";
+        }
+        baseLocation += this.removeLang(this.query, this.langCode());
+        baseLocation = baseLocation.length() == 0 ? "/" : baseLocation;
+
         if (lang.equals(this.settings.defaultLang)) {
-            return this.protocol + "://" + this.url;
+            return this.protocol + "://" + baseLocation;
         } else {
-            String location = this.url;
+            String location = baseLocation;
             if (this.settings.urlPattern.equals("query")) {
                 if (!Pattern.compile("\\?").matcher(location).find()) {
                     location = location + "?wovn=" + lang;
@@ -215,7 +215,7 @@ class Headers {
      * @return String Returns request URL without any language code
      */
     String getUrlWithoutLanguageCode() {
-        return this.protocol + "://" + this.url;
+        return redirectLocation(this.settings.defaultLang);
     }
 
     String removeLang(String uri, String lang) {
