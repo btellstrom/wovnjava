@@ -93,7 +93,6 @@ public class InterceptorTest extends TestCase {
         EasyMock.expect(mock.getServerName()).andReturn("example.com").atLeastOnce();
         EasyMock.expect(mock.getQueryString()).andReturn("").atLeastOnce();
         EasyMock.expect(mock.getServerPort()).andReturn(443).atLeastOnce();
-        EasyMock.expect(mock.getHeader("Location")).andReturn(path).atLeastOnce();
         EasyMock.replay(mock);
         return mock;
     }

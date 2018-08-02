@@ -233,23 +233,4 @@ class Headers {
             return uri.replaceFirst(prefix + lang + "(/|$)", prefix);
         }
     }
-
-    void out(HttpServletRequest req, HttpServletResponse res) {
-        String loc = req.getHeader("Location");
-        if (loc != null && Pattern.compile("//" + host).matcher(loc).find()) {
-            if (this.settings.urlPattern.equals("query")) {
-                if (Pattern.compile("\\?").matcher(loc).find()) {
-                    res.setHeader("Location", loc + "?wovn=" + langCode());
-                } else {
-                    res.setHeader("Location", loc + "&wovn=" + langCode());
-                }
-            } else if (this.settings.urlPattern.equals("subdomain")) {
-                loc = loc.replaceFirst("//([^.]+)", "//" + langCode() + "\\.$1");
-                res.setHeader("Location", loc);
-            } else {
-                loc = loc.replaceFirst("(//[^/]+)", "$1/" + langCode());
-                res.setHeader("Location", loc);
-            }
-        }
-    }
 }

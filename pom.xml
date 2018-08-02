@@ -7,7 +7,7 @@
     <groupId>com.github.wovnio</groupId>
     <artifactId>wovnjava</artifactId>
     <name>wovnjava</name>
-    <version>0.3.7</version>
+    <version>0.3.8</version>
     <url>https://github.com/WOVNio/wovnjava</url>
 
     <licenses>
@@ -25,8 +25,8 @@
     <dependencies>
         <dependency>
             <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>2.5</version>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.0.1</version>
             <scope>provided</scope>
         </dependency>
 
