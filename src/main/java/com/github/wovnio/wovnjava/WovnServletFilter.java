@@ -46,7 +46,7 @@ public class WovnServletFilter implements Filter {
 
     private void tryTranslate(Headers headers, HttpServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         WovnHttpServletRequest wovnRequest = new WovnHttpServletRequest(request, headers);
-        WovnHttpServletResponse wovnResponse = new WovnHttpServletResponse((HttpServletResponse)response);
+        WovnHttpServletResponse wovnResponse = new WovnHttpServletResponse((HttpServletResponse)response, headers);
 
         if (settings.urlPattern.equals("path") && headers.getPathLang().length() > 0) {
             wovnRequest.getRequestDispatcher(headers.pathNameKeepTrailingSlash).forward(wovnRequest, wovnResponse);
@@ -78,6 +78,5 @@ public class WovnServletFilter implements Filter {
             out.write(wovnResponse.getData());
             out.close();
         }
-        headers.out(wovnRequest, wovnResponse);
     }
 }

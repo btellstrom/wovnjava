@@ -54,7 +54,6 @@ public class TestUtil {
         EasyMock.expect(mock.getServerName()).andReturn("example.com").atLeastOnce();
         EasyMock.expect(mock.getQueryString()).andReturn("").atLeastOnce();
         EasyMock.expect(mock.getServerPort()).andReturn(443).atLeastOnce();
-        EasyMock.expect(mock.getHeader("Location")).andReturn(path).atLeastOnce();
         EasyMock.expect(mock.getRequestDispatcher(replacedPath == null ? EasyMock.anyString() : replacedPath)).andReturn(dispatcher);
         EasyMock.replay(mock);
         return mock;
@@ -65,6 +64,7 @@ public class TestUtil {
         mock.setContentLength(EasyMock.anyInt());
         EasyMock.expectLastCall();
         mock.setCharacterEncoding("utf-8");
+        EasyMock.expect(mock.getHeader("Location")).andReturn("");
         EasyMock.expectLastCall();
         EasyMock.expect(mock.getWriter()).andReturn(new PrintWriter(new StringWriter()));
         EasyMock.expect(mock.getContentType()).andReturn(contentType).atLeastOnce();
