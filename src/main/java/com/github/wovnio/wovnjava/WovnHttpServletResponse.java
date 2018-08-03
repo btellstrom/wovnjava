@@ -110,13 +110,16 @@ class WovnHttpServletResponse extends HttpServletResponseWrapper {
         } else {
             pathLang = langCode;
         }
-        String pathAll = pathJoin(pathLang, pathJoin(headers.pathNameKeepTrailingSlash, loc));
+        String pathAll = loc.startsWith("/") ?
+          pathJoin(pathLang, loc) :
+          pathJoin(pathLang, pathJoin(headers.pathNameKeepTrailingSlash, loc));
         return protocol + "://" + subdomainLang + headers.host + pathAll + queryLang;
     }
 
     private String pathJoin(String left, String right) {
         int slash_pos = left.lastIndexOf("/");
         left = slash_pos >= 0 ? left.substring(0, slash_pos) : "";
+        right = right.startsWith("./") ? right.substring(2) : right;
         boolean l = left.endsWith("/");
         boolean r = right.startsWith("/");
         if (l && r) {
