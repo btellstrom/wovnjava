@@ -2,7 +2,8 @@ package com.github.wovnio.wovnjava;
 
 import junit.framework.TestCase;
 
-import java.util.HashMap;
+import java.util.*;
+
 import org.easymock.EasyMock;
 
 import javax.servlet.FilterConfig;
@@ -20,6 +21,8 @@ public class WovnHttpServletRequestTest extends TestCase {
         EasyMock.expect(mock.getQueryString()).andReturn("").atLeastOnce();
         EasyMock.expect(mock.getServerPort()).andReturn(443).atLeastOnce();
         EasyMock.expect(mock.getServletPath()).andReturn("/en/test").atLeastOnce();
+        EasyMock.expect(mock.getHeaderNames()).andReturn(new Vector<String>().elements());
+        EasyMock.expect(mock.getHeader("X-Header-Key")).andReturn("x-header-value");
         EasyMock.replay(mock);
         return mock;
     }
@@ -34,6 +37,8 @@ public class WovnHttpServletRequestTest extends TestCase {
         EasyMock.expect(mock.getQueryString()).andReturn("").atLeastOnce();
         EasyMock.expect(mock.getServerPort()).andReturn(443).atLeastOnce();
         EasyMock.expect(mock.getServletPath()).andReturn("/test").atLeastOnce();
+        EasyMock.expect(mock.getHeaderNames()).andReturn(new Vector<String>().elements());
+        EasyMock.expect(mock.getHeader("X-Header-Key")).andReturn("x-header-value");
         EasyMock.replay(mock);
         return mock;
     }
@@ -48,6 +53,8 @@ public class WovnHttpServletRequestTest extends TestCase {
         EasyMock.expect(mock.getQueryString()).andReturn("wovn=en").atLeastOnce();
         EasyMock.expect(mock.getServerPort()).andReturn(443).atLeastOnce();
         EasyMock.expect(mock.getServletPath()).andReturn("/test").atLeastOnce();
+        EasyMock.expect(mock.getHeaderNames()).andReturn(new Vector<String>().elements());
+        EasyMock.expect(mock.getHeader("X-Header-Key")).andReturn("x-header-value");
         EasyMock.replay(mock);
         return mock;
     }
@@ -271,5 +278,39 @@ public class WovnHttpServletRequestTest extends TestCase {
         WovnHttpServletRequest wovnRequest = new WovnHttpServletRequest(mockRequest, headers);
 
         assertEquals("/test", wovnRequest.getServletPath());
+    }
+
+    public void testWovnLangHeaderWithPath() {
+        HttpServletRequest mockRequest = mockRequestPath();
+        FilterConfig mockConfig = mockConfigPath();
+
+        Settings settings = new Settings(mockConfig);
+        Headers headers = new Headers(mockRequest, settings);
+
+        WovnHttpServletRequest wovnRequest = new WovnHttpServletRequest(mockRequest, headers);
+
+        assertEquals("en", wovnRequest.getHeader("X-Wovn-Lang"));
+        assertEquals("x-header-value", wovnRequest.getHeader("X-Header-Key"));
+
+        Enumeration<String> reqHeaders = wovnRequest.getHeaderNames();
+        assertEquals(true, reqHeaders.hasMoreElements());
+        assertEquals("X-Wovn-Lang", reqHeaders.nextElement());
+    }
+
+    public void testWovnLangHeaderWithQuery() {
+        HttpServletRequest mockRequest = mockRequestQuery();
+        FilterConfig mockConfig = mockConfigQuery();
+
+        Settings settings = new Settings(mockConfig);
+        Headers headers = new Headers(mockRequest, settings);
+
+        WovnHttpServletRequest wovnRequest = new WovnHttpServletRequest(mockRequest, headers);
+
+        assertEquals("en", wovnRequest.getHeader("X-Wovn-Lang"));
+        assertEquals("x-header-value", wovnRequest.getHeader("X-Header-Key"));
+
+        Enumeration<String> reqHeaders = wovnRequest.getHeaderNames();
+        assertEquals(true, reqHeaders.hasMoreElements());
+        assertEquals("X-Wovn-Lang", reqHeaders.nextElement());
     }
 }
