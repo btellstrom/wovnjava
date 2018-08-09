@@ -346,6 +346,14 @@ public class HeadersTest extends TestCase {
         assertEquals("https://example.com/ja/file", h.locationWithLangCode("../../../file"));
     }
 
+    public void testLocationWithPathAndTopLevel() {
+        HttpServletRequest mockRequest = mockRequestPath("/location.jsp?wovn=ja");
+        FilterConfig mockConfig = mockConfigQuery();
+        Settings s = new Settings(mockConfig);
+        Headers h = new Headers(mockRequest, s);
+        assertEquals("https://example.com/index.jsp?wovn=ja", h.locationWithLangCode("./index.jsp"));
+    }
+
     public void testLocationWithQuery() {
         HttpServletRequest mockRequest = mockRequestPath("/dir/signin?wovn=ja");
         FilterConfig mockConfig = mockConfigQuery();

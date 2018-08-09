@@ -302,7 +302,7 @@ class Headers {
             if (index > 0) {
                 return path.substring(0, index + 1);
             } else {
-                return path;
+                return "/";
             }
         }
     }
