@@ -75,11 +75,14 @@ public class HeadersTest extends TestCase {
         return mockRequestPath("/ja/test");
     }
     private static HttpServletRequest mockRequestPath(String path) {
+        return mockRequestPath(path, "example.com");
+    }
+    private static HttpServletRequest mockRequestPath(String path, String host) {
         HttpServletRequest mock = EasyMock.createMock(HttpServletRequest.class);
         EasyMock.expect(mock.getScheme()).andReturn("https");
-        EasyMock.expect(mock.getRemoteHost()).andReturn("example.com");
+        EasyMock.expect(mock.getRemoteHost()).andReturn(host);
         EasyMock.expect(mock.getRequestURI()).andReturn(path).atLeastOnce();
-        EasyMock.expect(mock.getServerName()).andReturn("example.com").atLeastOnce();
+        EasyMock.expect(mock.getServerName()).andReturn(host).atLeastOnce();
         EasyMock.expect(mock.getQueryString()).andReturn("").atLeastOnce();
         EasyMock.expect(mock.getServerPort()).andReturn(443).atLeastOnce();
         EasyMock.replay(mock);
@@ -304,6 +307,86 @@ public class HeadersTest extends TestCase {
         Headers h = makeHeader("/global/en/foo", "/global/");
         assertEquals("/global/", h.removeLang("/global/en/", null));
         assertEquals("/en/global/", h.removeLang("/en/global/", null));
+    }
+
+    public void testLocationWithDefaultLangCode() {
+        HttpServletRequest mockRequest = mockRequestPath("/signin");
+        FilterConfig mockConfig = mockConfigPath();
+        Settings s = new Settings(mockConfig);
+        Headers h = new Headers(mockRequest, s);
+        assertEquals("http://example.com/", h.locationWithLangCode("http://example.com/"));
+        assertEquals("https://example.com/", h.locationWithLangCode("https://example.com/"));
+        assertEquals("https://example.com/dir/file", h.locationWithLangCode("https://example.com/dir/file"));
+    }
+
+    public void testLocationWithPath() {
+        HttpServletRequest mockRequest = mockRequestPath("/ja/dir/signin");
+        FilterConfig mockConfig = mockConfigPath();
+        Settings s = new Settings(mockConfig);
+        Headers h = new Headers(mockRequest, s);
+        assertEquals("http://example.com/ja/", h.locationWithLangCode("http://example.com/"));
+        assertEquals("https://example.com/ja/", h.locationWithLangCode("https://example.com/"));
+        assertEquals("https://example.com/ja/dir/file", h.locationWithLangCode("https://example.com/dir/file"));
+        assertEquals("https://other.com/dir/file", h.locationWithLangCode("https://other.com/dir/file"));
+        assertEquals("https://example.com/ja/", h.locationWithLangCode("/"));
+        assertEquals("https://example.com/ja/dir/file", h.locationWithLangCode("/dir/file"));
+        assertEquals("https://example.com/ja/dir/file", h.locationWithLangCode("./file"));
+        assertEquals("https://example.com/ja/file", h.locationWithLangCode("../file"));
+        assertEquals("https://example.com/ja/file", h.locationWithLangCode("../../file"));
+    }
+
+    public void testLocationWithPathAndTrailingSlash() {
+        HttpServletRequest mockRequest = mockRequestPath("/ja/dir/signin/");
+        FilterConfig mockConfig = mockConfigPath();
+        Settings s = new Settings(mockConfig);
+        Headers h = new Headers(mockRequest, s);
+        assertEquals("https://example.com/ja/dir/signin/file", h.locationWithLangCode("./file"));
+        assertEquals("https://example.com/ja/dir/file", h.locationWithLangCode("../file"));
+        assertEquals("https://example.com/ja/file", h.locationWithLangCode("../../file"));
+        assertEquals("https://example.com/ja/file", h.locationWithLangCode("../../../file"));
+    }
+
+    public void testLocationWithPathAndTopLevel() {
+        HttpServletRequest mockRequest = mockRequestPath("/location.jsp?wovn=ja");
+        FilterConfig mockConfig = mockConfigQuery();
+        Settings s = new Settings(mockConfig);
+        Headers h = new Headers(mockRequest, s);
+        assertEquals("https://example.com/index.jsp?wovn=ja", h.locationWithLangCode("./index.jsp"));
+    }
+
+    public void testLocationWithQuery() {
+        HttpServletRequest mockRequest = mockRequestPath("/dir/signin?wovn=ja");
+        FilterConfig mockConfig = mockConfigQuery();
+        Settings s = new Settings(mockConfig);
+        Headers h = new Headers(mockRequest, s);
+        assertEquals("http://example.com/?wovn=ja", h.locationWithLangCode("http://example.com/"));
+        assertEquals("https://example.com/?wovn=ja", h.locationWithLangCode("https://example.com/"));
+        assertEquals("https://example.com/dir/file?wovn=ja", h.locationWithLangCode("https://example.com/dir/file"));
+        assertEquals("https://other.com/dir/file", h.locationWithLangCode("https://other.com/dir/file"));
+        assertEquals("https://example.com/?wovn=ja", h.locationWithLangCode("/"));
+        assertEquals("https://example.com/dir/file?wovn=ja", h.locationWithLangCode("/dir/file"));
+        assertEquals("https://example.com/dir/file?wovn=ja", h.locationWithLangCode("./file"));
+        assertEquals("https://example.com/file?wovn=ja", h.locationWithLangCode("../file"));
+        assertEquals("https://example.com/file?wovn=ja", h.locationWithLangCode("../../file"));
+        assertEquals("../../file?q=hello&wovn=zh-CHS", h.locationWithLangCode("../../file?q=hello&wovn=zh-CHS"));
+        assertEquals("../../file?wovn=zh-CHS", h.locationWithLangCode("../../file?wovn=zh-CHS"));
+    }
+
+    public void testLocationWithSubdomain() {
+        HttpServletRequest mockRequest = mockRequestPath("/dir/signin", "ja.example.com");
+        FilterConfig mockConfig = mockConfigSubdomain();
+        Settings s = new Settings(mockConfig);
+        Headers h = new Headers(mockRequest, s);
+        assertEquals("http://ja.example.com/", h.locationWithLangCode("http://example.com/"));
+        assertEquals("https://ja.example.com/", h.locationWithLangCode("https://example.com/"));
+        assertEquals("https://ja.example.com/dir/file", h.locationWithLangCode("https://example.com/dir/file"));
+        assertEquals("https://other.com/dir/file", h.locationWithLangCode("https://other.com/dir/file"));
+        assertEquals("https://fr.example.com/dir/file", h.locationWithLangCode("https://fr.example.com/dir/file"));
+        assertEquals("https://ja.example.com/", h.locationWithLangCode("/"));
+        assertEquals("https://ja.example.com/dir/file", h.locationWithLangCode("/dir/file"));
+        assertEquals("https://ja.example.com/dir/file", h.locationWithLangCode("./file"));
+        assertEquals("https://ja.example.com/file", h.locationWithLangCode("../file"));
+        assertEquals("https://ja.example.com/file", h.locationWithLangCode("../../file"));
     }
 
     private Headers makeHeader(String requestPath, String sitePrefix) {

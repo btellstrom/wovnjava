@@ -211,6 +211,66 @@ class Headers {
         }
     }
 
+    public String locationWithLangCode(String location) {
+        // check if needed
+        if (location == null) {
+            return null;
+        }
+        if (langCode().equals(settings.defaultLang)) {
+            return location;
+        }
+
+        // catprue protocl and path
+        String locationProtocol = protocol;
+        String path;
+        if (location.contains("://")) {
+            if (!location.contains("://" + host)) {
+                return location;
+            }
+            String[] protocolAndRemaining = location.split("://", 2);
+            locationProtocol = protocolAndRemaining[0];
+            path = "/" + protocolAndRemaining[1].split("/", 2)[1];
+        } else {
+            if (location.startsWith("/")) {
+                path = location;
+            } else {
+                path = pathJoin("/", pathJoin(removeFilePart(pathNameKeepTrailingSlash), location));
+            }
+        }
+        path = pathNormalize(path);
+
+        // check location already have language code
+        if (settings.urlPattern.equals("query") && location.contains("wovn=")) {
+            return location;
+        } else if (settings.urlPattern.equals("path")) {
+            Pattern p = Pattern.compile(settings.urlPatternReg);
+            Matcher m = p.matcher(path);
+            if (m.find()) {
+                String l = m.group(1);
+                if (l != null && l.length() > 0 && Lang.getLang(l) != null) {
+                    return location;
+                }
+            }
+        }
+
+        // build new location
+        String lang = langCode();
+        String queryLangCode = "";
+        String subdomainLangCode = "";
+        String pathLangCode = "";
+        if (settings.urlPattern.equals("query")) {
+            if (location.contains("?")) {
+                queryLangCode = "&wovn=" + lang;
+            } else {
+                queryLangCode = "?wovn=" + lang;
+            }
+        } else if (settings.urlPattern.equals("subdomain")) {
+            subdomainLangCode = lang + ".";
+        } else {
+            pathLangCode = "/" + lang;
+        }
+        return locationProtocol + "://" + subdomainLangCode + host + pathLangCode + path + queryLangCode;
+    }
     /**
      * @return String Returns request URL without any language code
      */
@@ -234,21 +294,46 @@ class Headers {
         }
     }
 
-    void out(HttpServletRequest req, HttpServletResponse res) {
-        String loc = req.getHeader("Location");
-        if (loc != null && Pattern.compile("//" + host).matcher(loc).find()) {
-            if (this.settings.urlPattern.equals("query")) {
-                if (Pattern.compile("\\?").matcher(loc).find()) {
-                    res.setHeader("Location", loc + "?wovn=" + langCode());
-                } else {
-                    res.setHeader("Location", loc + "&wovn=" + langCode());
-                }
-            } else if (this.settings.urlPattern.equals("subdomain")) {
-                loc = loc.replaceFirst("//([^.]+)", "//" + langCode() + "\\.$1");
-                res.setHeader("Location", loc);
+    private String removeFilePart(String path) {
+        if (path.endsWith("/")) {
+            return path;
+        } else {
+            int index = path.lastIndexOf("/");
+            if (index > 0) {
+                return path.substring(0, index + 1);
             } else {
-                loc = loc.replaceFirst("(//[^/]+)", "$1/" + langCode());
-                res.setHeader("Location", loc);
+                return "/";
+            }
+        }
+    }
+
+    private String pathJoin(String left, String right) {
+        boolean l = left.endsWith("/");
+        boolean r = right.startsWith("/");
+        if (l && r) {
+            return left + right.substring(1);
+        } else if (l || r) {
+            return left + right;
+        } else {
+            return left + "/" + right;
+        }
+    }
+
+    private String pathNormalize(String path) {
+        path = replaceRepeat(path, "/./", "/");            // remove redundant relative path
+        path = replaceRepeat(path, "/[^/]+/\\.\\./", "/"); // combine relative path.         eg. '/dir/../file' to '/file'
+        path = path.replace("/../", "/");                  // remove nonsense relative path. eg. '/../dir/file' to '/dir/file'
+        path = path.replaceFirst("\\.\\./", "");           // remove nonsense relative path. eg.'../dir/file' to '/dir/file'
+        return path.length() == 0 ? "/" : path;
+    }
+
+    private String replaceRepeat(String path, String pattern, String replacement) {
+        while(true) {
+            String newPath = path.replaceAll(pattern, replacement);
+            if (path.length() == newPath.length()) {
+                return path;
+            } else {
+                path = newPath;
             }
         }
     }

@@ -15,10 +15,12 @@ class WovnHttpServletResponse extends HttpServletResponseWrapper {
     private ByteArrayOutputStream buff;
     private PrintWriter writer;
     private ServletOutputStream output;
+    private Headers headers;
 
-    WovnHttpServletResponse(HttpServletResponse response) {
+    WovnHttpServletResponse(HttpServletResponse response, Headers headers) {
         super(response);
         this.buff = new ByteArrayOutputStream();
+        this.headers = headers;
     }
 
     byte[] getData() {
@@ -66,5 +68,16 @@ class WovnHttpServletResponse extends HttpServletResponseWrapper {
             );
         }
         return this.writer;
+    }
+
+    public void sendRedirect(String location) throws java.io.IOException {
+        super.sendRedirect(headers.locationWithLangCode(location));
+    }
+
+    public void setHeader(String name, String value) {
+        if (name.toLowerCase() == "location") {
+            value = headers.locationWithLangCode(value);
+        }
+        super.setHeader(name, value);
     }
 }
