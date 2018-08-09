@@ -71,63 +71,13 @@ class WovnHttpServletResponse extends HttpServletResponseWrapper {
     }
 
     public void sendRedirect(String location) throws java.io.IOException {
-        super.sendRedirect(locationWithLangCode(location));
+        super.sendRedirect(headers.locationWithLangCode(location));
     }
 
     public void setHeader(String name, String value) {
         if (name.toLowerCase() == "location") {
-            value = locationWithLangCode(value);
+            value = headers.locationWithLangCode(value);
         }
         super.setHeader(name, value);
-    }
-
-    private String locationWithLangCode(String loc) {
-        if (loc == null) {
-            return null;
-        }
-
-        // capture protocol if location included
-        String protocol = headers.protocol;
-        if (loc.contains("//")) {
-            if (!loc.contains("//" + headers.host)) {
-                return loc;
-            }
-            protocol = loc.split("//")[0];
-        }
-
-        String langCode = headers.langCode();
-        String queryLang = "";
-        String subdomainLang = "";
-        String pathLang = "";
-        if (headers.settings.urlPattern.equals("query")) {
-            if (loc.contains("?")) {
-                queryLang = "&wovn=" + langCode;
-            } else {
-                queryLang = "?wovn=" + langCode;
-            }
-        } else if (headers.settings.urlPattern.equals("subdomain")) {
-            subdomainLang = langCode + ".";
-        } else {
-            pathLang = langCode;
-        }
-        String pathAll = loc.startsWith("/") ?
-          pathJoin(pathLang, loc) :
-          pathJoin(pathLang, pathJoin(headers.pathNameKeepTrailingSlash, loc));
-        return protocol + "://" + subdomainLang + headers.host + pathAll + queryLang;
-    }
-
-    private String pathJoin(String left, String right) {
-        int slash_pos = left.lastIndexOf("/");
-        left = slash_pos >= 0 ? left.substring(0, slash_pos) : "";
-        right = right.startsWith("./") ? right.substring(2) : right;
-        boolean l = left.endsWith("/");
-        boolean r = right.startsWith("/");
-        if (l && r) {
-            return left + right.substring(1);
-        } else if (l || r) {
-            return left + right;
-        } else {
-            return left + "/" + right;
-        }
     }
 }
