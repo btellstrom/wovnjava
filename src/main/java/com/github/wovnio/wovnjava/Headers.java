@@ -231,7 +231,11 @@ class Headers {
             locationProtocol = protocolAndRemaining[0];
             path = "/" + protocolAndRemaining[1].split("/", 2)[1];
         } else {
-            path = location.startsWith("/") ? location : pathJoin("/", pathJoin(pathNameKeepTrailingSlash, location));
+            if (location.startsWith("/")) {
+                path = location;
+            } else {
+                path = pathJoin("/", pathJoin(removeFilePart(pathNameKeepTrailingSlash), location));
+            }
         }
         path = pathNormalize(path);
 
@@ -287,6 +291,19 @@ class Headers {
         } else {
             String prefix = this.settings.sitePrefixPathWithSlash;
             return uri.replaceFirst(prefix + lang + "(/|$)", prefix);
+        }
+    }
+
+    private String removeFilePart(String path) {
+        if (path.endsWith("/")) {
+            return path;
+        } else {
+            int index = path.lastIndexOf("/");
+            if (index > 0) {
+                return path.substring(0, index + 1);
+            } else {
+                return path;
+            }
         }
     }
 
