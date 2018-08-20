@@ -29,12 +29,12 @@ class Interceptor {
             return converter.restore(translatedBody);
         } catch (ApiException e) {
             Logger.log.error("ApiException", e);
-            return apiTranslateFail(body, e.getMessage());
+            return apiTranslateFail(body, lang, e.getMessage());
         }
     }
 
-    private String apiTranslateFail(String body, String reason) {
-        return new HtmlConverter(settings, body).convert(headers, settings.defaultLang, reason);
+    private String apiTranslateFail(String body, String lang, String reason) {
+        return new HtmlConverter(settings, body).convert(headers, lang, reason);
     }
 
     private String localTranslate(String lang, String body) {
