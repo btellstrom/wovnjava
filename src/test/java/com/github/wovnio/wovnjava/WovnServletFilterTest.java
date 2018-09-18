@@ -64,6 +64,16 @@ public class WovnServletFilterTest extends TestCase {
         assertEquals("/image.png", mock.req.getRequestURI());
     }
 
+    public void testLocation() throws ServletException, IOException {
+        HashMap<String, String> testQuery = new HashMap<String, String>() {{
+            put("urlPattern", "query");
+            put("defaultLang", "ja");
+        }};
+        FilterChainMock mock = TestUtil.doServletFilter("text/html", "/search/?abc=123&wovn=ja", testQuery);
+        HttpServletResponse res = (HttpServletResponse)mock.res;
+        assertEquals("", res.getHeader("Location"));
+    }
+
     private final HashMap<String, String> queryOption = new HashMap<String, String>() {{
         put("urlPattern", "query");
     }};
