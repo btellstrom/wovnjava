@@ -68,10 +68,11 @@ public class WovnServletFilterTest extends TestCase {
         HashMap<String, String> testQuery = new HashMap<String, String>() {{
             put("urlPattern", "query");
             put("defaultLang", "ja");
+            put("location", "https://example.com/search/?abc=123&wovn=ja");
         }};
         FilterChainMock mock = TestUtil.doServletFilter("text/html", "/search/?abc=123&wovn=ja", testQuery);
         HttpServletResponse res = (HttpServletResponse)mock.res;
-        assertEquals("", res.getHeader("Location"));
+        assertEquals("https://example.com/search/?abc=123&wovn=ja", res.getHeader("Location"));
     }
 
     private final HashMap<String, String> queryOption = new HashMap<String, String>() {{
