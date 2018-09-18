@@ -59,12 +59,12 @@ public class TestUtil {
         return mock;
     }
 
-    public static ServletResponse mockResponse(String contentType, String encoding) throws IOException {
+    public static ServletResponse mockResponse(String contentType, String encoding, String location) throws IOException {
         HttpServletResponse mock = EasyMock.createMock(HttpServletResponse.class);
         mock.setContentLength(EasyMock.anyInt());
         EasyMock.expectLastCall();
         mock.setCharacterEncoding("utf-8");
-        EasyMock.expect(mock.getHeader("Location")).andReturn("");
+        EasyMock.expect(mock.getHeader("Location")).andReturn(location);
         EasyMock.expectLastCall();
         EasyMock.expect(mock.getWriter()).andReturn(new PrintWriter(new StringWriter()));
         EasyMock.expect(mock.getContentType()).andReturn(contentType).atLeastOnce();
@@ -88,7 +88,7 @@ public class TestUtil {
     public static FilterChainMock doServletFilter(String contentType, String path, String forwardPath, HashMap<String, String> option) throws ServletException, IOException {
         RequestDispatcherMock dispatcher = new RequestDispatcherMock();
         HttpServletRequest req = mockRequestPath(path, forwardPath, dispatcher);
-        ServletResponse res = TestUtil.mockResponse(contentType, "");
+        ServletResponse res = mockResponse(contentType, "", option.getOrDefault("location", ""));
         FilterConfig filterConfig = makeConfig(option);
         FilterChainMock filterChain = new FilterChainMock();
         WovnServletFilter filter = new WovnServletFilter();

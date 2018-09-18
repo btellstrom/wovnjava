@@ -30,7 +30,7 @@ public class WovnServletFilter implements Filter {
     {
         Headers headers = new Headers((HttpServletRequest)request, settings);
         String lang = headers.getPathLang();
-        boolean hasShorterPath = lang.length() > 0 && lang.equals(settings.defaultLang);
+        boolean hasShorterPath = settings.urlPattern.equals("path") && lang.length() > 0 && lang.equals(settings.defaultLang);
         if (hasShorterPath) {
             ((HttpServletResponse) response).sendRedirect(headers.redirectLocation(settings.defaultLang));
         } else if (htmlChecker.canTranslatePath(headers.pathName)) {
