@@ -32,6 +32,7 @@ class Settings {
     String originalUrlHeader = "";
     String originalQueryStringHeader = "";
     boolean strictHtmlCheck = false;
+    boolean automaticEncodeFromSJIS = true;
     final String version = VERSION;
     int connectTimeout = 1000;
     int readTimeout = 1000;

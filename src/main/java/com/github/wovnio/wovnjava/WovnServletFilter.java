@@ -26,8 +26,9 @@ public class WovnServletFilter implements Filter {
         this.settings = new Settings(config);
     }
 
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws ServletException, IOException
+    public void doFilter(ServletRequest originalRequest, ServletResponse response, FilterChain chain) throws ServletException, IOException
     {
+        ServletRequest request = new AutomaticEncodingHttpServletRequest((HttpServletRequest)originalRequest);
         Headers headers = new Headers((HttpServletRequest)request, settings);
         String lang = headers.getPathLang();
         boolean hasShorterPath = settings.urlPattern.equals("path") && lang.length() > 0 && lang.equals(settings.defaultLang);
