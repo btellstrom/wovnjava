@@ -20,7 +20,7 @@ public class WovnServletFilter implements Filter {
     private Settings settings;
     private final HtmlChecker htmlChecker = new HtmlChecker();
 
-    public static final String VERSION = Settings.VERSION;  // for backword compatibility
+    public static final String VERSION = Settings.VERSION;  // for backward compatibility
 
     public void init(FilterConfig config) throws ServletException {
         this.settings = new Settings(config);
@@ -91,6 +91,7 @@ public class WovnServletFilter implements Filter {
     private String createDebuggingSection(HttpServletRequest request, WovnHttpServletResponse response, Headers headers) {
         StringBuilder sb = new StringBuilder();
         sb.append("\n<!--Debugging information:");
+        sb.append("\nVersion=" + VERSION);
         sb.append("\nTimestamp=" + System.currentTimeMillis());
         sb.append("\nlangCode=" + headers.langCode());
         sb.append("\ngetRequestURI=" + request.getRequestURI());
