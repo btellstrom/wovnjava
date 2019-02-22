@@ -31,6 +31,7 @@ class Api {
     }
 
     String translate(String lang, String html) throws ApiException {
+        headers.trace("Api#translate(1)");
         HttpURLConnection con = null;
         try {
             URL url = getApiUrl(lang, html);
@@ -39,12 +40,15 @@ class Api {
             con.setReadTimeout(settings.readTimeout);
             return translate(lang, html, con);
         } catch (UnsupportedEncodingException e) {
+            headers.trace("Api#UnsupportedEncodingException(1): " + e);
             Logger.log.error("Api url", e);
             throw new ApiException("encoding");
         } catch (IOException e) {
+            headers.trace("Api#IOException(1): " + e);
             Logger.log.error("Api url", e);
             throw new ApiException("io");
         } catch (NoSuchAlgorithmException e) {
+            headers.trace("Api#NoSuchAlgorithmException: " + e);
             Logger.log.error("Api url", e);
             throw new ApiException("algorithm");
         } finally {
@@ -55,6 +59,7 @@ class Api {
     }
 
     String translate(String lang, String html, HttpURLConnection con) throws ApiException {
+        headers.trace("Api#translate(2)");
         OutputStream out = null;
         try {
             ByteArrayOutputStream body = gzipStream(getApiBody(lang, html).getBytes());
@@ -69,18 +74,22 @@ class Api {
             out = null;
             int status = con.getResponseCode();
             if (status == HttpURLConnection.HTTP_OK) {
+                headers.trace("Api#HttpURLConnection.HTTP_OK");
                 InputStream input = con.getInputStream();
                 if ("gzip".equals(con.getContentEncoding())) {
                     input = new GZIPInputStream(input);
                 }
                 return extractHtml(input);
             } else {
+                headers.trace("Api#ApiException " + String.valueOf(status));
                 throw new ApiException("status_" + String.valueOf(status));
             }
         } catch (UnsupportedEncodingException e) {
+            headers.trace("Api#UnsupportedEncodingException(2): " + e);
             Logger.log.error("Api url", e);
             throw new ApiException("encoding");
         } catch (IOException e) {
+            headers.trace("Api#IOException(2): " + e);
             Logger.log.error("Api url", e);
             throw new ApiException("io");
         } finally {
@@ -106,6 +115,7 @@ class Api {
     }
 
     private String extractHtml(InputStream input) throws ApiException, IOException, UnsupportedEncodingException {
+        headers.trace("Api#extractHtml");
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         byte[] buffer = new byte[READ_BUFFER_SIZE];
         int len = 0;
@@ -118,6 +128,7 @@ class Api {
         LinkedHashMap<String, String> dict = JSON.decode(json);
         String html = dict.get("body");
         if (html == null) {
+            headers.trace("Unknown json format " + json);
             Logger.log.error("Unknown json format " + json);
             throw new ApiException("unknown_json_format");
         }

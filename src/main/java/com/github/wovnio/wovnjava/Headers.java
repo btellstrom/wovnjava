@@ -28,9 +28,12 @@ class Headers {
     private String unmaskedPathName;
     private String unmaskedUrl;
 
+    private StringBuilder traceBuffer;
+
     Headers(HttpServletRequest r, Settings s) {
         this.settings = s;
         this.request = r;
+        this.traceBuffer = new StringBuilder();
 
         this.protocol = this.request.getScheme();
         if (this.settings.useProxy && this.request.getHeader("X-Forwarded-Host") != null) {
@@ -336,5 +339,15 @@ class Headers {
                 path = newPath;
             }
         }
+    }
+
+    public void trace(String msg) {
+        if (traceBuffer == null) traceBuffer = new StringBuilder();
+        traceBuffer.append(msg + "\n");
+    }
+    public String printTrace() {
+        String output = traceBuffer.toString();
+        traceBuffer = null;
+        return output;
     }
 }

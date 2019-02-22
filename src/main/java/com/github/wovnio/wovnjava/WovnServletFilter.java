@@ -49,11 +49,14 @@ public class WovnServletFilter implements Filter {
         WovnHttpServletResponse wovnResponse = new WovnHttpServletResponse((HttpServletResponse)response, headers);
 
         if (settings.urlPattern.equals("path") && headers.getPathLang().length() > 0) {
+            headers.trace("WovnServletFilter#forward to " + headers.pathNameKeepTrailingSlash);
             wovnRequest.getRequestDispatcher(headers.pathNameKeepTrailingSlash).forward(wovnRequest, wovnResponse);
         } else {
+            headers.trace("WovnServletFilter#chain.doFilter");
             chain.doFilter(wovnRequest, wovnResponse);
         }
 
+        headers.trace("WovnServletFilter#Response received");
         String originalBody = wovnResponse.toString();
         if (originalBody != null) {
             // text
@@ -63,6 +66,11 @@ public class WovnServletFilter implements Filter {
                 Api api = new Api(settings, headers);
                 Interceptor interceptor = new Interceptor(headers, settings, api);
                 body = interceptor.translate(originalBody);
+
+                // Temporary debugging section
+                headers.trace("WovnServletFilter#translation complete");
+                String debugging_section = createDebuggingSection(request, wovnResponse, headers);
+                body = body + debugging_section;
             } else {
                 // css, javascript or others
                 body = originalBody;
@@ -78,5 +86,19 @@ public class WovnServletFilter implements Filter {
             out.write(wovnResponse.getData());
             out.close();
         }
+    }
+
+    private String createDebuggingSection(HttpServletRequest request, WovnHttpServletResponse response, Headers headers) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("\n<!--Debugging information:");
+        sb.append("\nTimestamp=" + System.currentTimeMillis());
+        sb.append("\nlangCode=" + headers.langCode());
+        sb.append("\ngetRequestURI=" + request.getRequestURI());
+        sb.append("\nforward.request_uri=" + request.getAttribute("javax.servlet.forward.request_uri"));
+        sb.append("\ngetQueryString=" + request.getQueryString());
+        sb.append("\noriginal_encoding=" + response.original_encoding);
+        sb.append("\n===trace===\n" + headers.printTrace());
+        sb.append("-->\n");
+        return sb.toString();
     }
 }

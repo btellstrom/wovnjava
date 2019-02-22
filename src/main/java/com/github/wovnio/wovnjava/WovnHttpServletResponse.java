@@ -16,11 +16,13 @@ class WovnHttpServletResponse extends HttpServletResponseWrapper {
     private PrintWriter writer;
     private ServletOutputStream output;
     private Headers headers;
+    public String original_encoding; // temporary debugging
 
     WovnHttpServletResponse(HttpServletResponse response, Headers headers) {
         super(response);
         this.buff = new ByteArrayOutputStream();
         this.headers = headers;
+        this.original_encoding = "";
     }
 
     byte[] getData() {
@@ -45,7 +47,9 @@ class WovnHttpServletResponse extends HttpServletResponseWrapper {
     }
 
     public String toString() {
-        return Utf8.toStringUtf8(this.getData());
+        byte[] data = this.getData();
+        this.original_encoding = Utf8.detectEncoding(data);
+        return Utf8.toStringUtf8(data);
     }
 
     public void setStatus(int sc) {
