@@ -11,7 +11,7 @@ import javax.servlet.FilterConfig;
 import javax.xml.bind.DatatypeConverter;
 
 class Settings {
-    public static final String VERSION = "0.4.1-fix01";
+    public static final String VERSION = "0.4.1-fix02";
     static final String UrlPatternRegPath = "/([^/.?]+)";
     static final String UrlPatternRegQuery = "(?:(?:\\?.*&)|\\?)wovn=([^&]+)(?:&|$)";
     static final String UrlPatternRegSubdomain = "^([^.]+)\\.";
