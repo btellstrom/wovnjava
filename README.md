@@ -211,3 +211,22 @@ Including three classes, `email-address-element`, `my-secret-class`, and `noshow
   ...
 </filter>
 ```
+
+### 2.11. sitePrefixPath
+
+This parameter lets you set a path for which WOVN will translate pages. By default, WOVN will translate all pages for your domain.
+
+If, for example, you set your sitePrefix path to `city` as follows
+```
+<filter>
+  ...
+  <init-param>
+    <param-name>sitePrefixPath</param-name>
+    <param-value>city</param-value>
+  </init-param>
+  ...
+</filter>
+```
+WOVN will only translate pages that match `http://www.mysite.com/city/*`.
+
+`http://www.mysite.com/city/tokyo/map.html` would be translated, and it would be possible to access that page with language code (in english) like this: `http://www.mysite.com/city/en/tokyo.map.html`. Notice that the language code is set _after_ the sitePrefixPath.
