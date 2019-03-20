@@ -201,10 +201,20 @@ class Headers {
                 location = lang.toLowerCase() + "." + location;
             } else {
                 // path
-                if (location.contains("/")) {
-                    location = location.replaceFirst("/", "/" + lang + "/");
+                if (settings.hasSitePrefixPath) {
+                    String sitePrefixPath = this.settings.sitePrefixPathWithoutSlash;
+                    if (this.pathName.startsWith(sitePrefixPath)) {
+                        location = location.replaceFirst(sitePrefixPath, sitePrefixPath + "/" + lang);
+                        if (!location.endsWith("/")) {
+                          location += "/";
+                        }
+                    }
                 } else {
-                    location += "/" + lang + "/";
+                    if (location.contains("/")) {
+                        location = location.replaceFirst("/", "/" + lang + "/");
+                    } else {
+                        location += "/" + lang + "/";
+                    }
                 }
             }
             return protocol + "://" + location;
