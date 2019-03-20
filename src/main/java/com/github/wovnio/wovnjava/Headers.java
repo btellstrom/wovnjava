@@ -239,6 +239,10 @@ class Headers {
         }
         path = pathNormalize(path);
 
+        if (!path.startsWith(this.settings.sitePrefixPathWithoutSlash)) {
+            return location;
+        }
+
         // check location already have language code
         if (settings.urlPattern.equals("query") && location.contains("wovn=")) {
             return location;
@@ -258,6 +262,7 @@ class Headers {
         String queryLangCode = "";
         String subdomainLangCode = "";
         String pathLangCode = "";
+        String sitePrefixPath = "";
         if (settings.urlPattern.equals("query")) {
             if (location.contains("?")) {
                 queryLangCode = "&wovn=" + lang;
@@ -268,8 +273,10 @@ class Headers {
             subdomainLangCode = lang + ".";
         } else {
             pathLangCode = "/" + lang;
+            sitePrefixPath = this.settings.sitePrefixPathWithoutSlash;
+            path = path.replaceFirst(sitePrefixPath, "");
         }
-        return locationProtocol + "://" + subdomainLangCode + host + pathLangCode + path + queryLangCode;
+        return locationProtocol + "://" + subdomainLangCode + host + sitePrefixPath + pathLangCode + path + queryLangCode;
     }
     /**
      * @return String Returns request URL without any language code
