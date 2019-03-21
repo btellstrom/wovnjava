@@ -311,6 +311,10 @@ class Headers {
         }
     }
 
+    boolean isValidPath() {
+        return this.pathName.startsWith(this.settings.sitePrefixPathWithoutSlash);
+    }
+
     private String removeFilePart(String path) {
         if (path.endsWith("/")) {
             return path;

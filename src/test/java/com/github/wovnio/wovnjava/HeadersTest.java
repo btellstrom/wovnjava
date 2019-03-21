@@ -428,6 +428,21 @@ public class HeadersTest extends TestCase {
         assertEquals("https://example.com/th/", h.locationWithLangCode("https://example.com/th/"));
     }
 
+    public void testIsValidPath() {
+        Headers h;
+        h = makeHeaderWithSitePrefixPath("/", "global");
+        assertEquals(false, h.isValidPath());
+
+        h = makeHeaderWithSitePrefixPath("/global", "global");
+        assertEquals(true, h.isValidPath());
+
+        h = makeHeaderWithSitePrefixPath("/global/ja/foo", "global");
+        assertEquals(true, h.isValidPath());
+
+        h = makeHeaderWithSitePrefixPath("/ja/global/foo", "global");
+        assertEquals(false, h.isValidPath());
+    }
+
     private Headers makeHeaderWithSitePrefixPath(String requestPath, String sitePrefixPath) {
         HttpServletRequest mockRequest = mockRequestPath(requestPath);
         HashMap<String, String> option = new HashMap<String, String>() {{
