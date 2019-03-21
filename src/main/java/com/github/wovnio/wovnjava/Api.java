@@ -130,6 +130,7 @@ class Api {
         appendKeyValue(sb, "&token=", settings.projectToken);
         appendKeyValue(sb, "&lang_code=", lang);
         appendKeyValue(sb, "&url_pattern=", settings.urlPattern);
+        appendKeyValue(sb, "&site_prefix_path=", settings.sitePrefixPathWithoutSlash);
         appendKeyValue(sb, "&body=", body);
         return sb.toString();
     }
@@ -150,8 +151,6 @@ class Api {
         appendValue(sb, lang);
         appendValue(sb, "&version=");
         appendValue(sb, settings.version);
-        appendValue(sb, "&site_prefix_path=");
-        appendValue(sb, settings.sitePrefixPathWithoutSlash);
         appendValue(sb, ")");
         return new URL(sb.toString());
     }
