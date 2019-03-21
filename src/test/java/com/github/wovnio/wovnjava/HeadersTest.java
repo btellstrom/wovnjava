@@ -248,21 +248,21 @@ public class HeadersTest extends TestCase {
         assertEquals("https://example.com/ja/dir1/dir2/", h.redirectLocation("ja"));
     }
 
-    public void testRedirectLocationWithSitePrefixPathBasePathOnly() {
+    public void testRedirectLocation_WithSitePrefixPathBasePathOnly_AddsLanguageToUrl() {
         Headers h = makeHeaderWithSitePrefixPath("/global", "/global/");
         assertEquals("https://example.com/global", h.redirectLocation("en")); // `en` is defaultLang
         assertEquals("https://example.com/global/ja/", h.redirectLocation("ja"));
         assertEquals("https://example.com/global/garbage/", h.redirectLocation("garbage"));
     }
 
-    public void testRedirectLocationWithSitePrefixPathMatchingPath() {
+    public void testRedirectLocation_WithSitePrefixPathMatchingPath_AddsLanguageToUrl() {
         Headers h = makeHeaderWithSitePrefixPath("/global/tokyo/", "/global/");
         assertEquals("https://example.com/global/tokyo/", h.redirectLocation("en")); // `en` is defaultLang
         assertEquals("https://example.com/global/ja/tokyo/", h.redirectLocation("ja"));
         assertEquals("https://example.com/global/garbage/tokyo/", h.redirectLocation("garbage"));
     }
 
-    public void testRedirectLocationWithSitePrefixPathNonmatchingPath() {
+    public void testRedirectLocation_WithSitePrefixPathNonmatchingPath_DoesNotModifyUrl() {
         Headers h = makeHeaderWithSitePrefixPath("/tokyo/global/", "/global/");
         assertEquals("https://example.com/tokyo/global/", h.redirectLocation("en")); // `en` is defaultLang
         assertEquals("https://example.com/tokyo/global/", h.redirectLocation("ja"));
