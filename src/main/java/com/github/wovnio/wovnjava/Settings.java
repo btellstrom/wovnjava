@@ -226,6 +226,10 @@ class Settings {
             valid = false;
             errors.add("Supported langs is not configured.");
         }
+        if (hasSitePrefixPath && urlPattern != "path") {
+            valid = false;
+            errors.add("sitePrefixPath must be used together with urlPattern=path.");
+        }
 
         if (errors.size() > 0) {
             Logger.log.error("Settings is invalid: " + errors.toString());
